@@ -4,6 +4,8 @@
 
 > 本项目基于 [TiryHi Android App](https://github.com/Yokitu) v1.4 Beta 2 开发，是其 Web 版本。
 
+> Android App 暂未发布到 GitHub，之后我们会考虑
+
 ## 简介
 
 TiryHi 是一个面向 Tiry 团队的工具箱应用，包含倒计日、计数器、浏览器书签、Intent 快捷指令、福利群打卡等多种实用功能。采用 Material 3 Expressive 设计，支持浅色/深色模式自动切换，数据本地持久化保存。
