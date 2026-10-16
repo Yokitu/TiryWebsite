@@ -2,9 +2,7 @@
 
 一款为你而生的工具箱应用。
 
-> 本项目基于 [TiryHi Android App](https://github.com/Yokitu) v1.4 Beta 2 开发，是其 Web 版本。
-
-> Android App 暂未发布到 GitHub，之后我们会考虑
+> 本项目基于 [TiryHi Android App](https://github.com/Yokitu) v1.4 Beta 2 开发，是其 Web 版本。Android App 暂未发布到 GitHub，之后我们会考虑发布。
 
 ## 简介
 
