@@ -1785,7 +1785,7 @@ async function init() {
       verified: await getSetting('verified', false),
       directLogin: await getSetting('directLogin', false),
       rememberMe: await getSetting('rememberMe', true),
-      startPage: await getSetting('startPage', 'start'),
+      startPage: await getSetting('startPage', 'welcome'),
     };
     const seeded = await getSetting('intentsSeeded', false);
     if (!seeded) {
