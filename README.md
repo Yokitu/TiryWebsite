@@ -2,11 +2,11 @@
 
 一款为你而生的工具箱应用。
 
-> 本项目基于 [TiryHi Android App](https://github.com/Yokitu) v1.4 Beta 2 开发，是其 Web 版本。Android App 暂未发布到 GitHub，之后我们会考虑发布。
+> 本项目基于 TiryHi Android App v1.4 Beta 2 开发，是其 Web 版本。Android App 暂未发布到 GitHub，之后我们会考虑发布。
 
 ## 简介
 
-TiryHi 是一个面向 Tiry 团队的工具箱应用，包含倒计日、计数器、浏览器书签、Intent 快捷指令、福利群打卡等多种实用功能。采用 Material 3 Expressive 设计，支持浅色/深色模式自动切换，数据本地持久化保存。
+TiryHi 是一个（不止）面向 Tiry 团队的工具箱应用，包含倒计日、计数器、浏览器书签、Intent 快捷指令、福利群打卡等多种实用功能。采用 Material 3 Expressive 设计，支持浅色/深色模式自动切换，数据本地持久化保存。
 
 ## 功能
 
@@ -20,6 +20,8 @@ TiryHi 是一个面向 Tiry 团队的工具箱应用，包含倒计日、计数�
 | **设置** | 主题、启动页、记住我、浏览器默认行为等 |
 > 图片素材是由天边橒（联系方式见下）上传到图床的，因而GitHub中不上传图片素材。
 
+---
+
 ## 使用方式
 
 直接访问：[https://yokitu.github.io/TiryWebsite/](https://yokitu.github.io/TiryWebsite/)
@@ -28,6 +30,13 @@ TiryHi 是一个面向 Tiry 团队的工具箱应用，包含倒计日、计数�
 
 - 输入暗号 → 解锁全部功能
 - 直接登录 → 限制浏览器和 Intent 功能
+
+### 你有必要注意
+
+- 分享链接时请分享 **完整链接** （有人反馈跳转的页面不符合预期，亲测发现该用户未复制完整链接）
+- **暗号** 可以在QQ群（见上）发 **scrept** 获取
+- 目前没有对 横屏、大屏 做适配
+
 
 ## 技术栈
 
@@ -70,7 +79,7 @@ TiryHi 是一个面向 Tiry 团队的工具箱应用，包含倒计日、计数�
 - **Android**: v1.4 Beta 2
 
 
-Tiry 团队 · 本网站更新于 2026.10.15
+Tiry 团队 · 本网站更新于 2026.10.17
 
 ---
 
