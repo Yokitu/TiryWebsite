@@ -3,6 +3,8 @@
 
 一款为你而生的工具箱应用。
 
+> 暂时不在更新，预计下次更新时间：2026.10.25~11.1
+
 ![TiryHi 图标](https://cloudflareimg.cdn.sn/i/6ad0c7aa5bff2_1792067498.png)
 
 > 本项目基于 TiryHi Android App v1.4 Beta 2 开发，是其 Web 版本。Android App 暂未发布到 GitHub，之后我们会考虑发布。
