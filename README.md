@@ -4,7 +4,9 @@
 一款为你而生的工具箱应用。
 
 >①暂时不在更新，预计下次更新时间：2026.10.25~11.1
+
 >②Android App 正在开发开源版本
+
 >③我们正在考虑在 [此网站](https://dnslz.itlaozai.top/) 申请二级域名
 
 ![TiryHi 图标](https://cloudflareimg.cdn.sn/i/6ad0c7aa5bff2_1792067498.png)
