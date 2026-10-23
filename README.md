@@ -3,12 +3,6 @@
 
 一款为你而生的工具箱应用。
 
->①暂时不在更新，预计下次更新时间：2026.10.25~11.1
-
->②Android App 正在开发开源版本
-
->③我们正在考虑在 [此网站](https://dnslz.itlaozai.top/) 申请二级域名
-
 ![TiryHi 图标](https://cloudflareimg.cdn.sn/i/6ad0c7aa5bff2_1792067498.png)
 
 > 本项目基于 TiryHi Android App v1.4 Beta 2 开发，是其 Web 版本。Android App 暂未发布到 GitHub，之后我们会考虑发布。
@@ -60,6 +54,14 @@ TiryHi 是一个（不止）面向 Tiry 团队的工具箱应用，包含倒计�
 ## 隐私说明
 
 所有数据（计数器、纪念日、Intent、书签等）均保存在 **用户浏览器的本地存储（IndexedDB）** 中，**不会上传到任何服务器**。清除浏览器数据会同时清除这些内容。
+
+## 最新消息
+
+- 我们正在更新 跨年系统
+
+- Android App 正在开发开源版本
+
+- 我们正在考虑在 [此网站](https://dnslz.itlaozai.top/) 申请二级域名。当前：第一次申请失败，理由：“Cloudflare API认证失败，请联系管理员检查API Token和Zone ID配置”。我们已联系该网站官方，等待官方回应。
 
 ## 团队内成员
 
