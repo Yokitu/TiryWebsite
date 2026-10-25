@@ -57,7 +57,7 @@ TiryHi 是一个（不止）面向 Tiry 团队的工具箱应用，包含倒计�
 
 ## 最新消息
 
-- 已更新 跨年系统（已发布于[另一个仓库](https://github.com/Yokitu/new-year-celebration）
+- 已更新 跨年系统（已发布于 [另一个仓库](https://github.com/Yokitu/new-year-celebration) ）
 
 - Android App 正在开发开源版本
 
