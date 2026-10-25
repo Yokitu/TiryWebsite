@@ -61,7 +61,7 @@ TiryHi 是一个（不止）面向 Tiry 团队的工具箱应用，包含倒计�
 
 - Android App 正在开发开源版本
 
-- 我们正在考虑在 [此网站](https://dnslz.itlaozai.top/) 申请二级域名。当前：第一次申请失败，理由：“Cloudflare API认证失败，请联系管理员检查API Token和Zone ID配置”。我们已联系该网站官方，等待官方回应。
+- 我们正在考虑在 [此网站](https://dnslz.itlaozai.top/) 申请二级域名。当前：站长正在检查网页是否合规。
 
 ## 团队内成员
 
