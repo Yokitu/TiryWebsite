@@ -267,7 +267,7 @@ const IMG = {
   sky:        'https://img.scdn.io/i/6acb967fc6981_1791727231.webp'
 };
 
-const VERIFY_CODE = 'Rayo99Yog6DB';
+const DeeBusAti = 'UmF5bzk5WW9nNkRC';
 
 const DB_NAME = 'tiryhi_db';
 const DB_VERSION = 1;
@@ -528,7 +528,7 @@ function showVerifyDialog() {
   const unlock = async () => {
     const val = input.value.trim();
     if (!val) { showSnackbar('请输入暗号，或选择直接登录'); return; }
-    if (val !== VERIFY_CODE) { showSnackbar('暗号不正确'); return; }
+    if (btoa(val) !== DeeBusAti) {showSnackbar('暗号不正确'); return; }
     const rem = getRemember();
     await setSetting('verified', true);
     await setSetting('rememberMe', rem);
