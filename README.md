@@ -4,6 +4,8 @@
 
 ![TiryHi 图标](https://cloudflareimg.cdn.sn/i/6ad0c7aa5bff2_1792067498.png)
 
+> 项目 **正在更新** ，可能会出现异常
+
 > 本项目基于 TiryHi Android App v1.4 Beta 2 开发，是其 Web 版本。Android App 暂未发布到 GitHub，之后我们会考虑发布。
 
 ## 简介
