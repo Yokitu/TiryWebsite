@@ -1,0 +1,1858 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>TiryHi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+<link rel="preload" as="image" href="https://img.scdn.io/i/6ad0c7aa5bff2_1792067498.png" fetchpriority="high">
+<link rel="preload" as="image" href="https://img.scdn.io/i/6acb97a301667_1791727523.webp">
+<link rel="preload" as="image" href="https://img.scdn.io/i/6acb972f6f781_1791727407.webp">
+<style>
+:root {
+  --primary: #00696E; --on-primary: #FFFFFF; --primary-container: #9CF1F6; --on-primary-container: #002022;
+  --secondary: #4D6263; --secondary-container: #CCE8E9; --on-secondary-container: #051F20;
+  --tertiary-container: #D2E4FF; --on-tertiary-container: #001C3B;
+  --surface: #F4FBFB; --surface-container-low: #EEF5F5; --surface-container: #E8EFEF;
+  --surface-container-high: #E2EAEA; --surface-container-highest: #DDE4E4;
+  --on-surface: #161D1D; --on-surface-variant: #3F4948; --outline: #6F7979; --outline-variant: #BEC8C8;
+  --inverse-surface: #2B3232; --inverse-on-surface: #ECF2F2; --inverse-primary: #80D5DA;
+  --error: #B3261E; --on-error: #FFFFFF; --error-container: #F9DEDC; --on-error-container: #410E0B;
+  --shadow: rgba(0,0,0,0.15);
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --primary: #83D4D8; --on-primary: #063639; --primary-container: #0B4F52; --on-primary-container: #9FF0F5;
+    --secondary: #B3CBCC; --secondary-container: #354A4C; --on-secondary-container: #CFE7E8;
+    --tertiary-container: #38485A; --on-tertiary-container: #D3E4FA;
+    --surface: #0D1515; --surface-container-low: #161D1D; --surface-container: #1A2121;
+    --surface-container-high: #252B2B; --surface-container-highest: #2F3636;
+    --on-surface: #DCE4E4; --on-surface-variant: #B7CACB; --outline: #819495; --outline-variant: #394A4B;
+    --inverse-surface: #DCE4E4; --inverse-on-surface: #2B3232; --inverse-primary: #00696E;
+    --error: #F2B8B5; --on-error: #601410; --error-container: #8C1D18; --on-error-container: #F9DEDC;
+    --shadow: rgba(0,0,0,0.5);
+  }
+}
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+html, body { height:100%; font-family:'Roboto', system-ui, -apple-system, sans-serif; background: var(--surface); color: var(--on-surface); overflow:hidden; }
+body { display:flex; justify-content:center; align-items:center; }
+#app-frame { width: 412px; height: 892px; max-height: 100vh; background: var(--surface); position: relative; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 0 40px var(--shadow); }
+@media (max-width: 412px), (max-height: 892px) { #app-frame { width:100vw; height:100vh; max-height:100vh; } }
+#screens { position: relative; flex: 1; overflow: hidden; }
+.screen { position: absolute; inset: 0; display: none; flex-direction: column; background: var(--surface); overflow: hidden; }
+.screen.active { display: flex; }
+.screen.anim-in-right { animation: slideInRight 0.4s cubic-bezier(0.2, 0.8, 0.2, 1.05) forwards; }
+.screen.anim-out-right { animation: slideOutRight 0.4s cubic-bezier(0.2, 0.8, 0.2, 1.05) forwards; }
+.screen.anim-in-left { animation: slideInLeft 0.4s cubic-bezier(0.2, 0.8, 0.2, 1.05) forwards; }
+.screen.anim-out-left { animation: slideOutLeft 0.4s cubic-bezier(0.2, 0.8, 0.2, 1.05) forwards; }
+@keyframes slideInRight { from { transform: translateX(100%); } to { transform: translateX(0); } }
+@keyframes slideOutRight { from { transform: translateX(0); } to { transform: translateX(100%); } }
+@keyframes slideInLeft { from { transform: translateX(-100%); } to { transform: translateX(0); } }
+@keyframes slideOutLeft { from { transform: translateX(0); } to { transform: translateX(-100%); } }
+.screen-scroll { flex: 1; overflow-y: auto; overflow-x: hidden; padding-bottom: 16px; -webkit-overflow-scrolling: touch; }
+.screen-scroll::-webkit-scrollbar { width: 3px; }
+.screen-scroll::-webkit-scrollbar-thumb { background: var(--outline-variant); border-radius: 2px; }
+.app-bar { height: 64px; min-height: 64px; background: var(--surface); display: flex; align-items: center; padding: 0 4px; gap: 4px; transition: background 0.2s; z-index: 10; }
+.app-bar.scrolled { background: var(--surface-container); }
+.app-bar-title { font-size: 22px; font-weight: 400; color: var(--on-surface); flex: 1; padding: 0 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.icon-btn { width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: transparent; border: none; color: var(--on-surface-variant); cursor: pointer; position: relative; overflow: hidden; transition: background 0.15s; flex-shrink: 0; }
+.icon-btn:hover { background: color-mix(in srgb, var(--on-surface) 8%, transparent); }
+.icon-btn:active { background: color-mix(in srgb, var(--on-surface) 12%, transparent); transform: scale(0.92); }
+.icon-btn .material-symbols-rounded { font-size: 24px; }
+.icon-btn.small { width: 40px; height: 40px; }
+.icon-btn.small .material-symbols-rounded { font-size: 20px; }
+.icon-btn.filled { background: var(--primary); color: var(--on-primary); }
+.icon-btn.tonal { background: var(--secondary-container); color: var(--on-secondary-container); }
+.icon-btn.tonal:hover { background: color-mix(in srgb, var(--secondary-container) 88%, var(--on-secondary-container)); }
+.text-display { font-size: 45px; font-weight: 400; color: var(--on-surface); }
+.text-h1 { font-size: 28px; font-weight: 400; color: var(--on-surface); }
+.text-h2 { font-size: 22px; font-weight: 400; color: var(--on-surface); }
+.text-body { font-size: 16px; font-weight: 400; color: var(--on-surface); line-height: 1.5; }
+.text-body-sm { font-size: 14px; font-weight: 400; color: var(--on-surface-variant); line-height: 1.4; }
+.text-caption { font-size: 13px; font-weight: 400; color: var(--on-surface-variant); }
+.list-group { display: flex; flex-direction: column; gap: 3px; padding: 0 16px; }
+.list-item { min-height: 72px; display: flex; align-items: center; gap: 16px; padding: 12px 16px; background: var(--surface-container-low); border: none; cursor: pointer; text-align: left; color: var(--on-surface); transition: background 0.15s; position: relative; overflow: hidden; border-radius: 4px; width: 100%; font-family: inherit; }
+.list-item:hover { background: var(--surface-container); }
+.list-item:active { background: var(--surface-container-high); transform: scale(0.995); }
+.list-item:first-child { border-radius: 28px 28px 4px 4px; }
+.list-item:last-child { border-radius: 4px 4px 28px 28px; }
+.list-item:only-child { border-radius: 28px; }
+.list-item.disabled { opacity: 0.5; cursor: not-allowed; }
+.list-item-icon { width: 40px; height: 40px; border-radius: 50%; background: var(--primary-container); color: var(--on-primary-container); display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden; }
+.list-item-icon .material-symbols-rounded { font-size: 22px; }
+.list-item-icon img { width: 100%; height: 100%; object-fit: cover; }
+.list-item-icon.plain { background: transparent; color: var(--on-surface-variant); }
+.list-item-icon.primary { background: var(--primary); color: var(--on-primary); }
+.list-item-content { flex: 1; min-width: 0; }
+.list-item-title { font-size: 16px; font-weight: 400; color: var(--on-surface); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.list-item-sub { font-size: 14px; color: var(--on-surface-variant); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.list-item-trailing { color: var(--on-surface-variant); display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
+.list-item.solid-secondary { background: var(--secondary-container); }
+.list-item.solid-secondary .list-item-title { color: var(--on-secondary-container); }
+.list-item.solid-secondary .list-item-sub { color: var(--on-secondary-container); opacity: 0.8; }
+.list-item.solid-primary { background: var(--primary-container); }
+.list-item.solid-primary .list-item-title { color: var(--on-primary-container); }
+.list-item.solid-primary .list-item-sub { color: var(--on-primary-container); opacity: 0.8; }
+.btn { height: 56px; min-height: 56px; padding: 0 24px; border-radius: 28px; border: none; font-family: inherit; font-size: 15px; font-weight: 500; display: inline-flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; transition: all 0.15s; white-space: nowrap; }
+.btn .material-symbols-rounded { font-size: 20px; }
+.btn-filled { background: var(--primary); color: var(--on-primary); }
+.btn-filled:hover { background: color-mix(in srgb, var(--primary) 88%, var(--on-primary)); box-shadow: 0 2px 8px var(--shadow); }
+.btn-filled:active { transform: scale(0.97); }
+.btn-tonal { background: var(--secondary-container); color: var(--on-secondary-container); }
+.btn-tonal:hover { background: color-mix(in srgb, var(--secondary-container) 88%, var(--on-secondary-container)); }
+.btn-tonal:active { transform: scale(0.97); }
+.btn-outlined { background: transparent; color: var(--primary); border: 1px solid var(--outline); }
+.btn-outlined:hover { background: color-mix(in srgb, var(--primary) 8%, transparent); }
+.btn-outlined:active { transform: scale(0.97); }
+.btn-text { background: transparent; color: var(--primary); padding: 0 12px; }
+.btn-text:hover { background: color-mix(in srgb, var(--primary) 8%, transparent); }
+.btn.wide { width: 380px; max-width: 100%; }
+.connected-group { display: inline-flex; gap: 3px; }
+.connected-group .btn { border-radius: 8px; }
+.connected-group .btn:first-child { border-radius: 28px 8px 8px 28px; }
+.connected-group .btn:last-child { border-radius: 8px 28px 28px 8px; }
+.connected-group .btn:only-child { border-radius: 28px; }
+.fab { width: 56px; height: 56px; border-radius: 16px; border: none; background: var(--primary-container); color: var(--on-primary-container); display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 12px var(--shadow); transition: all 0.2s; flex-shrink: 0; }
+.fab:hover { box-shadow: 0 6px 16px var(--shadow); transform: scale(1.04); }
+.fab:active { transform: scale(0.94); }
+.fab .material-symbols-rounded { font-size: 24px; }
+.fab-container { position: absolute; right: 16px; bottom: 16px; z-index: 20; }
+.fab-row { display: flex; align-items: center; gap: 12px; padding: 0 16px; margin-top: 16px; }
+.fab-row .spacer { flex: 1; }
+.text-field { position: relative; width: 100%; }
+.text-field input { width: 100%; height: 56px; padding: 0 16px 0 52px; border-radius: 16px; border: 1px solid var(--outline); background: transparent; color: var(--on-surface); font-family: inherit; font-size: 16px; outline: none; transition: border 0.15s, background 0.15s; }
+.text-field input:focus { border: 2px solid var(--primary); padding: 0 15px 0 51px; }
+.text-field input::placeholder { color: transparent; }
+.text-field .field-label { position: absolute; left: 52px; top: 50%; transform: translateY(-50%); color: var(--on-surface-variant); font-size: 16px; pointer-events: none; transition: all 0.15s; background: var(--surface); padding: 0 4px; }
+.text-field input:focus + .field-label, .text-field input:not(:placeholder-shown) + .field-label { top: 0; font-size: 12px; color: var(--primary); background: var(--surface); }
+.text-field input:not(:focus):not(:placeholder-shown) + .field-label { color: var(--on-surface-variant); }
+.text-field .field-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--on-surface-variant); font-size: 20px; pointer-events: none; }
+.text-field .field-icon.material-symbols-rounded { font-size: 22px; }
+.dropdown { position: relative; width: 100%; }
+.dropdown-trigger { width: 100%; height: 56px; padding: 0 48px 0 52px; border-radius: 16px; border: 1px solid var(--outline); background: transparent; color: var(--on-surface); font-family: inherit; font-size: 16px; text-align: left; cursor: pointer; display: flex; align-items: center; transition: border 0.15s; position: relative; }
+.dropdown-trigger:focus, .dropdown-trigger.open { border: 2px solid var(--primary); }
+.dropdown-trigger .field-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--on-surface-variant); }
+.dropdown-trigger .arrow { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); color: var(--on-surface-variant); transition: transform 0.2s; }
+.dropdown-trigger.open .arrow { transform: translateY(-50%) rotate(180deg); }
+.dropdown-trigger .dd-label { position: absolute; left: 52px; top: 50%; transform: translateY(-50%); color: var(--on-surface-variant); font-size: 16px; transition: all 0.15s; background: var(--surface); padding: 0 4px; pointer-events: none; }
+.dropdown-trigger.has-value .dd-label, .dropdown-trigger.open .dd-label { top: 0; font-size: 12px; color: var(--primary); }
+.dropdown-trigger .dd-value { color: var(--on-surface); font-size: 16px; }
+.dropdown-menu { position: absolute; top: calc(100% + 4px); left: 0; right: 0; background: var(--surface-container); border-radius: 4px; box-shadow: 0 4px 16px var(--shadow); z-index: 100; overflow: hidden; display: none; animation: menuIn 0.15s ease-out; }
+@keyframes menuIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+.dropdown-menu.open { display: block; }
+.dropdown-menu-item { height: 48px; display: flex; align-items: center; padding: 0 16px; font-size: 16px; color: var(--on-surface); cursor: pointer; transition: background 0.15s; }
+.dropdown-menu-item:hover { background: color-mix(in srgb, var(--on-surface) 8%, transparent); }
+.dropdown-menu-item.selected { background: var(--secondary-container); color: var(--on-secondary-container); }
+.search-bar { height: 56px; margin: 0 16px; border-radius: 28px; background: var(--surface-container-high); display: flex; align-items: center; gap: 12px; padding: 0 16px; cursor: pointer; transition: background 0.15s; }
+.search-bar:hover { background: var(--surface-container-highest); }
+.search-bar input { flex: 1; background: transparent; border: none; outline: none; color: var(--on-surface); font-family: inherit; font-size: 16px; }
+.search-bar input::placeholder { color: var(--on-surface-variant); }
+.search-bar .material-symbols-rounded { color: var(--on-surface-variant); font-size: 22px; }
+.card { border-radius: 20px; background: var(--surface-container-highest); overflow: hidden; display: flex; flex-direction: column; }
+.card.elevated { background: var(--surface-container-low); box-shadow: 0 1px 4px var(--shadow); }
+.card-img { background: var(--surface-container-highest); display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
+.card-img img { width: 100%; height: 100%; object-fit: cover; }
+.card-img .material-symbols-rounded { font-size: 48px; color: var(--on-surface-variant); opacity: 0.5; }
+.card-body { padding: 20px; display: flex; flex-direction: column; gap: 4px; }
+.card-title { font-size: 16px; font-weight: 500; color: var(--on-surface); }
+.card-text { font-size: 14px; color: var(--on-surface-variant); line-height: 1.5; }
+.slider-row { display: flex; align-items: center; gap: 16px; padding: 8px 16px; }
+.slider-label { font-size: 28px; color: var(--on-surface); flex-shrink: 0; }
+.slider-value { font-size: 28px; color: var(--primary); min-width: 40px; text-align: right; flex-shrink: 0; }
+.slider-wrap { flex: 1; position: relative; height: 44px; display: flex; align-items: center; }
+.slider-track { position: absolute; left: 0; right: 0; height: 16px; border-radius: 8px; background: var(--secondary-container); overflow: hidden; }
+.slider-fill { position: absolute; left: 0; top: 0; bottom: 0; background: var(--primary); border-radius: 8px; }
+.slider-thumb { position: absolute; width: 4px; height: 44px; background: var(--primary); border-radius: 2px; top: 50%; transform: translate(-50%, -50%); pointer-events: none; box-shadow: 0 1px 4px var(--shadow); }
+.slider-input { position: absolute; inset: 0; width: 100%; opacity: 0; cursor: pointer; margin: 0; }
+.progress-wavy { height: 16px; position: relative; overflow: hidden; }
+.progress-wavy svg { width: 100%; height: 100%; display: block; }
+.progress-wavy .wave-bg { fill: var(--secondary-container); }
+.progress-wavy .wave-fg { fill: var(--primary); }
+.snackbar-host { position: absolute; left: 16px; right: 16px; bottom: 16px; z-index: 200; display: flex; flex-direction: column; gap: 8px; pointer-events: none; }
+.snackbar { min-height: 48px; border-radius: 8px; background: var(--inverse-surface); color: var(--inverse-on-surface); display: flex; align-items: center; gap: 12px; padding: 8px 8px 8px 16px; box-shadow: 0 4px 12px var(--shadow); pointer-events: auto; animation: snackIn 0.3s cubic-bezier(0.2,0.8,0.2,1.05); font-size: 14px; }
+@keyframes snackIn { from { opacity:0; transform: translateY(20px); } to { opacity:1; transform: translateY(0); } }
+.snackbar.removing { animation: snackOut 0.2s ease-in forwards; }
+@keyframes snackOut { to { opacity:0; transform: translateY(20px); } }
+.snackbar-text { flex: 1; }
+.snackbar-action { background: transparent; border: none; color: var(--inverse-primary); font-family: inherit; font-size: 14px; font-weight: 500; padding: 8px 12px; border-radius: 8px; cursor: pointer; }
+.snackbar-action:hover { background: color-mix(in srgb, var(--inverse-primary) 12%, transparent); }
+.dialog-scrim { position: absolute; inset: 0; background: rgba(0,0,0,0.4); z-index: 300; display: none; align-items: center; justify-content: center; padding: 24px; }
+.dialog-scrim.open { display: flex; animation: fadeIn 0.2s; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+.dialog { width: 100%; max-width: 360px; border-radius: 28px; background: var(--surface-container-high); color: var(--on-surface); padding: 24px; box-shadow: 0 8px 32px var(--shadow); animation: dialogIn 0.3s cubic-bezier(0.2,0.8,0.2,1.05); max-height: 80vh; overflow-y: auto; }
+@keyframes dialogIn { from { opacity:0; transform: scale(0.9); } to { opacity:1; transform: scale(1); } }
+.dialog-title { font-size: 24px; font-weight: 400; margin-bottom: 16px; }
+.dialog-text { font-size: 14px; color: var(--on-surface-variant); line-height: 1.5; margin-bottom: 16px; }
+.dialog-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 24px; }
+.dialog-actions.stacked { flex-direction: column; gap: 8px; align-items: stretch; }
+.dialog-actions.stacked .btn { width: 100%; }
+.datepicker { width: 100%; }
+.dp-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.dp-month { font-size: 16px; font-weight: 500; }
+.dp-weekdays { display: grid; grid-template-columns: repeat(7, 1fr); margin-bottom: 4px; }
+.dp-weekday { text-align: center; font-size: 12px; color: var(--on-surface-variant); padding: 4px 0; }
+.dp-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
+.dp-day { aspect-ratio: 1; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; cursor: pointer; border: none; background: transparent; color: var(--on-surface); font-family: inherit; transition: background 0.15s; }
+.dp-day:hover { background: color-mix(in srgb, var(--on-surface) 8%, transparent); }
+.dp-day.other { color: var(--on-surface-variant); opacity: 0.5; }
+.dp-day.today { border: 1px solid var(--primary); }
+.dp-day.selected { background: var(--primary); color: var(--on-primary); }
+.dp-day.selected:hover { background: var(--primary); }
+.container-box { width: 380px; max-width: calc(100% - 32px); height: 220px; background: var(--primary-container); border-radius: 28px; position: relative; margin: 0 auto; color: var(--on-primary-container); }
+.container-box .cb-title { position: absolute; top: 20px; left: 24px; font-size: 28px; color: var(--on-primary-container); }
+.container-box .cb-number { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 45px; color: var(--on-primary-container); }
+.container-box .cb-actions { position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%); display: flex; gap: 3px; }
+.container-box .cb-actions .icon-btn { color: var(--on-primary-container); width: 48px; height: 48px; }
+.container-box .cb-actions .icon-btn:hover { background: color-mix(in srgb, var(--on-primary-container) 12%, transparent); }
+.carousel { display: flex; gap: 8px; overflow-x: auto; padding: 4px 16px; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; }
+.carousel::-webkit-scrollbar { display: none; }
+.carousel-card { flex-shrink: 0; border-radius: 16px; background: var(--surface-container-high); overflow: hidden; scroll-snap-align: start; display: flex; flex-direction: column; position: relative; }
+.carousel-card .cc-img { flex: 1; background: var(--surface-container-highest); display: flex; align-items: center; justify-content: center; overflow: hidden; }
+.carousel-card .cc-img img { width: 100%; height: 100%; object-fit: cover; }
+.carousel-card .cc-img .material-symbols-rounded { font-size: 40px; color: var(--on-surface-variant); opacity: 0.5; }
+.carousel-card .cc-title { position: absolute; bottom: 0; left: 0; right: 0; padding: 12px 16px; font-size: 16px; font-weight: 500; color: var(--on-surface); background: linear-gradient(transparent, var(--surface-container-high)); }
+.divider { height: 1px; background: var(--outline-variant); margin: 8px 16px; }
+.empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 48px 32px; gap: 12px; text-align: center; }
+.empty-state .material-symbols-rounded { font-size: 56px; color: var(--on-surface-variant); opacity: 0.5; }
+.empty-state .empty-title { font-size: 18px; color: var(--on-surface); }
+.empty-state .empty-text { font-size: 14px; color: var(--on-surface-variant); line-height: 1.5; }
+.content-pad { padding: 8px 16px; }
+.row { display: flex; align-items: center; gap: 12px; }
+.row.pad { padding: 8px 16px; }
+.spacer { flex: 1; }
+.section-title { font-size: 28px; color: var(--on-surface); padding: 16px 16px 8px; }
+.img-placeholder { background: var(--surface-container-highest); display: flex; align-items: center; justify-content: center; color: var(--on-surface-variant); }
+.img-placeholder .material-symbols-rounded { font-size: 48px; opacity: 0.4; }
+.copied-flash { animation: copiedFlash 0.6s; }
+@keyframes copiedFlash { 0%,100% { background: var(--surface-container-low); } 50% { background: var(--secondary-container); } }
+.material-symbols-rounded { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; user-select: none; line-height: 1; display: inline-block; }
+.material-symbols-rounded.filled { font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+.avatar-img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.img-box { position: relative; overflow: hidden; background: var(--surface-container-highest); }
+.img-box::after { content: ''; position: absolute; inset: 0; background: var(--surface-container-highest); opacity: 1; transition: opacity 0.35s ease; pointer-events: none; }
+.img-box.loaded::after { opacity: 0; }
+.img-box img { width: 100%; height: 100%; object-fit: cover; display: block; opacity: 0; transition: opacity 0.35s ease; }
+.img-box.loaded img { opacity: 1; }
+.img-box.logo-box img { object-fit: contain; padding: 12px; background: var(--surface-container-highest); }
+.checkbox-row { display: flex; align-items: center; gap: 12px; padding: 8px 4px; cursor: pointer; user-select: none; }
+.checkbox-row input[type="checkbox"] { display: none; }
+.checkbox-box { width: 24px; height: 24px; border-radius: 6px; border: 2px solid var(--outline); display: flex; align-items: center; justify-content: center; transition: all 0.15s; flex-shrink: 0; }
+.checkbox-row input:checked + .checkbox-box { background: var(--primary); border-color: var(--primary); }
+.checkbox-box .material-symbols-rounded { font-size: 16px; color: var(--on-primary); opacity: 0; transition: opacity 0.15s; }
+.checkbox-row input:checked + .checkbox-box .material-symbols-rounded { opacity: 1; }
+.checkbox-label { font-size: 15px; color: var(--on-surface); }
+.remember-row { display: flex; align-items: center; gap: 8px; background: var(--surface-container-low); border-radius: 16px; padding: 8px 12px; }
+.remember-row .checkbox-row { flex: 1; padding: 4px; }
+</style>
+</head>
+<body>
+<div id="app-frame">
+  <div id="screens"></div>
+  <div class="snackbar-host" id="snackbar-host"></div>
+  <div class="dialog-scrim" id="dialog-scrim"></div>
+</div>
+<script>
+'use strict';
+
+const IMG = {
+  tiryIcon:   'https://img.scdn.io/i/6ad0c7aa5bff2_1792067498.png',
+  tiryLogo:   'https://cloudflareimg.cdn.sn/i/6acb9606406df_1791727110.png',
+  jidurt:     'https://img.scdn.io/i/6acb972f6f781_1791727407.webp',
+  tianbianyun:'https://img.scdn.io/i/6acb97a301667_1791727523.webp',
+  ranxinyan:  'https://img.scdn.io/i/6acb96b258c5b_1791727282.webp',
+  qingshu:    'https://img.scdn.io/i/6acb9654c7c4b_1791727188.webp',
+  sky:        'https://img.scdn.io/i/6acb967fc6981_1791727231.webp'
+};
+
+const DeeBusAti = 'UmF5bzk5WW9nNkRC';
+
+const DB_NAME = 'tiryhi_db';
+const DB_VERSION = 1;
+const STORES = ['counters', 'anniversaries', 'intents', 'browserPages', 'settings'];
+let dbPromise = null;
+
+function openDB() {
+  if (dbPromise) return dbPromise;
+  dbPromise = new Promise((resolve, reject) => {
+    const req = indexedDB.open(DB_NAME, DB_VERSION);
+    req.onupgradeneeded = (e) => {
+      const db = e.target.result;
+      for (const name of STORES) {
+        if (!db.objectStoreNames.contains(name)) {
+          db.createObjectStore(name, { keyPath: 'id', autoIncrement: name !== 'settings' });
+        }
+      }
+    };
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  });
+  return dbPromise;
+}
+function dbGetAll(store) {
+  return openDB().then(db => new Promise((res, rej) => {
+    const tx = db.transaction(store, 'readonly');
+    const r = tx.objectStore(store).getAll();
+    r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error);
+  }));
+}
+function dbPut(store, value) {
+  return openDB().then(db => new Promise((res, rej) => {
+    const tx = db.transaction(store, 'readwrite');
+    const r = tx.objectStore(store).put(value);
+    r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error);
+  }));
+}
+function dbAdd(store, value) {
+  return openDB().then(db => new Promise((res, rej) => {
+    const tx = db.transaction(store, 'readwrite');
+    const r = tx.objectStore(store).add(value);
+    r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error);
+  }));
+}
+function dbDelete(store, id) {
+  return openDB().then(db => new Promise((res, rej) => {
+    const tx = db.transaction(store, 'readwrite');
+    const r = tx.objectStore(store).delete(id);
+    r.onsuccess = () => res(); r.onerror = () => rej(r.error);
+  }));
+}
+function getSetting(key, def = null) {
+  return openDB().then(db => new Promise((res, rej) => {
+    const tx = db.transaction('settings', 'readonly');
+    const r = tx.objectStore('settings').get(key);
+    r.onsuccess = () => res(r.result ? r.result.value : def);
+    r.onerror = () => rej(r.error);
+  }));
+}
+function setSetting(key, value) {
+  return openDB().then(db => new Promise((res, rej) => {
+    const tx = db.transaction('settings', 'readwrite');
+    const r = tx.objectStore('settings').put({ id: key, value });
+    r.onsuccess = () => res(); r.onerror = () => rej(r.error);
+  }));
+}
+
+function icon(name, opts = {}) {
+  const cls = opts.filled ? 'material-symbols-rounded filled' : 'material-symbols-rounded';
+  const style = (opts.size ? `font-size:${opts.size}px;` : '') + (opts.color ? `color:${opts.color};` : '');
+  return `<span class="${cls}" style="${style}">${name}</span>`;
+}
+
+const state = {
+  currentScreen: null,
+  history: [],
+  animating: false,
+  counters: [],
+  anniversaries: [],
+  intents: [],
+  browserPages: [],
+  settings: {},
+  editingIntentId: null,
+  editingAnniversaryId: null,
+  editingBrowserPageId: null,
+  editingCounterId: null,
+  viewingAnniversaryId: null,
+};
+
+function esc(s) {
+  if (s == null) return '';
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function formatDate(d) {
+  const y = d.getFullYear();
+  const m = String(d.getMonth()+1).padStart(2,'0');
+  const day = String(d.getDate()).padStart(2,'0');
+  return `${y}/${m}/${day}`;
+}
+function parseDate(s) {
+  const parts = s.split('/').map(Number);
+  return new Date(parts[0], parts[1]-1, parts[2]);
+}
+function daysBetween(a, b) {
+  const ms = 24*60*60*1000;
+  return Math.round((b - a) / ms);
+}
+function getAnniversaryInfo(dateStr) {
+  const date = parseDate(dateStr);
+  const today = new Date(); today.setHours(0,0,0,0);
+  let years = today.getFullYear() - date.getFullYear();
+  if (years < 0) years = 0;
+  let next = new Date(today.getFullYear(), date.getMonth(), date.getDate());
+  if (next < today) next = new Date(today.getFullYear()+1, date.getMonth(), date.getDate());
+  const daysLeft = daysBetween(today, next);
+  return { years, daysLeft, next };
+}
+
+function showSnackbar(text, actionLabel, actionFn) {
+  const host = document.getElementById('snackbar-host');
+  const el = document.createElement('div');
+  el.className = 'snackbar';
+  el.innerHTML = `<span class="snackbar-text">${esc(text)}</span>`;
+  if (actionLabel) {
+    const btn = document.createElement('button');
+    btn.className = 'snackbar-action';
+    btn.textContent = actionLabel;
+    btn.onclick = () => { if (actionFn) actionFn(); removeSnackbar(el); };
+    el.appendChild(btn);
+  }
+  host.appendChild(el);
+  setTimeout(() => removeSnackbar(el), 4000);
+}
+function removeSnackbar(el) {
+  if (!el.parentNode) return;
+  el.classList.add('removing');
+  setTimeout(() => el.remove(), 200);
+}
+
+function confirmDialog(title, text, confirmLabel, onConfirm) {
+  const scrim = document.getElementById('dialog-scrim');
+  scrim.innerHTML = `
+    <div class="dialog">
+      <div class="dialog-title">${esc(title)}</div>
+      <div class="dialog-text">${esc(text)}</div>
+      <div class="dialog-actions">
+        <button class="btn btn-text" id="dlg-cancel">取消</button>
+        <button class="btn btn-filled" id="dlg-confirm">${esc(confirmLabel || '确定')}</button>
+      </div>
+    </div>`;
+  scrim.classList.add('open');
+  const close = () => { scrim.classList.remove('open'); scrim.innerHTML = ''; };
+  scrim.querySelector('#dlg-cancel').onclick = close;
+  scrim.querySelector('#dlg-confirm').onclick = () => { close(); if (onConfirm) onConfirm(); };
+  scrim.onclick = (e) => { if (e.target === scrim) close(); };
+}
+
+function copyText(text, label) {
+  const done = () => showSnackbar(`已复制${label ? '：'+label : ''}`);
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(done).catch(() => fallbackCopy(text, done));
+  } else {
+    fallbackCopy(text, done);
+  }
+}
+function fallbackCopy(text, done) {
+  const ta = document.createElement('textarea');
+  ta.value = text; ta.style.position='fixed'; ta.style.opacity='0';
+  document.body.appendChild(ta); ta.select();
+  try { document.execCommand('copy'); } catch(e) {}
+  document.body.removeChild(ta);
+  if (done) done();
+}
+function openExternal(url) {
+  window.open(url, '_blank', 'noopener');
+}
+
+function appBar({ title, back, actions = [] }) {
+  const left = back ? `<button class="icon-btn" data-back>${icon('arrow_back')}</button>` : '<div style="width:4px"></div>';
+  const right = actions.map(a => `<button class="icon-btn" data-action="${a.id}" id="${a.id}">${icon(a.icon)}</button>`).join('');
+  return `<header class="app-bar" data-appbar>
+    ${left}
+    <h1 class="app-bar-title">${esc(title)}</h1>
+    ${right}
+  </header>`;
+}
+function listItem({ title, sub, iconName, iconStyle = '', avatar = '', trailing = 'chevron_right', trailingIcon = 'chevron_right', bg = '', dataAttrs = '', id = '', disabled = false }) {
+  let iconHtml = '';
+  if (avatar) {
+    iconHtml = `<div class="list-item-icon ${iconStyle}"><span class="img-box" style="display:block;width:100%;height:100%"><img class="avatar-img" src="${esc(avatar)}" alt="" loading="lazy" decoding="async"></span></div>`;
+  } else if (iconName) {
+    iconHtml = `<div class="list-item-icon ${iconStyle}">${icon(iconName)}</div>`;
+  }
+  const trailHtml = trailing === false ? '' : `<div class="list-item-trailing">${icon(trailingIcon)}</div>`;
+  return `<button class="list-item ${bg} ${disabled ? 'disabled' : ''}" ${dataAttrs} ${id ? `id="${id}"` : ''}>
+    ${iconHtml}
+    <div class="list-item-content">
+      <div class="list-item-title">${esc(title)}</div>
+      ${sub ? `<div class="list-item-sub">${esc(sub)}</div>` : ''}
+    </div>
+    ${trailHtml}
+  </button>`;
+}
+function wavyProgress(pct) {
+  return `<div class="progress-wavy">
+    <svg viewBox="0 0 400 16" preserveAspectRatio="none">
+      <rect x="0" y="0" width="400" height="16" rx="8" class="wave-bg"/>
+      <rect x="0" y="0" width="${400*pct/100}" height="16" rx="8" class="wave-fg"/>
+    </svg>
+  </div>`;
+}
+
+function attachLongPress(el, fn) {
+  let timer = null;
+  const start = (e) => {
+    if (e.target.closest('[data-copy]')) return;
+    timer = setTimeout(() => { timer = null; fn(); }, 550);
+  };
+  const cancel = () => { if (timer) { clearTimeout(timer); timer = null; } };
+  el.addEventListener('touchstart', start, { passive: true });
+  el.addEventListener('touchend', cancel);
+  el.addEventListener('touchmove', cancel);
+  el.addEventListener('touchcancel', cancel);
+  el.addEventListener('mousedown', start);
+  el.addEventListener('mouseup', cancel);
+  el.addEventListener('mouseleave', cancel);
+}
+
+function showVerifyDialog() {
+  const scrim = document.getElementById('dialog-scrim');
+  const remember = state.settings.rememberMe !== false;
+  scrim.innerHTML = `
+    <div class="dialog">
+      <div class="dialog-title">初步验证身份</div>
+      <div class="dialog-text">输入暗号解锁全部功能，或直接登录（部分功能受限）</div>
+      <div class="text-field" style="margin-bottom:8px">
+        ${icon('lock','field-icon')}
+        <input type="password" id="dlg-code" placeholder=" " autocomplete="off">
+        <label class="field-label">暗号</label>
+      </div>
+      <label class="checkbox-row">
+        <input type="checkbox" id="dlg-remember" ${remember ? 'checked' : ''}>
+        <span class="checkbox-box">${icon('check')}</span>
+        <span class="checkbox-label">记住我</span>
+      </label>
+      <div class="dialog-actions stacked">
+        <button class="btn btn-filled" id="dlg-unlock">开始吧</button>
+        <button class="btn btn-tonal" id="dlg-direct">直接登录</button>
+      </div>
+    </div>`;
+  scrim.classList.add('open');
+  const close = () => { scrim.classList.remove('open'); scrim.innerHTML = ''; };
+  scrim.onclick = (e) => { if (e.target === scrim) close(); };
+  const input = scrim.querySelector('#dlg-code');
+  setTimeout(() => input?.focus(), 50);
+  const getRemember = () => scrim.querySelector('#dlg-remember')?.checked !== false;
+
+  const unlock = async () => {
+    const val = input.value.trim();
+    if (!val) { showSnackbar('请输入暗号，或选择直接登录'); return; }
+    if (btoa(val) !== DeeBusAti) {showSnackbar('暗号不正确'); return; }
+    const rem = getRemember();
+    await setSetting('verified', true);
+    await setSetting('rememberMe', rem);
+    await setSetting('directLogin', false);
+    state.settings.verified = true;
+    state.settings.rememberMe = rem;
+    state.settings.directLogin = false;
+    close();
+    showSnackbar('验证通过，已解锁全部功能');
+    navigateTo('home', { replace: true });
+  };
+
+  const direct = async () => {
+    const rem = getRemember();
+    await setSetting('verified', true);
+    await setSetting('rememberMe', rem);
+    await setSetting('directLogin', true);
+    state.settings.verified = true;
+    state.settings.rememberMe = rem;
+    state.settings.directLogin = true;
+    close();
+    showSnackbar('已直接登录（浏览器与 Intent 不可用）');
+    navigateTo('home', { replace: true });
+  };
+
+  scrim.querySelector('#dlg-unlock').onclick = unlock;
+  scrim.querySelector('#dlg-direct').onclick = direct;
+  input.addEventListener('keydown', (e) => { if (e.key === 'Enter') unlock(); });
+}
+
+const R = {};
+
+R.home = () => {
+  const direct = state.settings.directLogin === true;
+  return `
+  ${appBar({ title: 'TiryHi' })}
+  <div class="screen-scroll">
+    <h2 class="section-title">常用</h2>
+    <div class="list-group">
+      ${listItem({ title:'跨年活动', iconName:'celebration', dataAttrs:'data-action="open-newyear"' })}
+      ${listItem({ title:'倒计日', iconName:'calendar_month', dataAttrs:'data-nav="countdown"' })}
+      ${listItem({ title:'计数器', iconName:'counter_6', dataAttrs:'data-nav="counter"' })}
+      ${listItem({ title:'浏览器', iconName:'language', dataAttrs: direct ? 'data-blocked="浏览器"' : 'data-nav="browser"', disabled: direct })}
+      ${listItem({ title:'Intent', iconName:'open_in_new', dataAttrs: direct ? 'data-blocked="Intent"' : 'data-nav="shell"', disabled: direct })}
+      ${listItem({ title:'设置', iconName:'settings', dataAttrs:'data-nav="settings"' })}
+    </div>
+    ${direct ? `<div style="padding:16px;font-size:13px;color:var(--on-surface-variant);text-align:center">直接登录模式下，浏览器与 Intent 不可用</div>` : ''}
+  </div>`;
+};
+
+R.countdown = () => {
+  const items = state.anniversaries.length ? state.anniversaries.map(a => {
+    const info = getAnniversaryInfo(a.date);
+    const display = a.name
+      ? `${a.name}•${a.title}•${a.date}`
+      : `${a.title}•${a.date}`;
+    return listItem({
+      title: display,
+      sub: `${info.years}周年•还剩${info.daysLeft}天`,
+      iconName: 'calendar_month',
+      dataAttrs: `data-nav-anniversary="${a.id}"`
+    });
+  }).join('') : `<div class="empty-state">
+      ${icon('calendar_month')}
+      <div class="empty-title">暂无纪念日</div>
+      <div class="empty-text">点击右下角按钮添加你的第一个纪念日</div>
+    </div>`;
+  return `
+    ${appBar({ title:'倒计日', back:true })}
+    <div class="screen-scroll">
+      <div class="list-group" style="margin-top:8px">${items}</div>
+    </div>
+    <div class="fab-container"><button class="fab" data-fab-add-anniversary>${icon('add')}</button></div>`;
+};
+
+R.counter = () => {
+  const boxes = state.counters.length ? state.counters.map(c => `
+    <div class="container-box" style="margin-top:16px" data-counter-id="${c.id}">
+      <div class="cb-title">${esc(c.title || '计数器')}</div>
+      <div class="cb-number" data-counter-num="${c.id}">${c.value}</div>
+      <div class="cb-actions">
+        <button class="icon-btn" data-counter-reset="${c.id}">${icon('refresh')}</button>
+        <button class="icon-btn" data-counter-edit="${c.id}">${icon('edit')}</button>
+        <button class="icon-btn" data-counter-sub="${c.id}">${icon('remove')}</button>
+        <button class="icon-btn" data-counter-add="${c.id}">${icon('add')}</button>
+      </div>
+    </div>
+    <div class="row pad" style="margin-top:12px">
+      <div class="text-field" style="flex:1">
+        ${icon('add','field-icon')}
+        <input type="number" inputmode="numeric" placeholder=" " data-counter-input="${c.id}" value="${c.step||1}">
+        <label class="field-label">输入加数</label>
+      </div>
+      <button class="icon-btn tonal" data-counter-plus="${c.id}">${icon('add')}</button>
+    </div>
+    <div class="divider"></div>
+  `).join('') : `<div class="empty-state" style="margin-top:24px">
+      ${icon('counter_6')}
+      <div class="empty-title">暂无计数器</div>
+      <div class="empty-text">点击右上角加号添加</div>
+    </div>`;
+  return `
+    ${appBar({ title:'计数器', back:true, actions:[{id:'add-counter', icon:'add'}] })}
+    <div class="screen-scroll">${boxes}</div>`;
+};
+
+R.counterEdit = () => {
+  const c = state.editingCounterId ? state.counters.find(x=>x.id===state.editingCounterId) : null;
+  return `
+    ${appBar({ title:'编辑计数器', back:true, actions:[{id:'counter-delete', icon:'delete'}] })}
+    <div class="screen-scroll">
+      <div class="content-pad" style="display:flex;flex-direction:column;gap:16px;margin-top:8px">
+        <div class="text-field">
+          ${icon('title','field-icon')}
+          <input type="text" id="ce-title" placeholder=" " value="${c?esc(c.title):''}">
+          <label class="field-label">标题</label>
+        </div>
+        <div class="text-field">
+          ${icon('numbers','field-icon')}
+          <input type="number" id="ce-value" placeholder=" " value="${c?c.value:0}">
+          <label class="field-label">当前数值</label>
+        </div>
+        <div class="text-field">
+          ${icon('add','field-icon')}
+          <input type="number" id="ce-step" placeholder=" " value="${c?c.step:1}">
+          <label class="field-label">步长</label>
+        </div>
+      </div>
+    </div>
+    <div class="fab-container"><button class="fab" data-save-counter>${icon('check')}</button></div>`;
+};
+
+R.browser = () => {
+  const pages = state.browserPages.length ? state.browserPages.map(p => {
+    const isWelfare = p.url && p.url.includes('yoyo.luxifakj.cn');
+    return listItem({
+      title: p.title,
+      sub: p.url,
+      iconName: 'language',
+      iconStyle: isWelfare ? 'plain' : '',
+      bg: isWelfare ? 'solid-secondary' : '',
+      dataAttrs: `data-browser-page="${p.id}"`
+    });
+  }).join('') : `<div class="empty-state">
+      ${icon('language')}
+      <div class="empty-title">暂无页面</div>
+      <div class="empty-text">点击右下角按钮添加</div>
+    </div>`;
+  return `
+    ${appBar({ title:'浏览器', back:true, actions:[{id:'browser-search', icon:'search'}] })}
+    <div class="screen-scroll">
+      <div style="padding:8px 0 4px">
+        <div class="search-bar" data-browser-searchbar>
+          ${icon('search')}
+          <input type="text" placeholder="搜索" readonly>
+        </div>
+      </div>
+      <div class="list-group" style="margin-top:8px">${pages}</div>
+      <div style="padding:16px;font-size:13px;color:var(--on-surface-variant);text-align:center">长按列表项可编辑</div>
+    </div>
+    <div class="fab-container"><button class="fab" data-fab-add-browser>${icon('add')}</button></div>`;
+};
+
+R.shell = () => {
+  const items = state.intents.length ? state.intents.map(it => listItem({
+    title: it.title,
+    sub: it.cmd,
+    iconName: 'code',
+    dataAttrs: `data-intent="${it.id}"`
+  })).join('') : `<div class="empty-state">
+      ${icon('code')}
+      <div class="empty-title">暂无Intent</div>
+      <div class="empty-text">点击右下角按钮添加</div>
+    </div>`;
+  return `
+    ${appBar({ title:'Intent', back:true })}
+    <div class="screen-scroll">
+      <div class="list-group" style="margin-top:8px">${items}</div>
+      <div style="padding:16px;font-size:13px;color:var(--on-surface-variant);text-align:center">长按列表项可编辑</div>
+    </div>
+    <div class="fab-container"><button class="fab" data-fab-create-intent>${icon('add')}</button></div>`;
+};
+
+R.settings = () => `
+  ${appBar({ title:'设置', back:true })}
+  <div class="screen-scroll">
+    <div class="list-group" style="margin-top:8px">
+      ${listItem({ title:'账号', sub:'查看账号信息', iconName:'person', dataAttrs:'data-nav="account"' })}
+      ${listItem({ title:'显示与风格', sub:'主题色、暗色模式等', iconName:'brightness_7', dataAttrs:'data-nav="display"' })}
+      ${listItem({ title:'福利群', sub:'显示福利选项', iconName:'redeem', dataAttrs:'data-nav="welfare"' })}
+      ${listItem({ title:'默认行为', sub:'浏览器、启动页、记住我', iconName:'language', dataAttrs:'data-nav="browserSettings"' })}
+      ${listItem({ title:'关于我们', sub:'TiryHi v1.4 Beta 2', iconName:'info', dataAttrs:'data-nav="about"' })}
+    </div>
+  </div>`;
+
+R.account = () => `
+  ${appBar({ title:'账号', back:true })}
+  <div class="screen-scroll" style="display:flex;flex-direction:column">
+    <div style="flex:1;display:flex;align-items:center;justify-content:center;min-height:400px">
+      <div class="text-h1">网页端无法登录</div>
+    </div>
+    <div style="padding:16px;display:flex;justify-content:center">
+      <button class="btn btn-tonal wide" data-logout>退出登录</button>
+    </div>
+  </div>`;
+
+R.display = () => {
+  const theme = state.settings.theme || '';
+  const label = theme==='dark'?'深色':theme==='light'?'亮色':theme==='system'?'跟随系统设置':'';
+  return `
+    ${appBar({ title:'显示设置', back:true })}
+    <div class="screen-scroll">
+      <div class="content-pad" style="margin-top:8px">
+        <div class="dropdown" data-dropdown="theme">
+          <button class="dropdown-trigger ${theme?'has-value':''}" data-dd-trigger>
+            <span class="dd-label">主题</span>
+            <span class="dd-value">${label}</span>
+            ${icon('arrow_drop_down','arrow')}
+          </button>
+          <div class="dropdown-menu">
+            <div class="dropdown-menu-item ${theme==='dark'?'selected':''}" data-dd-value="dark">深色</div>
+            <div class="dropdown-menu-item ${theme==='light'?'selected':''}" data-dd-value="light">亮色</div>
+            <div class="dropdown-menu-item ${theme==='system'?'selected':''}" data-dd-value="system">跟随系统设置</div>
+          </div>
+        </div>
+      </div>
+    </div>`;
+};
+
+R.welfare = () => {
+  const normal = state.settings.welfareNormal ?? 3;
+  const evening = state.settings.welfareEvening ?? 2;
+  const makeup = state.settings.welfareMakeup ?? 1;
+  const prize = state.settings.welfarePrize ?? 0.0;
+  const pct = Math.min(100, (prize / 7) * 100);
+  return `
+    ${appBar({ title:'福利群', back:true })}
+    <div class="screen-scroll">
+      <div style="padding:8px 0">
+        ${listItem({ title:'加入福利群', sub:'你将跳转到YoYo日常', iconName:'check_circle', trailing:false, trailingIcon:'chevron_right', dataAttrs:'data-join-welfare' })}
+      </div>
+      <div class="slider-row">
+        <span class="slider-label">正常打卡</span>
+        <div class="slider-wrap" data-slider="welfareNormal">
+          <div class="slider-track"><div class="slider-fill" style="width:${normal/7*100}%"></div></div>
+          <div class="slider-thumb" style="left:${normal/7*100}%"></div>
+          <input class="slider-input" type="range" min="0" max="7" step="1" value="${normal}">
+        </div>
+        <span class="slider-value" data-slider-val="welfareNormal">${normal}</span>
+      </div>
+      <div class="slider-row">
+        <span class="slider-label">晚间打卡</span>
+        <div class="slider-wrap" data-slider="welfareEvening">
+          <div class="slider-track"><div class="slider-fill" style="width:${evening/7*100}%"></div></div>
+          <div class="slider-thumb" style="left:${evening/7*100}%"></div>
+          <input class="slider-input" type="range" min="0" max="7" step="1" value="${evening}">
+        </div>
+        <span class="slider-value" data-slider-val="welfareEvening">${evening}</span>
+      </div>
+      <div class="slider-row">
+        <span class="slider-label">补签卡</span>
+        <div class="slider-wrap" data-slider="welfareMakeup">
+          <div class="slider-track"><div class="slider-fill" style="width:${makeup/7*100}%"></div></div>
+          <div class="slider-thumb" style="left:${makeup/7*100}%"></div>
+          <input class="slider-input" type="range" min="0" max="7" step="1" value="${makeup}">
+        </div>
+        <span class="slider-value" data-slider-val="welfareMakeup">${makeup}</span>
+      </div>
+      <div class="row pad" style="gap:8px">
+        <span class="text-h1">本周获奖</span>
+        <span class="text-h1" data-prize>${prize.toFixed(1)}</span>
+      </div>
+      <div style="padding:16px">
+        ${wavyProgress(pct)}
+      </div>
+      <div style="text-align:center;padding:0 16px;font-size:16px;color:var(--on-surface-variant)">
+        规则：正常打卡+晚间打卡×0.8+补签卡×0.1
+      </div>
+      <div style="padding:12px 16px;font-size:16px;color:var(--on-surface-variant)">
+        第5期：2026.10.1~2027.2.1
+      </div>
+    </div>`;
+};
+
+R.about = () => `
+  ${appBar({ title:'关于', back:true })}
+  <div class="screen-scroll">
+    <div style="padding:16px">
+      <button class="card elevated" style="height:212px;flex-direction:row;width:100%;border:none;cursor:pointer;font-family:inherit;text-align:left;padding:0" data-nav="start">
+        <div class="img-box logo-box" style="width:189px;height:100%;flex-shrink:0">
+          <img src="${IMG.tiryIcon}" alt="TiryHi" loading="lazy" decoding="async">
+        </div>
+        <div class="card-body" style="flex:1">
+          <div class="card-title">关于我们</div>
+          <div class="card-text">一款为你而生的工具箱应用，DeepSeek、豆包辅助开发，此WebApp根据TiryHi Android App v1.4 Beta 2开发，开发者都是初中生，开发速度可能较慢，敬请谅解</div>
+        </div>
+      </button>
+    </div>
+    <div class="list-group">
+      ${listItem({ title:'联系我们', iconName:'person', dataAttrs:'data-nav="contact"' })}
+      ${listItem({ title:'版本', sub:'Web: v1.1，Android: v1.4 Beta 2', iconName:'verified', trailing:false, dataAttrs:'data-version' })}
+    </div>
+  </div>`;
+
+R.contact = () => {
+  const contacts = [
+    { title:'QQ', sub:'3623633553' },
+    { title:'GitHub', sub:'github.com/Yokitu' },
+    { title:'邮箱', sub:'3623633553@qq.com' },
+    { title:'邮箱', sub:'tsunset9315@163.com' },
+    { title:'邮箱', sub:'yunran99@outlook.com' },
+    { title:'抖音', sub:'amRxy9' },
+    { title:'快手', sub:'amRxy649' },
+    { title:'哔哩哔哩', sub:'是橒儿呀' },
+  ];
+  const members = [
+    { title:'冉欣妍·ꦿ໊ོr.lin：快手', sub:'rxy620Aaaa119yy', avatar: IMG.ranxinyan },
+    { title:'请输入文本：抖音', sub:'41074590062', avatar: IMG.qingshu },
+    { title:'Sky双叶：快手', sub:'1927127987', avatar: IMG.sky },
+  ];
+  return `
+    ${appBar({ title:'联系我们', back:true })}
+    <div class="screen-scroll">
+      <div style="text-align:center;padding:16px 0 8px"><span class="text-h1">交流群（可下载APK）</span></div>
+      <div style="padding:0 16px 8px">
+        ${listItem({ title:'QQ', sub:'1093730235', iconName:'chat', iconStyle:'primary', trailing:false, trailingIcon:'content_copy', bg:'solid-primary', dataAttrs:'data-copy="1093730235"' })}
+      </div>
+      <div class="section-title">天边橒</div>
+      <div class="list-group">
+        ${contacts.map(c => listItem({ title:c.title, sub:c.sub, iconName:'chat', trailing:false, trailingIcon:'content_copy', dataAttrs:`data-copy="${esc(c.sub)}"` })).join('')}
+      </div>
+      <div class="section-title">Jidurt</div>
+      <div class="list-group">
+        ${listItem({ title:'QQ', sub:'3427780794', iconName:'chat', trailing:false, trailingIcon:'content_copy', dataAttrs:'data-copy="3427780794"' })}
+      </div>
+      <div class="section-title">非开发者</div>
+      <div class="list-group">
+        ${members.map(m => listItem({ title:m.title, sub:m.sub, avatar:m.avatar, iconName:'person', trailing:false, trailingIcon:'content_copy', dataAttrs:`data-copy="${esc(m.sub)}"` })).join('')}
+      </div>
+      <div style="padding:16px;font-size:16px;color:var(--on-surface-variant);line-height:1.5">
+        如果原作者疑似无法继续开发请加群后@Q群管家发
+      </div>
+      <div style="padding:4px 16px 24px;font-size:22px;color:var(--on-surface)">isudee</div>
+    </div>`;
+};
+
+R.intentEdit = () => {
+  const it = state.editingIntentId ? state.intents.find(i=>i.id===state.editingIntentId) : null;
+  return `
+    ${appBar({ title:'编辑', back:true, actions:[{id:'intent-delete', icon:'delete'}] })}
+    <div class="screen-scroll">
+      <div class="content-pad" style="display:flex;flex-direction:column;gap:16px;margin-top:8px">
+        <div class="text-field">
+          ${icon('title','field-icon')}
+          <input type="text" id="intent-title" placeholder=" " value="${it?esc(it.title):''}">
+          <label class="field-label">标题</label>
+        </div>
+        <div class="text-field">
+          ${icon('code','field-icon')}
+          <input type="text" id="intent-cmd" placeholder=" " value="${it?esc(it.cmd):''}">
+          <label class="field-label">完整命令</label>
+        </div>
+        <div style="font-size:13px;color:var(--on-surface-variant);line-height:1.5">
+          支持：intent://... 启动手机应用、tiry://nav/页面名、https://...
+        </div>
+      </div>
+    </div>
+    <div class="fab-container"><button class="fab" data-save-intent>${icon('check')}</button></div>`;
+};
+
+R.browserAdd = () => {
+  const p = state.editingBrowserPageId ? state.browserPages.find(x=>x.id===state.editingBrowserPageId) : null;
+  return `
+    ${appBar({ title:'添加', back:true, actions:[{id:'browser-page-delete', icon:'delete'}] })}
+    <div class="screen-scroll">
+      <div class="content-pad" style="display:flex;flex-direction:column;gap:16px;margin-top:8px">
+        <div class="text-field">
+          ${icon('title','field-icon')}
+          <input type="text" id="bp-title" placeholder=" " value="${p?esc(p.title):''}">
+          <label class="field-label">标题</label>
+        </div>
+        <div class="text-field">
+          ${icon('language','field-icon')}
+          <input type="url" id="bp-url" placeholder=" " value="${p?esc(p.url):''}">
+          <label class="field-label">网页</label>
+        </div>
+      </div>
+    </div>
+    <div class="fab-container"><button class="fab" data-save-browser-page>${icon('check')}</button></div>`;
+};
+
+R.iframe = () => {
+  const url = state.settings.iframeUrl || 'about:blank';
+  return `
+    ${appBar({ title:'Iframe', back:true, actions:[{id:'iframe-copy', icon:'content_copy'}] })}
+    <div class="screen-scroll">
+      <div style="padding:16px">
+        <iframe src="${esc(url)}" style="width:100%;height:600px;border:1px solid var(--outline-variant);border-radius:16px;background:var(--surface-container-low)" sandbox="allow-scripts allow-same-origin allow-popups allow-forms"></iframe>
+      </div>
+    </div>`;
+};
+
+R.anniversaryAdd = () => {
+  const a = state.editingAnniversaryId ? state.anniversaries.find(x=>x.id===state.editingAnniversaryId) : null;
+  return `
+    ${appBar({ title:'编辑', back:true, actions:[{id:'ann-delete', icon:'delete'}] })}
+    <div class="screen-scroll">
+      <div class="content-pad" style="display:flex;flex-direction:column;gap:16px;margin-top:8px">
+        <div class="text-field">
+          ${icon('title','field-icon')}
+          <input type="text" id="ann-title" placeholder=" " value="${a?esc(a.title):''}">
+          <label class="field-label">标题</label>
+        </div>
+        <div class="text-field">
+          ${icon('person','field-icon')}
+          <input type="text" id="ann-name" placeholder=" " value="${a?esc(a.name):''}">
+          <label class="field-label">姓名（可选）</label>
+        </div>
+      </div>
+      <div style="padding:16px">
+        <div class="card" style="background:var(--surface-container);padding:16px;border-radius:28px">
+          <div class="datepicker" id="datepicker"></div>
+        </div>
+      </div>
+    </div>
+    <div class="fab-container"><button class="fab" data-save-anniversary>${icon('check')}</button></div>`;
+};
+
+R.anniversaryView = () => {
+  const a = state.viewingAnniversaryId ? state.anniversaries.find(x=>x.id===state.viewingAnniversaryId) : null;
+  if (!a) return `${appBar({title:'查看',back:true})}<div class="screen-scroll"><div class="empty-state">${icon('event')}<div class="empty-title">未找到</div></div></div>`;
+  const info = getAnniversaryInfo(a.date);
+  const pct = Math.min(100, Math.round((365 - info.daysLeft) / 365 * 100));
+  return `
+    ${appBar({ title:'查看', back:true, actions:[{id:'ann-more', icon:'more_vert'}] })}
+    <div class="screen-scroll">
+      <div class="section-title">还有${info.daysLeft}天</div>
+      <div style="padding:8px 16px">
+        ${wavyProgress(pct)}
+      </div>
+      <div class="section-title">今年是第${info.years}周年</div>
+      <div style="padding:16px">
+        <div class="card elevated" style="padding:20px">
+          <div class="card-title">${a.name ? esc(a.name)+'•' : ''}${esc(a.title)}</div>
+          <div class="card-text">${esc(a.date)}</div>
+        </div>
+      </div>
+    </div>
+    <div class="fab-container"><button class="fab" data-edit-anniversary="${a.id}">${icon('edit')}</button></div>`;
+};
+
+R.browserSettings = () => {
+  const behavior = state.settings.browserBehavior || '';
+  const engine = state.settings.searchEngine || '';
+  const sp = state.settings.startPage || 'start';
+  const spLabel = sp==='start'?'Tiry介绍页':sp==='welcome'?'TiryHi欢迎页':sp==='home'?'功能主页':'';
+  const remember = state.settings.rememberMe === true && state.settings.verified === true;
+  return `
+    ${appBar({ title:'默认行为', back:true })}
+    <div class="screen-scroll">
+      <div class="content-pad" style="display:flex;flex-direction:column;gap:16px;margin-top:8px">
+        <div class="dropdown" data-dropdown="browserBehavior">
+          <button class="dropdown-trigger ${behavior?'has-value':''}" data-dd-trigger>
+            ${icon('language','field-icon')}
+            <span class="dd-label">浏览器默认行为</span>
+            <span class="dd-value">${behavior==='newTab'?'新标签跳转':behavior==='iframe'?'Iframe':''}</span>
+            ${icon('arrow_drop_down','arrow')}
+          </button>
+          <div class="dropdown-menu">
+            <div class="dropdown-menu-item ${behavior==='newTab'?'selected':''}" data-dd-value="newTab">新标签跳转</div>
+            <div class="dropdown-menu-item ${behavior==='iframe'?'selected':''}" data-dd-value="iframe">Iframe</div>
+          </div>
+        </div>
+        <div class="dropdown" data-dropdown="searchEngine">
+          <button class="dropdown-trigger ${engine?'has-value':''}" data-dd-trigger>
+            ${icon('search','field-icon')}
+            <span class="dd-label">搜索引擎</span>
+            <span class="dd-value">${engine==='bing'?'Bing':engine==='google'?'Google':engine==='baidu'?'百度':engine==='360'?'360':''}</span>
+            ${icon('arrow_drop_down','arrow')}
+          </button>
+          <div class="dropdown-menu">
+            <div class="dropdown-menu-item ${engine==='bing'?'selected':''}" data-dd-value="bing">Bing</div>
+            <div class="dropdown-menu-item ${engine==='google'?'selected':''}" data-dd-value="google">Google</div>
+            <div class="dropdown-menu-item ${engine==='baidu'?'selected':''}" data-dd-value="baidu">百度</div>
+            <div class="dropdown-menu-item ${engine==='360'?'selected':''}" data-dd-value="360">360</div>
+          </div>
+        </div>
+        <div class="dropdown" data-dropdown="startPage">
+          <button class="dropdown-trigger ${sp?'has-value':''}" data-dd-trigger>
+            ${icon('rocket_launch','field-icon')}
+            <span class="dd-label">启动页</span>
+            <span class="dd-value">${spLabel}</span>
+            ${icon('arrow_drop_down','arrow')}
+          </button>
+          <div class="dropdown-menu">
+            <div class="dropdown-menu-item ${sp==='start'?'selected':''}" data-dd-value="start">Tiry介绍页</div>
+            <div class="dropdown-menu-item ${sp==='welcome'?'selected':''}" data-dd-value="welcome">TiryHi欢迎页</div>
+            <div class="dropdown-menu-item ${sp==='home'?'selected':''}" data-dd-value="home">功能主页</div>
+          </div>
+        </div>
+        <div class="remember-row">
+          <label class="checkbox-row">
+            <input type="checkbox" id="remember-toggle" ${remember ? 'checked' : ''}>
+            <span class="checkbox-box">${icon('check')}</span>
+            <span class="checkbox-label">记住我（下次无需输入暗号）</span>
+          </label>
+          <button class="btn btn-text" id="revoke-remember" style="color:var(--error);font-weight:500">撤销</button>
+        </div>
+      </div>
+    </div>`;
+};
+
+R.welcome = () => `
+  <div class="screen-scroll" style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%">
+    <div style="font-size:28px;color:var(--on-surface);margin-bottom:16px">欢迎使用</div>
+    <div class="img-box logo-box" style="width:200px;height:200px;border-radius:20px;margin-bottom:16px">
+      <img src="${IMG.tiryIcon}" alt="TiryHi" fetchpriority="high" decoding="async">
+    </div>
+    <div style="font-size:22px;color:var(--on-surface);margin-bottom:24px">为你而生的工具箱应用</div>
+    <button class="btn btn-filled" style="width:182px" data-welcome-start>开始吧</button>
+    <div style="flex:1"></div>
+    <button class="btn btn-text" style="margin-bottom:24px" data-welcome-about>正在使用TiryHi WebApp</button>
+  </div>`;
+
+R.start = () => `
+  <div class="screen-scroll">
+    <div style="padding:16px">
+      <div class="card elevated" style="height:292px">
+        <div class="img-box logo-box" style="height:192px;width:100%">
+          <img src="${IMG.tiryLogo}" alt="Tiry" fetchpriority="high" decoding="async">
+        </div>
+        <div class="card-body">
+          <div class="card-title">欢迎来到Tiry的主页</div>
+          <div class="card-text">Tiry是一群初中生们自己的团队</div>
+        </div>
+      </div>
+    </div>
+    <div style="text-align:center;padding:8px 16px;font-size:16px;color:var(--on-surface-variant)">探索，开发，学习，互助……：Tiry存在的意义</div>
+    <div class="section-title">开发者</div>
+    <div class="carousel">
+      <div class="carousel-card" style="width:260px;height:216px">
+        <div class="cc-img img-box"><img src="${IMG.tianbianyun}" alt="天边橒" fetchpriority="high" decoding="async"></div>
+        <div class="cc-title">天边橒（团长）</div>
+      </div>
+      <div class="carousel-card" style="width:260px;height:216px">
+        <div class="cc-img img-box"><img src="${IMG.jidurt}" alt="Jidurt" fetchpriority="high" decoding="async"></div>
+        <div class="cc-title">Jidurt</div>
+      </div>
+    </div>
+    <div class="section-title">其他成员</div>
+    <div class="carousel">
+      <div class="carousel-card" style="width:220px;height:228px">
+        <div class="cc-img img-box"><img src="${IMG.ranxinyan}" alt="冉欣妍" loading="lazy" decoding="async"></div>
+        <div class="cc-title">冉欣妍·ꦿ໊ོr.lin</div>
+      </div>
+      <div class="carousel-card" style="width:220px;height:228px">
+        <div class="cc-img img-box"><img src="${IMG.qingshu}" alt="请输入文本" loading="lazy" decoding="async"></div>
+        <div class="cc-title">请输入文本</div>
+      </div>
+      <div class="carousel-card" style="width:220px;height:228px">
+        <div class="cc-img img-box"><img src="${IMG.sky}" alt="Sky双叶" loading="lazy" decoding="async"></div>
+        <div class="cc-title">Sky双叶</div>
+      </div>
+    </div>
+    <div style="padding:16px;display:flex;flex-direction:column;gap:12px;align-items:center">
+      <button class="btn btn-outlined wide" data-nav="welcome">${icon('arrow_forward')}来看看我们的项目：TiryHi</button>
+      <button class="btn btn-outlined wide" data-nav="contact">${icon('chat')}联系我们</button>
+    </div>
+    <div style="text-align:center;padding:8px 16px 24px;font-size:16px;color:var(--on-surface-variant)">Tiry主页</div>
+  </div>`;
+
+function renderScreen(name) {
+  const fn = R[name];
+  const content = fn ? fn() : '';
+  return `<div class="screen" data-screen="${name}">${content}</div>`;
+}
+function navigateTo(name, opts = {}) {
+  if (state.animating) return;
+  const screensEl = document.getElementById('screens');
+  const current = screensEl.querySelector('.screen.active');
+  if (current && current.dataset.screen === name && !opts.force) return;
+  state.animating = true;
+  const newEl = document.createElement('div');
+  newEl.innerHTML = renderScreen(name);
+  const newScreen = newEl.firstElementChild;
+  if (current && !opts.replace) {
+    if (opts.reverse) {
+      newScreen.classList.add('anim-in-left');
+      current.classList.add('anim-out-right');
+    } else {
+      newScreen.classList.add('anim-in-right');
+      current.classList.add('anim-out-left');
+    }
+    screensEl.appendChild(newScreen);
+    newScreen.classList.add('active');
+    const old = current;
+    setTimeout(() => {
+      old.remove();
+      newScreen.classList.remove('anim-in-right','anim-in-left','anim-out-right','anim-out-left');
+      state.animating = false;
+    }, 400);
+  } else {
+    if (current) current.remove();
+    screensEl.appendChild(newScreen);
+    newScreen.classList.add('active');
+    state.animating = false;
+  }
+  state.currentScreen = name;
+  if (!opts.noHistory) {
+    if (opts.replace) {
+      state.history[state.history.length - 1] = name;
+    } else if (opts.reverse) {
+      state.history.pop();
+    } else {
+      state.history.push(name);
+    }
+  }
+  bindScreenEvents(newScreen, name);
+  setupScrollListener(newScreen);
+}
+function goBack() {
+  if (state.animating) return;
+  if (state.history.length <= 1) {
+    showSnackbar('已经在首页');
+    return;
+  }
+  const screensEl = document.getElementById('screens');
+  const current = screensEl.querySelector('.screen.active');
+  if (!current) return;
+  state.history.pop();
+  const prev = state.history[state.history.length - 1];
+  state.animating = true;
+  const newEl = document.createElement('div');
+  newEl.innerHTML = renderScreen(prev);
+  const newScreen = newEl.firstElementChild;
+  screensEl.appendChild(newScreen);
+  newScreen.classList.add('active','anim-in-left');
+  current.classList.add('anim-out-right');
+  state.currentScreen = prev;
+  const old = current;
+  setTimeout(() => {
+    old.remove();
+    newScreen.classList.remove('anim-in-left','anim-out-right');
+    state.animating = false;
+  }, 400);
+  bindScreenEvents(newScreen, prev);
+  setupScrollListener(newScreen);
+}
+function rerender(name) {
+  const screensEl = document.getElementById('screens');
+  const current = screensEl.querySelector('.screen.active');
+  if (!current) return;
+  const el = document.createElement('div');
+  el.innerHTML = renderScreen(name);
+  const newScreen = el.firstElementChild;
+  newScreen.classList.add('active');
+  screensEl.appendChild(newScreen);
+  current.remove();
+  bindScreenEvents(newScreen, name);
+  setupScrollListener(newScreen);
+}
+function setupScrollListener(screenEl) {
+  const scroll = screenEl.querySelector('.screen-scroll');
+  if (!scroll) return;
+  const appbar = screenEl.querySelector('[data-appbar]');
+  scroll.addEventListener('scroll', () => {
+    if (appbar) appbar.classList.toggle('scrolled', scroll.scrollTop > 8);
+  }, { passive: true });
+  screenEl.querySelectorAll('.img-box img').forEach(img => {
+    const box = img.parentElement;
+    if (!box) return;
+    if (img.complete && img.naturalWidth > 0) box.classList.add('loaded');
+    else {
+      img.addEventListener('load', () => box.classList.add('loaded'), { once: true });
+      img.addEventListener('error', () => box.classList.add('loaded'), { once: true });
+    }
+  });
+}
+
+function runIntent(it) {
+  const cmd = (it.cmd || '').trim();
+  let m = cmd.match(/^tiry:\/\/nav\/([a-zA-Z]+)$/);
+  if (m) {
+    const target = m[1];
+    if (R[target]) { navigateTo(target); return; }
+    showSnackbar('未知页面：' + target);
+    return;
+  }
+  m = cmd.match(/^tiry:\/\/open\/(.+)$/);
+  if (m) { openExternal(decodeURIComponent(m[1])); return; }
+  if (/^intent:/i.test(cmd) || (/^[a-z][a-z0-9+.-]*:\/\//i.test(cmd) && !/^https?:\/\//i.test(cmd))) {
+    try { window.location.href = cmd; }
+    catch(e) { showSnackbar('无法启动：' + cmd); }
+    return;
+  }
+  if (/^https?:\/\//i.test(cmd)) { openExternal(cmd); return; }
+  state.editingIntentId = it.id;
+  navigateTo('intentEdit');
+}
+
+function bindScreenEvents(screenEl, name) {
+  const el = screenEl;
+
+  el.querySelectorAll('[data-back]').forEach(btn => {
+    btn.addEventListener('click', (e) => { e.preventDefault(); goBack(); });
+  });
+  el.querySelectorAll('[data-nav]').forEach(btn => {
+    btn.addEventListener('click', () => navigateTo(btn.dataset.nav));
+  });
+  el.querySelectorAll('[data-blocked]').forEach(btn => {
+    btn.addEventListener('click', () => showSnackbar(btn.dataset.blocked + ' 在直接登录模式下不可用'));
+  });
+  el.querySelectorAll('[data-nav-anniversary]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      state.viewingAnniversaryId = Number(btn.dataset.navAnniversary);
+      navigateTo('anniversaryView');
+    });
+  });
+  el.querySelector('[data-fab-add-anniversary]')?.addEventListener('click', () => {
+    state.editingAnniversaryId = null;
+    navigateTo('anniversaryAdd');
+  });
+  bindCounterEvents(el);
+  el.querySelector('[data-fab-add-browser]')?.addEventListener('click', () => {
+    state.editingBrowserPageId = null;
+    navigateTo('browserAdd');
+  });
+  el.querySelector('[data-browser-searchbar]')?.addEventListener('click', () => {
+    const engine = state.settings.searchEngine || 'bing';
+    const input = prompt('输入完整链接或域名');
+    if (!input) return;
+    let q = input.trim();
+    let url;
+    if (/^https?:\/\//i.test(q)) {
+      url = q;
+    } else if (/^[\w-]+(\.[\w-]+)+(\/.*)?$/.test(q) || q.includes('.')) {
+      url = 'https://' + q;
+    } else {
+      const urls = {
+        bing: `https://www.bing.com/search?q=${encodeURIComponent(q)}`,
+        google: `https://www.google.com/search?q=${encodeURIComponent(q)}`,
+        baidu: `https://www.baidu.com/s?wd=${encodeURIComponent(q)}`,
+        '360': `https://www.so.com/s?q=${encodeURIComponent(q)}`
+      };
+      url = urls[engine] || urls.bing;
+    }
+    window.open(url, '_blank');
+  });
+  el.querySelectorAll('[data-browser-page]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const page = state.browserPages.find(p => p.id === Number(btn.dataset.browserPage));
+      if (!page) return;
+      const behavior = state.settings.browserBehavior || 'newTab';
+      if (behavior === 'iframe') {
+        state.settings.iframeUrl = page.url;
+        setSetting('iframeUrl', page.url);
+        navigateTo('iframe');
+      } else {
+        openExternal(page.url);
+      }
+    });
+    attachLongPress(btn, () => {
+      state.editingBrowserPageId = Number(btn.dataset.browserPage);
+      navigateTo('browserAdd');
+    });
+  });
+  el.querySelectorAll('[data-intent]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const it = state.intents.find(x => x.id === Number(btn.dataset.intent));
+      if (it) runIntent(it);
+    });
+    attachLongPress(btn, () => {
+      state.editingIntentId = Number(btn.dataset.intent);
+      navigateTo('intentEdit');
+    });
+  });
+  el.querySelector('[data-fab-create-intent]')?.addEventListener('click', () => {
+    state.editingIntentId = null;
+    navigateTo('intentEdit');
+  });
+  el.querySelector('[data-logout]')?.addEventListener('click', () => {
+    showSnackbar('已退出登录');
+  });
+  el.querySelector('[data-version]')?.addEventListener('click', () => {
+    showSnackbar('本网站更新于2026.10.25');
+  });
+  bindDropdowns(el);
+  bindSliders(el);
+  el.querySelector('[data-join-welfare]')?.addEventListener('click', () => {
+    openExternal('https://yoyo.luxifakj.cn/share-um-html?v=1788872540462&msgType=2&groupId=1337265&shareUserId=26846988&qq_aio_chat_type=3');
+  });
+  el.querySelectorAll('[data-copy]').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      copyText(btn.dataset.copy, '');
+      btn.classList.add('copied-flash');
+      setTimeout(()=>btn.classList.remove('copied-flash'), 600);
+    });
+  });
+  el.querySelector('[data-save-intent]')?.addEventListener('click', saveIntent);
+  el.querySelector('#intent-delete')?.addEventListener('click', deleteIntent);
+  el.querySelector('[data-save-browser-page]')?.addEventListener('click', saveBrowserPage);
+  el.querySelector('#browser-page-delete')?.addEventListener('click', deleteBrowserPage);
+  el.querySelector('[data-save-anniversary]')?.addEventListener('click', saveAnniversary);
+  el.querySelector('#ann-delete')?.addEventListener('click', deleteAnniversary);
+  el.querySelector('[data-save-counter]')?.addEventListener('click', saveCounter);
+  el.querySelector('#counter-delete')?.addEventListener('click', deleteCounter);
+  if (name === 'anniversaryAdd') initDatePicker(el);
+  el.querySelector('[data-edit-anniversary]')?.addEventListener('click', (e) => {
+    state.editingAnniversaryId = Number(e.currentTarget.dataset.editAnniversary);
+    navigateTo('anniversaryAdd');
+  });
+  el.querySelector('#iframe-copy')?.addEventListener('click', () => {
+    copyText(state.settings.iframeUrl || '');
+  });
+  el.querySelector('[data-welcome-start]')?.addEventListener('click', () => {
+    if (state.settings.rememberMe && state.settings.verified) {
+      navigateTo('home', { replace: true });
+    } else {
+      showVerifyDialog();
+    }
+  });
+  el.querySelector('[data-welcome-about]')?.addEventListener('click', () => navigateTo('about'));
+  el.querySelector('#add-counter')?.addEventListener('click', addCounter);
+  el.querySelector('#browser-search')?.addEventListener('click', () => {
+    el.querySelector('[data-browser-searchbar]')?.click();
+  });
+  el.querySelector('#ann-more')?.addEventListener('click', () => {
+    const a = state.anniversaries.find(x=>x.id===state.viewingAnniversaryId);
+    if (!a) return;
+    confirmDialog('删除纪念日', '确定删除该纪念日？', '删除', async () => {
+      await dbDelete('anniversaries', a.id);
+      state.anniversaries = state.anniversaries.filter(x=>x.id!==a.id);
+      showSnackbar('已删除');
+      navigateTo('countdown', { reverse: true });
+    });
+  });
+  if (name === 'display') {
+    el.querySelectorAll('[data-dd-value]').forEach(item => {
+      item.addEventListener('click', async () => {
+        const val = item.dataset.ddValue;
+        await setSetting('theme', val);
+        state.settings.theme = val;
+        applyTheme();
+        rerender('display');
+      });
+    });
+  }
+  if (name === 'browserSettings') {
+    el.querySelectorAll('[data-dropdown="browserBehavior"] [data-dd-value]').forEach(item => {
+      item.addEventListener('click', async () => {
+        await setSetting('browserBehavior', item.dataset.ddValue);
+        state.settings.browserBehavior = item.dataset.ddValue;
+        rerender('browserSettings');
+      });
+    });
+    el.querySelectorAll('[data-dropdown="searchEngine"] [data-dd-value]').forEach(item => {
+      item.addEventListener('click', async () => {
+        await setSetting('searchEngine', item.dataset.ddValue);
+        state.settings.searchEngine = item.dataset.ddValue;
+        rerender('browserSettings');
+      });
+    });
+    el.querySelectorAll('[data-dropdown="startPage"] [data-dd-value]').forEach(item => {
+      item.addEventListener('click', async () => {
+        await setSetting('startPage', item.dataset.ddValue);
+        state.settings.startPage = item.dataset.ddValue;
+        const label = item.dataset.ddValue==='start'?'Tiry介绍页':item.dataset.ddValue==='welcome'?'TiryHi欢迎页':'功能主页';
+        showSnackbar('启动页已设为：' + label);
+        rerender('browserSettings');
+      });
+    });
+    el.querySelector('#remember-toggle')?.addEventListener('change', async (e) => {
+      const checked = e.target.checked;
+      if (checked) {
+        e.target.checked = false;
+        showVerifyDialog();
+        return;
+      }
+      await setSetting('rememberMe', false);
+      state.settings.rememberMe = false;
+      await setSetting('verified', false);
+      state.settings.verified = false;
+      showSnackbar('已关闭记住我，下次需重新验证');
+      rerender('browserSettings');
+    });
+    el.querySelector('#revoke-remember')?.addEventListener('click', () => {
+      confirmDialog('撤销记住我', '撤销后，下次打开需重新输入暗号。', '撤销', async () => {
+        await setSetting('rememberMe', false);
+        await setSetting('verified', false);
+        state.settings.rememberMe = false;
+        state.settings.verified = false;
+        showSnackbar('已撤销记住我，下次需重新验证');
+        rerender('browserSettings');
+      });
+    });
+  }
+  el.querySelector('[data-action="open-newyear"]')?.addEventListener('click', () => {
+    openExternal('https://yokitu.github.io/new-year-celebration/');
+  });
+}
+
+function bindDropdowns(el) {
+  el.querySelectorAll('.dropdown').forEach(dd => {
+    const trigger = dd.querySelector('[data-dd-trigger]');
+    const menu = dd.querySelector('.dropdown-menu');
+    if (!trigger || !menu) return;
+    trigger.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isOpen = menu.classList.contains('open');
+      el.querySelectorAll('.dropdown-menu.open').forEach(m => m.classList.remove('open'));
+      el.querySelectorAll('.dropdown-trigger.open').forEach(t => t.classList.remove('open'));
+      if (!isOpen) { menu.classList.add('open'); trigger.classList.add('open'); }
+    });
+  });
+}
+
+function bindSliders(el) {
+  el.querySelectorAll('.slider-wrap').forEach(wrap => {
+    const input = wrap.querySelector('input[type=range]');
+    const fill = wrap.querySelector('.slider-fill');
+    const thumb = wrap.querySelector('.slider-thumb');
+    if (!input) return;
+    const key = wrap.dataset.slider;
+    const max = Number(input.max) || 7;
+    const update = () => {
+      const val = Number(input.value);
+      const pct = (val / max) * 100;
+      fill.style.width = pct + '%';
+      thumb.style.left = pct + '%';
+      const valEl = el.querySelector(`[data-slider-val="${key}"]`);
+      if (valEl) valEl.textContent = val;
+    };
+    input.addEventListener('input', update);
+    input.addEventListener('change', async () => {
+      if (key === 'welfareNormal' || key === 'welfareEvening') {
+        const n = Number(el.querySelector('[data-slider="welfareNormal"] input').value);
+        const e2 = Number(el.querySelector('[data-slider="welfareEvening"] input').value);
+        if (n + e2 > 7) showSnackbar('正常打卡+晚间打卡不能超过7');
+      }
+      if (key === 'welfareMakeup' && Number(input.value) > 7) {
+        showSnackbar('补卡不能超过7');
+      }
+      await setSetting(key, Number(input.value));
+      state.settings[key] = Number(input.value);
+      const n = Number(el.querySelector('[data-slider="welfareNormal"] input')?.value || 0);
+      const e2 = Number(el.querySelector('[data-slider="welfareEvening"] input')?.value || 0);
+      const m = Number(el.querySelector('[data-slider="welfareMakeup"] input')?.value || 0);
+      const rawPrize = n + e2*0.8 + m*0.1;
+      const displayPrize = Math.min(7, rawPrize);
+      const pct = Math.min(100, (rawPrize / 7) * 100);
+      await setSetting('welfarePrize', displayPrize);
+      await setSetting('welfareProgress', Math.round(pct));
+      const prizeEl = el.querySelector('[data-prize]');
+      if (prizeEl) prizeEl.textContent = displayPrize.toFixed(1);
+      const wavy = el.querySelector('.progress-wavy rect.wave-fg');
+      if (wavy) wavy.setAttribute('width', String(400 * pct / 100));
+    });
+    update();
+  });
+}
+
+function bindCounterEvents(el) {
+  el.querySelectorAll('[data-counter-add]').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const id = Number(btn.dataset.counterAdd);
+      const c = state.counters.find(x => x.id === id);
+      if (!c) return;
+      const step = Number(el.querySelector(`[data-counter-input="${id}"]`)?.value) || 1;
+      c.value += step;
+      await dbPut('counters', c);
+      const numEl = el.querySelector(`[data-counter-num="${id}"]`);
+      if (numEl) numEl.textContent = c.value;
+    });
+  });
+  el.querySelectorAll('[data-counter-sub]').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const id = Number(btn.dataset.counterSub);
+      const c = state.counters.find(x => x.id === id);
+      if (!c) return;
+      const step = Number(el.querySelector(`[data-counter-input="${id}"]`)?.value) || 1;
+      c.value -= step;
+      await dbPut('counters', c);
+      const numEl = el.querySelector(`[data-counter-num="${id}"]`);
+      if (numEl) numEl.textContent = c.value;
+    });
+  });
+  el.querySelectorAll('[data-counter-reset]').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const id = Number(btn.dataset.counterReset);
+      const c = state.counters.find(x => x.id === id);
+      if (!c) return;
+      c.value = 0;
+      await dbPut('counters', c);
+      const numEl = el.querySelector(`[data-counter-num="${id}"]`);
+      if (numEl) numEl.textContent = '0';
+    });
+  });
+  el.querySelectorAll('[data-counter-edit]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      state.editingCounterId = Number(btn.dataset.counterEdit);
+      navigateTo('counterEdit');
+    });
+  });
+  el.querySelectorAll('[data-counter-plus]').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const id = Number(btn.dataset.counterPlus);
+      const c = state.counters.find(x => x.id === id);
+      if (!c) return;
+      const step = Number(el.querySelector(`[data-counter-input="${id}"]`)?.value) || 1;
+      c.value += step;
+      await dbPut('counters', c);
+      const numEl = el.querySelector(`[data-counter-num="${id}"]`);
+      if (numEl) numEl.textContent = c.value;
+    });
+  });
+}
+
+async function addCounter() {
+  const title = prompt('计数器标题', '计数器');
+  if (title == null) return;
+  const obj = { title: title.trim() || '计数器', value: 0, step: 1 };
+  const id = await dbAdd('counters', obj);
+  obj.id = id;
+  state.counters.push(obj);
+  rerender('counter');
+  showSnackbar('已添加计数器');
+}
+
+async function saveCounter() {
+  const c = state.counters.find(x=>x.id===state.editingCounterId);
+  if (!c) return;
+  const title = document.getElementById('ce-title')?.value.trim();
+  if (!title) { showSnackbar('请输入标题'); return; }
+  c.title = title;
+  c.value = Number(document.getElementById('ce-value')?.value) || 0;
+  c.step = Number(document.getElementById('ce-step')?.value) || 1;
+  await dbPut('counters', c);
+  showSnackbar('已保存');
+  navigateTo('counter', { reverse: true });
+}
+async function deleteCounter() {
+  const c = state.counters.find(x=>x.id===state.editingCounterId);
+  if (!c) { goBack(); return; }
+  confirmDialog('删除计数器', '确定删除该计数器？', '删除', async () => {
+    await dbDelete('counters', c.id);
+    state.counters = state.counters.filter(x=>x.id!==c.id);
+    state.editingCounterId = null;
+    showSnackbar('已删除');
+    navigateTo('counter', { reverse: true });
+  });
+}
+
+async function saveIntent() {
+  const title = document.getElementById('intent-title')?.value.trim();
+  const cmd = document.getElementById('intent-cmd')?.value.trim();
+  if (!title) { showSnackbar('请输入标题'); return; }
+  if (!cmd) { showSnackbar('请输入完整命令'); return; }
+  if (state.editingIntentId) {
+    const it = state.intents.find(x=>x.id===state.editingIntentId);
+    it.title = title; it.cmd = cmd;
+    await dbPut('intents', it);
+    showSnackbar('已保存');
+  } else {
+    const obj = { title, cmd };
+    const id = await dbAdd('intents', obj);
+    obj.id = id;
+    state.intents.push(obj);
+    showSnackbar('已添加');
+  }
+  navigateTo('shell', { reverse: true });
+}
+async function deleteIntent() {
+  if (!state.editingIntentId) { goBack(); return; }
+  confirmDialog('删除', '确定删除该Intent？', '删除', async () => {
+    await dbDelete('intents', state.editingIntentId);
+    state.intents = state.intents.filter(x=>x.id!==state.editingIntentId);
+    state.editingIntentId = null;
+    showSnackbar('已删除');
+    navigateTo('shell', { reverse: true });
+  });
+}
+
+async function saveBrowserPage() {
+  const title = document.getElementById('bp-title')?.value.trim();
+  const url = document.getElementById('bp-url')?.value.trim();
+  if (!title) { showSnackbar('请输入标题'); return; }
+  if (!url) { showSnackbar('请输入网页地址'); return; }
+  if (state.editingBrowserPageId) {
+    const p = state.browserPages.find(x=>x.id===state.editingBrowserPageId);
+    p.title = title; p.url = url;
+    await dbPut('browserPages', p);
+    showSnackbar('已保存');
+  } else {
+    const obj = { title, url };
+    const id = await dbAdd('browserPages', obj);
+    obj.id = id;
+    state.browserPages.push(obj);
+    showSnackbar('已添加');
+  }
+  navigateTo('browser', { reverse: true });
+}
+async function deleteBrowserPage() {
+  if (!state.editingBrowserPageId) { goBack(); return; }
+  confirmDialog('删除', '确定删除该页面？', '删除', async () => {
+    await dbDelete('browserPages', state.editingBrowserPageId);
+    state.browserPages = state.browserPages.filter(x=>x.id!==state.editingBrowserPageId);
+    state.editingBrowserPageId = null;
+    showSnackbar('已删除');
+    navigateTo('browser', { reverse: true });
+  });
+}
+
+let dpState = { year: 0, month: 0, selected: null };
+async function saveAnniversary() {
+  const title = document.getElementById('ann-title')?.value.trim();
+  const name = document.getElementById('ann-name')?.value.trim();
+  if (!title) { showSnackbar('请输入标题'); return; }
+  if (!dpState.selected) { showSnackbar('请选择日期'); return; }
+  const dateStr = formatDate(dpState.selected);
+  const finalName = name || '';
+  if (state.editingAnniversaryId) {
+    const a = state.anniversaries.find(x=>x.id===state.editingAnniversaryId);
+    a.title = title; a.name = finalName; a.date = dateStr;
+    await dbPut('anniversaries', a);
+    showSnackbar('已保存');
+  } else {
+    const obj = { title, name: finalName, date: dateStr };
+    const id = await dbAdd('anniversaries', obj);
+    obj.id = id;
+    state.anniversaries.push(obj);
+    showSnackbar('已添加');
+  }
+  navigateTo('countdown', { reverse: true });
+}
+async function deleteAnniversary() {
+  if (!state.editingAnniversaryId) { goBack(); return; }
+  confirmDialog('删除', '确定删除该纪念日？', '删除', async () => {
+    await dbDelete('anniversaries', state.editingAnniversaryId);
+    state.anniversaries = state.anniversaries.filter(x=>x.id!==state.editingAnniversaryId);
+    state.editingAnniversaryId = null;
+    showSnackbar('已删除');
+    navigateTo('countdown', { reverse: true });
+  });
+}
+function initDatePicker(root) {
+  const container = root.querySelector('#datepicker');
+  if (!container) return;
+  const a = state.editingAnniversaryId ? state.anniversaries.find(x=>x.id===state.editingAnniversaryId) : null;
+  const today = new Date();
+  if (a) {
+    const d = parseDate(a.date);
+    dpState.year = d.getFullYear();
+    dpState.month = d.getMonth();
+    dpState.selected = d;
+  } else {
+    dpState.year = today.getFullYear();
+    dpState.month = today.getMonth();
+    dpState.selected = new Date(today);
+  }
+  renderDatePicker(container);
+}
+function renderDatePicker(container) {
+  const { year, month, selected } = dpState;
+  const first = new Date(year, month, 1);
+  const startDay = first.getDay();
+  const daysInMonth = new Date(year, month+1, 0).getDate();
+  const prevDays = new Date(year, month, 0).getDate();
+  const today = new Date(); today.setHours(0,0,0,0);
+  const weekdays = ['日','一','二','三','四','五','六'];
+  let cells = '';
+  for (let i = 0; i < startDay; i++) {
+    const d = prevDays - startDay + 1 + i;
+    cells += `<button class="dp-day other" data-day="${d}" data-month="${month-1}" data-year="${month===0?year-1:year}">${d}</button>`;
+  }
+  for (let d = 1; d <= daysInMonth; d++) {
+    const isToday = (year===today.getFullYear() && month===today.getMonth() && d===today.getDate());
+    const isSel = selected && selected.getFullYear()===year && selected.getMonth()===month && selected.getDate()===d;
+    cells += `<button class="dp-day ${isToday?'today':''} ${isSel?'selected':''}" data-day="${d}" data-month="${month}" data-year="${year}">${d}</button>`;
+  }
+  const remaining = (7 - ((startDay + daysInMonth) % 7)) % 7;
+  for (let i = 1; i <= remaining; i++) {
+    cells += `<button class="dp-day other" data-day="${i}" data-month="${month+1}" data-year="${month===11?year+1:year}">${i}</button>`;
+  }
+  container.innerHTML = `
+    <div class="dp-header">
+      <button class="icon-btn small" data-dp-prev>${icon('chevron_left')}</button>
+      <span class="dp-month">${year}年${month+1}月</span>
+      <button class="icon-btn small" data-dp-next>${icon('chevron_right')}</button>
+    </div>
+    <div class="dp-weekdays">${weekdays.map(w=>`<div class="dp-weekday">${w}</div>`).join('')}</div>
+    <div class="dp-grid">${cells}</div>`;
+  container.querySelector('[data-dp-prev]').onclick = () => {
+    dpState.month--; if (dpState.month < 0) { dpState.month = 11; dpState.year--; }
+    renderDatePicker(container);
+  };
+  container.querySelector('[data-dp-next]').onclick = () => {
+    dpState.month++; if (dpState.month > 11) { dpState.month = 0; dpState.year++; }
+    renderDatePicker(container);
+  };
+  container.querySelectorAll('.dp-day').forEach(btn => {
+    btn.onclick = () => {
+      const y = Number(btn.dataset.year), m = Number(btn.dataset.month), d = Number(btn.dataset.day);
+      dpState.selected = new Date(y, m, d);
+      dpState.year = y; dpState.month = m;
+      renderDatePicker(container);
+    };
+  });
+}
+
+const LIGHT_TOKENS = {
+  '--primary':'#00696E','--on-primary':'#FFFFFF','--primary-container':'#9CF1F6','--on-primary-container':'#002022',
+  '--secondary':'#4D6263','--secondary-container':'#CCE8E9','--on-secondary-container':'#051F20',
+  '--tertiary-container':'#D2E4FF','--on-tertiary-container':'#001C3B',
+  '--surface':'#F4FBFB','--surface-container-low':'#EEF5F5','--surface-container':'#E8EFEF',
+  '--surface-container-high':'#E2EAEA','--surface-container-highest':'#DDE4E4',
+  '--on-surface':'#161D1D','--on-surface-variant':'#3F4948','--outline':'#6F7979','--outline-variant':'#BEC8C8',
+  '--inverse-surface':'#2B3232','--inverse-on-surface':'#ECF2F2','--inverse-primary':'#80D5DA',
+  '--error':'#B3261E','--on-error':'#FFFFFF','--error-container':'#F9DEDC','--on-error-container':'#410E0B'
+};
+const DARK_TOKENS = {
+  '--primary':'#83D4D8','--on-primary':'#063639','--primary-container':'#0B4F52','--on-primary-container':'#9FF0F5',
+  '--secondary':'#B3CBCC','--secondary-container':'#354A4C','--on-secondary-container':'#CFE7E8',
+  '--tertiary-container':'#38485A','--on-tertiary-container':'#D3E4FA',
+  '--surface':'#0D1515','--surface-container-low':'#161D1D','--surface-container':'#1A2121',
+  '--surface-container-high':'#252B2B','--surface-container-highest':'#2F3636',
+  '--on-surface':'#DCE4E4','--on-surface-variant':'#B7CACB','--outline':'#819495','--outline-variant':'#394A4B',
+  '--inverse-surface':'#DCE4E4','--inverse-on-surface':'#2B3232','--inverse-primary':'#00696E',
+  '--error':'#F2B8B5','--on-error':'#601410','--error-container':'#8C1D18','--on-error-container':'#F9DEDC'
+};
+function tokensToCSS(t) { return ':root{' + Object.entries(t).map(([k,v])=>`${k}:${v};`).join('') + '}'; }
+function applyTheme() {
+  const theme = state.settings.theme;
+  let style = document.getElementById('theme-override');
+  if (!style) { style = document.createElement('style'); style.id = 'theme-override'; document.head.appendChild(style); }
+  if (theme === 'dark') { style.textContent = tokensToCSS(DARK_TOKENS); document.documentElement.style.colorScheme = 'dark'; }
+  else if (theme === 'light') { style.textContent = tokensToCSS(LIGHT_TOKENS); document.documentElement.style.colorScheme = 'light'; }
+  else { style.textContent = ''; document.documentElement.style.colorScheme = ''; }
+}
+
+async function init() {
+  try {
+    state.counters = await dbGetAll('counters');
+    state.anniversaries = await dbGetAll('anniversaries');
+    state.intents = await dbGetAll('intents');
+    state.browserPages = await dbGetAll('browserPages');
+    state.settings = {
+      theme: await getSetting('theme', 'system'),
+      browserBehavior: await getSetting('browserBehavior', 'newTab'),
+      searchEngine: await getSetting('searchEngine', 'bing'),
+      welfareNormal: await getSetting('welfareNormal', 3),
+      welfareEvening: await getSetting('welfareEvening', 2),
+      welfareMakeup: await getSetting('welfareMakeup', 1),
+      welfareProgress: await getSetting('welfareProgress', 60),
+      welfarePrize: await getSetting('welfarePrize', 0.0),
+      iframeUrl: await getSetting('iframeUrl', ''),
+      welcomed: await getSetting('welcomed', false),
+      verified: await getSetting('verified', false),
+      directLogin: await getSetting('directLogin', false),
+      rememberMe: await getSetting('rememberMe', true),
+      startPage: await getSetting('startPage', 'welcome'),
+    };
+    const seeded = await getSetting('intentsSeeded', false);
+    if (!seeded) {
+      const presets = [
+        { title: '开发者模式', cmd: 'intent://settings#Intent;action=android.settings.APPLICATION_DEVELOPMENT_SETTINGS;end' },
+        { title: '设置搜索框', cmd: 'intent://settings#Intent;action=android.settings.APP_SEARCH_SETTINGS;end' },
+      ];
+      for (const p of presets) {
+        const id = await dbAdd('intents', p);
+        p.id = id;
+        state.intents.push(p);
+      }
+      await setSetting('intentsSeeded', true);
+    }
+  } catch(e) {
+    console.warn('DB init failed', e);
+    state.settings = { theme:'system', browserBehavior:'newTab', searchEngine:'bing',
+      welfareNormal:3, welfareEvening:2, welfareMakeup:1, welfareProgress:60, welfarePrize:0,
+      iframeUrl:'', welcomed:false, verified:false, directLogin:false, rememberMe:true, startPage:'welcome' };
+  }
+  applyTheme();
+
+  let startScreen = state.settings.startPage || 'welcome';
+  if (startScreen === 'home' && !(state.settings.rememberMe && state.settings.verified)) {
+    startScreen = 'welcome';
+  }
+
+  const screensEl = document.getElementById('screens');
+  const el = document.createElement('div');
+  el.innerHTML = renderScreen(startScreen);
+  const s = el.firstElementChild;
+  s.classList.add('active');
+  screensEl.appendChild(s);
+  state.currentScreen = startScreen;
+  state.history = [startScreen];
+  bindScreenEvents(s, startScreen);
+  setupScrollListener(s);
+
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.dropdown')) {
+      document.querySelectorAll('.dropdown-menu.open').forEach(m => m.classList.remove('open'));
+      document.querySelectorAll('.dropdown-trigger.open').forEach(t => t.classList.remove('open'));
+    }
+  });
+
+  history.pushState({ app: true }, '', location.href);
+  window.addEventListener('popstate', () => {
+    history.pushState({ app: true }, '', location.href);
+    const scrim = document.getElementById('dialog-scrim');
+    if (scrim.classList.contains('open')) { scrim.classList.remove('open'); scrim.innerHTML=''; return; }
+    goBack();
+  });
+
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      const scrim = document.getElementById('dialog-scrim');
+      if (scrim.classList.contains('open')) { scrim.classList.remove('open'); scrim.innerHTML=''; return; }
+      goBack();
+    }
+  });
+}
+
+init();
+</script>
+</body>
+</html>
