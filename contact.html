@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>联系我们 - TiryHi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+<style>
+:root {
+  --primary: #00696E; --on-primary: #FFFFFF; --primary-container: #9CF1F6; --on-primary-container: #002022;
+  --secondary: #4D6263; --secondary-container: #CCE8E9; --on-secondary-container: #051F20;
+  --surface: #F4FBFB; --surface-container-low: #EEF5F5; --surface-container: #E8EFEF;
+  --surface-container-high: #E2EAEA; --surface-container-highest: #DDE4E4;
+  --on-surface: #161D1D; --on-surface-variant: #3F4948; --outline: #6F7979; --outline-variant: #BEC8C8;
+  --inverse-surface: #2B3232; --inverse-on-surface: #ECF2F2; --inverse-primary: #80D5DA;
+  --shadow: rgba(0,0,0,0.15);
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --primary: #83D4D8; --on-primary: #063639; --primary-container: #0B4F52; --on-primary-container: #9FF0F5;
+    --secondary: #B3CBCC; --secondary-container: #354A4C; --on-secondary-container: #CFE7E8;
+    --surface: #0D1515; --surface-container-low: #161D1D; --surface-container: #1A2121;
+    --surface-container-high: #252B2B; --surface-container-highest: #2F3636;
+    --on-surface: #DCE4E4; --on-surface-variant: #B7CACB; --outline: #819495; --outline-variant: #394A4B;
+    --inverse-surface: #DCE4E4; --inverse-on-surface: #2B3232; --inverse-primary: #00696E;
+  }
+}
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+html, body { height:100%; font-family:'Roboto', system-ui, -apple-system, sans-serif; background: var(--surface); color: var(--on-surface); overflow:hidden; }
+body { display:flex; justify-content:center; align-items:center; }
+
+#app-frame { width: 412px; height: 892px; max-height: 100vh; background: var(--surface); position: relative; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 0 40px var(--shadow); }
+@media (max-width: 412px), (max-height: 892px) { #app-frame { width:100vw; height:100vh; max-height:100vh; } }
+
+.screen-scroll { flex: 1; overflow-y: auto; overflow-x: hidden; padding-bottom: 24px; -webkit-overflow-scrolling: touch; }
+.screen-scroll::-webkit-scrollbar { width: 3px; }
+.screen-scroll::-webkit-scrollbar-thumb { background: var(--outline-variant); border-radius: 2px; }
+
+/* 顶部应用栏 (移除了返回按钮，标题直接左侧留白) */
+.app-bar { height: 64px; min-height: 64px; background: var(--surface); display: flex; align-items: center; padding: 0 16px; z-index: 10; }
+.app-bar-title { font-size: 22px; font-weight: 400; color: var(--on-surface); }
+
+/* 列表与卡片组件 */
+.list-group { display: flex; flex-direction: column; gap: 3px; padding: 0 16px; }
+.list-item { min-height: 72px; display: flex; align-items: center; gap: 16px; padding: 12px 16px; background: var(--surface-container-low); border: none; cursor: pointer; text-align: left; color: var(--on-surface); position: relative; border-radius: 4px; width: 100%; font-family: inherit; transition: background 0.15s; }
+.list-item:hover { background: var(--surface-container); }
+.list-item:active { background: var(--surface-container-high); transform: scale(0.995); }
+.list-item:first-child { border-radius: 28px 28px 4px 4px; }
+.list-item:last-child { border-radius: 4px 4px 28px 28px; }
+.list-item:only-child { border-radius: 28px; }
+
+.list-item-icon { width: 40px; height: 40px; border-radius: 50%; background: var(--primary-container); color: var(--on-primary-container); display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden; }
+.list-item-icon img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.list-item-icon.primary { background: var(--primary); color: var(--on-primary); }
+
+.list-item-content { flex: 1; min-width: 0; }
+.list-item-title { font-size: 16px; font-weight: 400; color: var(--on-surface); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.list-item-sub { font-size: 14px; color: var(--on-surface-variant); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.list-item-trailing { color: var(--on-surface-variant); display: flex; align-items: center; flex-shrink: 0; }
+.list-item.solid-primary { background: var(--primary-container); }
+.list-item.solid-primary .list-item-title { color: var(--on-primary-container); }
+.list-item.solid-primary .list-item-sub { color: var(--on-primary-container); opacity: 0.8; }
+
+.text-h1 { font-size: 28px; font-weight: 400; color: var(--on-surface); }
+.section-title { font-size: 28px; color: var(--on-surface); padding: 16px 16px 8px; }
+
+/* 图片加载骨架屏 */
+.img-box { position: relative; overflow: hidden; background: var(--surface-container-highest); width: 100%; height: 100%; border-radius: 50%; }
+.img-box::after { content: ''; position: absolute; inset: 0; background: var(--surface-container-highest); opacity: 1; transition: opacity 0.35s ease; pointer-events: none; }
+.img-box.loaded::after { opacity: 0; }
+
+/* Snackbar */
+.snackbar-host { position: absolute; left: 16px; right: 16px; bottom: 16px; z-index: 200; display: flex; flex-direction: column; gap: 8px; pointer-events: none; }
+.snackbar { min-height: 48px; border-radius: 8px; background: var(--inverse-surface); color: var(--inverse-on-surface); display: flex; align-items: center; gap: 12px; padding: 8px 16px; box-shadow: 0 4px 12px var(--shadow); pointer-events: auto; font-size: 14px; animation: snackIn 0.3s cubic-bezier(0.2,0.8,0.2,1.05); }
+@keyframes snackIn { from { opacity:0; transform: translateY(20px); } to { opacity:1; transform: translateY(0); } }
+.snackbar.removing { animation: snackOut 0.2s ease-in forwards; }
+@keyframes snackOut { to { opacity:0; transform: translateY(20px); } }
+
+.copied-flash { animation: copiedFlash 0.6s; }
+@keyframes copiedFlash { 0%,100% { background: var(--surface-container-low); } 50% { background: var(--secondary-container); } }
+
+.material-symbols-rounded { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; user-select: none; line-height: 1; display: inline-block; }
+</style>
+</head>
+<body>
+<div id="app-frame">
+  <!-- 顶部栏 -->
+  <header class="app-bar">
+    <h1 class="app-bar-title">联系我们</h1>
+  </header>
+
+  <div class="screen-scroll">
+    <!-- 交流群 -->
+    <div style="text-align:center;padding:16px 0 8px">
+      <span class="text-h1">交流群（可下载APK）</span>
+    </div>
+    <div style="padding:0 16px 8px">
+      <button class="list-item solid-primary" onclick="copyText('1093730235')">
+        <div class="list-item-icon primary"><span class="material-symbols-rounded">chat</span></div>
+        <div class="list-item-content">
+          <div class="list-item-title">QQ</div>
+          <div class="list-item-sub">1093730235</div>
+        </div>
+        <div class="list-item-trailing"><span class="material-symbols-rounded">content_copy</span></div>
+      </button>
+    </div>
+
+    <!-- 天边橒 -->
+    <div class="section-title">天边橒</div>
+    <div class="list-group" id="group-tianbianyun"></div>
+
+    <!-- Jidurt -->
+    <div class="section-title">Jidurt</div>
+    <div class="list-group" id="group-jidurt"></div>
+
+    <!-- 非开发者 -->
+    <div class="section-title">非开发者</div>
+    <div class="list-group" id="group-members"></div>
+
+    <!-- 底部声明 -->
+    <div style="padding:16px;font-size:16px;color:var(--on-surface-variant);line-height:1.5">
+      如果原作者疑似无法继续开发请加群后@Q群管家发
+    </div>
+    <div style="padding:4px 16px 24px;font-size:22px;color:var(--on-surface)">
+      isudee
+    </div>
+  </div>
+
+  <!-- Snackbar 容器 -->
+  <div class="snackbar-host" id="snackbar-host"></div>
+</div>
+
+<script>
+// 数据定义
+const contacts = [
+  { title:'QQ', sub:'3623633553' },
+  { title:'GitHub', sub:'github.com/Yokitu' },
+  { title:'邮箱', sub:'3623633553@qq.com' },
+  { title:'邮箱', sub:'tsunset9315@163.com' },
+  { title:'邮箱', sub:'yunran99@outlook.com' },
+  { title:'抖音', sub:'amRxy9' },
+  { title:'快手', sub:'amRxy649' },
+  { title:'哔哩哔哩', sub:'是橒儿呀' },
+];
+
+const jidurt = [
+  { title:'QQ', sub:'3427780794' }
+];
+
+const members = [
+  { title:'冉欣妍·ꦿ໊ོr.lin：快手', sub:'rxy620Aaaa119yy', avatar: 'https://img.scdn.io/i/6acb96b258c5b_1791727282.webp' },
+  { title:'请输入文本：抖音', sub:'41074590062', avatar: 'https://img.scdn.io/i/6acb9654c7c4b_1791727188.webp' },
+  { title:'Sky双叶：快手', sub:'1927127987', avatar: 'https://img.scdn.io/i/6acb967fc6981_1791727231.webp' },
+];
+
+// 渲染列表函数
+function renderList(containerId, data, isPerson = false) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  
+  container.innerHTML = data.map(item => `
+    <button class="list-item" onclick="copyText('${item.sub}', this)">
+      <div class="list-item-icon ${item.avatar ? '' : ''}">
+        ${item.avatar 
+          ? `<div class="img-box"><img src="${item.avatar}" alt="" loading="lazy" onload="this.parentElement.classList.add('loaded')"></div>` 
+          : `<span class="material-symbols-rounded">${isPerson ? 'person' : 'chat'}</span>`}
+      </div>
+      <div class="list-item-content">
+        <div class="list-item-title">${item.title}</div>
+        <div class="list-item-sub">${item.sub}</div>
+      </div>
+      <div class="list-item-trailing"><span class="material-symbols-rounded">content_copy</span></div>
+    </button>
+  `).join('');
+}
+
+// 初始化列表
+renderList('group-tianbianyun', contacts);
+renderList('group-jidurt', jidurt);
+renderList('group-members', members, true);
+
+// 复制功能
+function copyText(text, btnElement) {
+  const done = () => {
+    showSnackbar(`已复制：${text}`);
+    // 触发按钮的闪烁动画
+    if (btnElement) {
+      btnElement.classList.add('copied-flash');
+      setTimeout(() => btnElement.classList.remove('copied-flash'), 600);
+    }
+  };
+
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(done).catch(() => fallbackCopy(text, done));
+  } else {
+    fallbackCopy(text, done);
+  }
+}
+
+// 兼容旧浏览器的复制兜底
+function fallbackCopy(text, done) {
+  const ta = document.createElement('textarea');
+  ta.value = text; 
+  ta.style.position='fixed'; 
+  ta.style.opacity='0';
+  document.body.appendChild(ta); 
+  ta.select();
+  try { document.execCommand('copy'); } catch(e) {}
+  document.body.removeChild(ta);
+  if (done) done();
+}
+
+// 显示提示消息 (Snackbar)
+function showSnackbar(text) {
+  const host = document.getElementById('snackbar-host');
+  const el = document.createElement('div');
+  el.className = 'snackbar';
+  el.innerHTML = `<span>${text}</span>`;
+  host.appendChild(el);
+  setTimeout(() => {
+    el.classList.add('removing');
+    setTimeout(() => el.remove(), 200);
+  }, 3000);
+}
+</script>
+</body>
+</html>
