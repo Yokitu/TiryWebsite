@@ -2,7 +2,7 @@
 
 一款为你而生的工具箱应用。
 
-![TiryHi 图标](https://cloudflareimg.cdn.sn/i/6ad0c7aa5bff2_1792067498.png)
+![TiryHi 图标](https://img.scdn.io/i/6ae6e11d21c3f_1793515805.png)
 
 > 正在重绘商标
 
