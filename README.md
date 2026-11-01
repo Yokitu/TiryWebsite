@@ -4,8 +4,6 @@
 
 ![TiryHi 图标](https://cloudflareimg.cdn.sn/i/6ae6e11d21c3f_1793515805.png)
 
-> 正在重绘商标
-
 > 本项目基于 TiryHi Android App v1.4 Beta 2 开发，是其 Web 版本。Android App 暂未发布到 GitHub，之后我们会考虑发布。
 
 ## 简介
