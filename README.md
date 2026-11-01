@@ -67,7 +67,7 @@ TiryHi 是一个（不止）面向 Tiry 团队的工具箱应用，包含倒计�
 
 - Android App 正在开发开源版本
 
-- 我们正在考虑在 [此网站](https://dnslz.itlaozai.top/) 申请二级域名。当前：站长正在检查网页是否合规。
+- 我们正在考虑在 [此网站](https://dnslz.itlaozai.top/) 申请二级域名。当前：站长正在检查网页是否合规。（[tiry.itlaozai.top（过审了叫我时间真的有点长）](https://tiry.itlaozai.top/TiryWebsite)）
 
 ## 团队内成员
 
