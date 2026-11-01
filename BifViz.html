@@ -1,8 +1,338 @@
-<p>我知道我们改变不了什么，毕竟，学生劝不动家长啊……</p>
-<p>算了，有没有人看无所谓了……</p>
-<h1>当下，是手机还是家长的错？</h1>
-<p>我们数学题都是先回答后证明，所以，我先说结论：<b>两个都有错</b>。</p>
-<h2>为什么？</h2>
-<p>要回答这个问题，我们还得从几个问题说起</p>
-<h3>我们更喜欢做什么样的事？</h3>
-<script>alert("更新中……")</script>
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>当下，是手机还是家长的错？</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  /* --- 紫色主题令牌 (Light) --- */
+  :root {
+    --bg-page: #F9F5FF;        /* 极浅紫背景 */
+    --bg-card: #FFFFFF;
+    --primary: #6750A4;        /* 主紫色 */
+    --on-primary: #FFFFFF;
+    --primary-container: #EADDFF; /* 浅紫容器 */
+    --on-primary-container: #21005D;
+    
+    --text-main: #1D1B20;
+    --text-muted: #49454F;
+    --divider: #E8DEF8;
+    
+    --shadow: 0 4px 20px rgba(103, 80, 164, 0.08);
+    --quote-bg: #F3EDF7;
+  }
+
+  /* --- 紫色主题令牌 (Dark) --- */
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg-page: #141218;
+      --bg-card: #1D1B20;
+      --primary: #D0BCFF;
+      --on-primary: #381E72;
+      --primary-container: #4F378B;
+      --on-primary-container: #EADDFF;
+      
+      --text-main: #E6E1E5;
+      --text-muted: #CAC4D0;
+      --divider: #49454F;
+      
+      --shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+      --quote-bg: #2B2930;
+    }
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Noto Sans SC', system-ui, -apple-system, sans-serif;
+    background-color: var(--bg-page);
+    color: var(--text-main);
+    line-height: 1.8;
+    display: flex;
+    justify-content: center;
+    padding: 24px 16px;
+    transition: background-color 0.3s;
+  }
+
+  /* --- 主容器 --- */
+  .article-card {
+    background-color: var(--bg-card);
+    width: 100%;
+    max-width: 720px;
+    border-radius: 32px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    transition: background-color 0.3s;
+  }
+
+  /* --- 顶部 --- */
+  .header {
+    padding: 48px 40px 24px;
+    border-bottom: 1px solid var(--divider);
+  }
+  
+  .header .slogan {
+    font-size: 15px;
+    color: var(--text-muted);
+    margin-bottom: 24px;
+    font-style: italic;
+    padding-left: 16px;
+    border-left: 3px solid var(--primary);
+  }
+
+  .header h1 {
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 1.3;
+    color: var(--primary);
+    margin-bottom: 16px;
+  }
+
+  /* --- 正文内容区 --- */
+  .content {
+    padding: 32px 40px 48px;
+  }
+
+  @media (max-width: 600px) {
+    .header, .content { padding: 32px 24px; }
+    .header h1 { font-size: 26px; }
+  }
+
+  p {
+    font-size: 16px;
+    color: var(--text-main);
+    margin-bottom: 20px;
+    text-align: justify;
+  }
+
+  /* 粗体和斜体 */
+  b, strong {
+    font-weight: 700;
+    color: var(--primary);
+  }
+
+  /* --- 章节标题 --- */
+  h1.main-title {
+    font-size: 26px;
+    color: var(--text-main);
+    margin: 48px 0 24px;
+    padding-bottom: 12px;
+    border-bottom: 2px dashed var(--divider);
+  }
+
+  h2 {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text-main);
+    margin: 36px 0 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  h2::before {
+    content: "";
+    display: inline-block;
+    width: 6px;
+    height: 20px;
+    background-color: var(--primary);
+    border-radius: 4px;
+  }
+
+  h3 {
+    font-size: 17px;
+    font-weight: 600;
+    margin: 24px 0 12px;
+    color: var(--primary);
+  }
+
+  /* --- 特殊样式：书籍引用 --- */
+  blockquote {
+    margin: 20px 0;
+    padding: 20px 24px;
+    background-color: var(--quote-bg);
+    border-left: 4px solid var(--primary);
+    border-radius: 0 16px 16px 0;
+    color: var(--text-muted);
+    font-size: 15px;
+    position: relative;
+  }
+  
+  blockquote::before {
+    content: "📖 教材/引用";
+    display: block;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 8px;
+    letter-spacing: 1px;
+  }
+
+  /* --- 列表样式 --- */
+  ul.list-group {
+    margin: 16px 0 24px 20px;
+  }
+
+  ul.list-group li {
+    margin-bottom: 12px;
+    font-size: 16px;
+    color: var(--text-main);
+  }
+  
+  ul.list-group li::marker {
+    color: var(--primary);
+  }
+
+  /* AI 生成的列表（轻量化） */
+  ul.ai-list {
+    margin: 16px 0 24px 0;
+    list-style: none;
+    background-color: var(--bg-page);
+    padding: 16px 24px;
+    border-radius: 12px;
+  }
+
+  ul.ai-list li {
+    margin-bottom: 10px;
+    font-size: 15px;
+    color: var(--text-muted);
+    position: relative;
+    padding-left: 20px;
+  }
+
+  ul.ai-list li::before {
+    content: "✦";
+    color: var(--primary);
+    position: absolute;
+    left: 0;
+  }
+
+  /* --- 注记排版 --- */
+  .footer-note {
+    margin-top: 48px;
+    padding: 24px;
+    background-color: var(--quote-bg);
+    border-radius: 20px;
+    font-size: 15px;
+    color: var(--text-muted);
+    text-align: center;
+  }
+
+</style>
+</head>
+<body>
+
+<div class="article-card">
+  
+  <div class="header">
+    <div class="slogan">
+      我知道我们改变不了什么，毕竟……学生劝不动家长啊……<br>
+      算了，有人看就得了……
+    </div>
+    <h1>当下，是手机还是家长的错？</h1>
+    <p style="margin-bottom: 0; font-weight: 500;">先说结论：<b>网络成瘾确实不好，但家长也有责任。</b></p>
+    <p style="margin-top: 8px; margin-bottom: 0;">为什么？要回答这个大问题，我们还得从几个小问题讲起。</p>
+  </div>
+
+  <div class="content">
+    
+    <h2>人更喜欢做什么样的事？</h2>
+    <p>您有工作吗？是工作更轻松，还是玩手机更轻松？回答这个问题，你发现了什么？没有的话，我再问你个更直接的：你喜欢轻松还是繁琐？孩子呢？</p>
+    <p>现在你知道了吧？<b>人更喜欢做令自己感到轻松的事</b>，但这只是众多原因的其中一条。</p>
+
+    <h2>孩子们希望从家长那儿得到什么？</h2>
+    
+    <blockquote>
+      网络促进了人际交往。网络打破了传统人际交往的时空限制，使人际关系更加方便快捷。通过网络，我们可以随时随地的与他人交流互动，世界变成了地球村。纵使相隔万里，也如近在咫尺。
+      <br><br>
+      <i>——人教版道德与法治八年级上册第18页第一段</i>
+    </blockquote>
+
+    <p>这是原话。孩子们希望通过网络与别人沟通。</p>
+    <p><i>不能不社交吗？为什么是别人不是家长？</i></p>
+    <p>我知道你会问，听我说。孩子不跟家长沟通，有这几个原因：</p>
+
+    <h3>青春期的矛盾心理</h3>
+    <p>我们（发这个网页的初中生团队）比你更懂青春期相比以前的变化，青春期表现为：</p>
+    <ul class="list-group">
+      <li><b>独立与依赖：</b>产生强烈的成人感，期待独立做主，不享受成人干涉，但是内心并没有完全摆脱对成人的依赖，希望从成人那里得到理解、支持与尊重。</li>
+      <li><b>闭锁与开放：</b>一方面，内心活动更加丰富，但是很少表露于外；另一方面，容易感到孤单和寂寞，希望得到关心和理解，一旦找到知心朋友，就会敞开心扉、毫无保留。</li>
+      <li><b>勇敢与怯懦：</b>有时表现的很勇敢，“初生牛犊不怕虎”；有时候表现的比较害羞、怯懦。</li>
+    </ul>
+    <p style="font-size: 14px; color: var(--text-muted); text-align: right; margin-top: -8px;">（人教版道德与法治七年级下册教科书第4～5页“相关链接”原话）</p>
+
+    <h3>在孩子眼里，您似乎无法和ta正常沟通</h3>
+    <p>“看看人家xxx”“1.01³⁶⁵≈37.78，0.99³⁶⁵≈0.02”“都是为了你好”“有那时间玩手机还不如多看几本书”，这样的话，您说过多少遍了（我知道有些时候ta确实听得进去）？</p>
+    <p>如果也有人总对你说这样的话，你会不会觉得烦？假如哪天，网上或班上真的出现了一个懂ta的人，ta更愿意听你说，还是跟那个人说？</p>
+    <p>走近、了解、读懂孩子的世界（别盯着ta书包里的日记了，每个公民都有隐私权，未成年也是公民！），也许哪天，ta真的会放下手机，主动奔向你。</p>
+
+    <h3>不社交会导致什么？</h3>
+    <p>未成年长期不社交，可能导致社交技能退化、情感表达受限，增加孤独感和焦虑风险。缺乏同伴互动会影响同理心与冲突解决能力的发展，也可能削弱自我认同。</p>
+    <p>虽独处有益，但长期回避交交易形成逃避习惯，影响未来人际关系与社会适应。我们建议适度参与集体活动，逐步建立社交信心。</p>
+
+    <h1 class="main-title">附：网络的优缺点</h1>
+    <p>为了图快，除了从人教版道德与法治八年级上册第三课的内容概括以外，还有点 AI 生成的文案（因为书上主要讲的是网络的优点）。</p>
+
+    <h3>优点</h3>
+    <p style="font-weight: 500; margin-bottom: 8px;">书上摘抄：</p>
+    <blockquote>
+      网络深刻改变着我们的生活方式。借助网络，不用舟车劳顿，我们就可以便捷的解决生活中的许多问题，从而大大节约成本，提高效率。网络让我们的生活变得更加丰富，便利和美好。
+      <br><br>
+      网络推动了生产方式的深刻变革。网络促进人才，资金，技术，物资的流动不断催生新产业，新业态，新模式，推动传统行业转型升级，提升经济发展水平；加速各种创新资源的汇集、融合与共享，成为众多新发明和新服务的源泉。
+      <br><br>
+      网络改进了社会治理方式。网络推动信息互联互通，有利于完善线上线下一体的智能化、精细化公共服务，提高社会治理水平；畅通人们参与社会治理的渠道，有助于人们表达诉求，保障人们的知情权、参与权、表达权和监督权，促进民主政治的进步。
+    </blockquote>
+
+    <p style="font-weight: 500; margin-bottom: 8px;">AI 生成：</p>
+    <ul class="ai-list">
+      <li><b>信息获取便捷：</b>搜索引擎、在线课程让知识触手可及。</li>
+      <li><b>沟通高效：</b>即时通讯、视频会议打破地域限制。</li>
+      <li><b>资源丰富：</b>开源软件、共享文档降低学习与创作门槛。</li>
+      <li><b>生活便利：</b>网购、在线支付、远程办公提升效率。</li>
+    </ul>
+
+    <h3>缺点</h3>
+    <p style="font-weight: 500; margin-bottom: 8px;">书上摘抄：</p>
+    <blockquote>
+      网络改变了社会生活，我们在享受网络带来便利的同时，也要全面认识网络，了解其可能衍生的社会问题。我们要学会理性参与网络生活，提升媒介素养，积极利用网络获取新知、促进沟通、完善自我。
+      <br><br>
+      网络成瘾主要表现为长时间沉迷于网络，对网络之外的事情缺乏兴趣，影响身心健康。网络成瘾者无法自主控制上网时间，花费在网上的时间比原定时间要长，想减少或控制上网时间却做不到。他们关注晚上的情况，超过关注自己的现实生活，头脑中经常浮现与网络有关的事，日常生活中心不在焉，只有上网时才充满兴趣。一旦减少上网或停止上网，他们就表现出消极的情绪和不良的生理反应，如沮丧、空虚、易发脾气、坐立不安、心慌、燥热出汗、失眠等。青少年沉迷于网络，容易弱化道德感，放纵自己的言行，从而滋生网上违规、违法行为，造成社会危害。
+    </blockquote>
+
+    <p style="font-weight: 500; margin-bottom: 8px;">AI 生成：</p>
+    <ul class="ai-list">
+      <li><b>信息过载与失真：</b>虚假新闻、算法茧房影响判断力。</li>
+      <li><b>隐私风险：</b>个人信息泄露、网络诈骗频发。</li>
+      <li><b>沉迷问题：</b>短视频、游戏易导致时间失控，影响身心健康。</li>
+      <li><b>社交浅层化：</b>线上互动替代面对面交流，可能削弱深度关系。</li>
+    </ul>
+
+    <h2>为什么还是有这么多人怪手机？</h2>
+    <p>通过前面两个大问题，我相信你也发现了，<b>学生沉迷网络的原因，不仅是因为游戏好玩，视频好看，还因为人们天生就喜欢做更轻松的事，更是因为家长疏于陪伴</b>（忽略那些放任不管的情况）。</p>
+    <p>那么，你现在是否会有如标题所示的问题？</p>
+    <p>还记得嘛？<b>人们天生就喜欢做更轻松的事</b>，<b>推卸责任比解决问题更轻松啊……</b></p>
+
+    <h1 class="main-title">总结</h1>
+    <p>说到底，手机只是个工具，它不主动勾引谁，也不主动毁掉谁。真正把孩子推向屏幕的，往往是现实里那些让人想逃开的东西：写不完的作业、说不通的大人、听腻了的"为你好"，还有一个越来越不知道怎么开口的自己。</p>
+    <p>家长当然有责任，但这话说给家长听，多半也没什么用——毕竟推卸责任比解决问题轻松多了，这是人性，不分大人小孩。所以这篇文章写出来，与其说是想劝动谁，不如说是替一群初中生把话说清楚：</p>
+    
+    <div style="background-color: var(--quote-bg); padding: 24px; border-radius: 16px; margin: 24px 0;">
+      <p style="margin-bottom: 0; font-weight: 700; color: var(--primary); text-align: center; font-size: 18px;">
+        我们不是不知道沉迷不好，我们只是也需要一个能喘口气、被认真听一听的地方。
+      </p>
+    </div>
+
+    <p>有人看就得了。有人看懂，就更好了。</p>
+
+    <div class="footer-note">
+      <p style="margin-bottom: 8px;"><b>注：</b></p>
+      <p style="margin-bottom: 8px;">你知道吗？这篇文章最初也是用AI写的，但，额……看不懂啊……所以这页的每一行文字都是我们写的，AI只负责美化（不美化文字太小了）。</p>
+      <p style="margin-bottom: 0;">你知道我们查资料查了多久吗？ :)</p>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>
