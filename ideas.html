@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TiryHi 想法征集</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F4FBFB;
+    --surface: #FFFFFF;
+    --primary: #00696E;
+    --primary-light: #9CF1F6;
+    --text: #161D1D;
+    --text-muted: #3F4948;
+    --border: #BEC8C8;
+  }
+  
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0D1515;
+      --surface: #1A2121;
+      --primary: #83D4D8;
+      --primary-light: #0B4F52;
+      --text: #DCE4E4;
+      --text-muted: #B7CACB;
+      --border: #394A4B;
+    }
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Noto Sans SC', system-ui, -apple-system, sans-serif;
+    background-color: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    display: flex;
+    justify-content: center;
+    padding: 24px 16px;
+    min-height: 100vh;
+  }
+
+  .container {
+    width: 100%;
+    max-width: 520px;
+    background-color: var(--surface);
+    border-radius: 32px;
+    padding: 40px 32px;
+    box-shadow: 0 8px 32px rgba(0, 105, 110, 0.08);
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .header {
+    text-align: center;
+  }
+
+  .icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+    display: inline-block;
+    animation: float 3s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+
+  h1 {
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 8px;
+  }
+
+  p.subtitle {
+    font-size: 15px;
+    color: var(--text-muted);
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  label {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  input, textarea, select {
+    width: 100%;
+    padding: 14px 16px;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    background-color: transparent;
+    color: var(--text);
+    font-family: inherit;
+    font-size: 15px;
+    outline: none;
+    transition: all 0.2s;
+  }
+
+  input:focus, textarea:focus, select:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--primary-light);
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 120px;
+  }
+
+  .btn {
+    background-color: var(--primary);
+    color: var(--surface);
+    border: none;
+    border-radius: 999px;
+    padding: 16px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s, opacity 0.2s;
+    margin-top: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .btn:hover { opacity: 0.9; transform: translateY(-2px); }
+  .btn:active { transform: translateY(0); }
+
+  .divider {
+    height: 1px;
+    background-color: var(--border);
+    margin: 8px 0;
+    opacity: 0.5;
+  }
+
+  .footer {
+    text-align: center;
+    font-size: 14px;
+    color: var(--text-muted);
+  }
+
+  .footer a {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  .footer a:hover {
+    text-decoration: underline;
+  }
+
+  /* 提示框样式 */
+  .toast {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background-color: var(--text);
+    color: var(--surface);
+    padding: 12px 24px;
+    border-radius: 999px;
+    font-size: 14px;
+    opacity: 0;
+    transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+    pointer-events: none;
+    z-index: 100;
+  }
+  .toast.show {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">
+    <div class="icon">💡</div>
+    <h1>TiryHi 想法征集</h1>
+    <p class="subtitle">我们想听听你的声音，让 TiryHi 变得更好</p>
+  </div>
+
+  <div class="form-group">
+    <label for="ideaType">想法类型</label>
+    <select id="ideaType">
+      <option value="功能建议">✨ 功能建议（我想让 TiryHi 增加...）</option>
+      <option value="Bug反馈">🐛 Bug 反馈（我发现了一个问题...）</option>
+      <option value="UI/UX设计">🎨 界面与体验（我觉得哪里不好看/不顺手...）</option>
+      <option value="随便聊聊">💬 随便聊聊（对团队的鼓励或吐槽...）</option>
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label for="ideaContent">具体内容 <span style="color:red">*</span></label>
+    <textarea id="ideaContent" placeholder="请详细描述你的想法，如果是 Bug 请说明在哪个页面、怎么触发的..."></textarea>
+  </div>
+
+  <div class="form-group">
+    <label for="userContact">怎么联系你？（选填）</label>
+    <input type="text" id="userContact" placeholder="QQ / 邮箱 / 微信 / 或者匿名">
+  </div>
+
+  <button class="btn" onclick="submitIdea()">
+    提交想法 (发送邮件)
+  </button>
+
+  <div class="divider"></div>
+
+  <div class="footer">
+    想直接找我们聊聊？<br>
+    <a href="https://yokitu.github.io/TiryWebsite/contact.html" target="_blank">👉 点此前往「联系我们」页面</a>
+  </div>
+</div>
+
+<div class="toast" id="toast">已成功生成邮件，请发送！</div>
+
+<script>
+  function submitIdea() {
+    const type = document.getElementById('ideaType').value;
+    const content = document.getElementById('ideaContent').value.trim();
+    const contact = document.getElementById('userContact').value.trim();
+
+    if (!content) {
+      alert("请先填写你的想法内容哦~");
+      return;
+    }
+
+    // 这里填你们接收反馈的邮箱
+    const targetEmail = "3623633553@qq.com"; 
+    
+    // 构造邮件标题和正文
+    const subject = `[TiryHi想法征集] - ${type}`;
+    let body = `【想法类型】\n${type}\n\n【具体内容】\n${content}\n\n【联系方式】\n${contact || '未填写'}\n\n---\n此邮件由 TiryHi 想法征集页面生成。`;
+    
+    // 生成 mailto 链接
+    const mailtoLink = `mailto:${targetEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+    // 提示用户
+    const toast = document.getElementById('toast');
+    toast.classList.add('show');
+    
+    // 打开默认邮件应用
+    window.location.href = mailtoLink;
+
+    // 3秒后隐藏提示，并清空内容
+    setTimeout(() => {
+      toast.classList.remove('show');
+      document.getElementById('ideaContent').value = '';
+    }, 3000);
+  }
+</script>
+
+</body>
+</html>
