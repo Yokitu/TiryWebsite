@@ -5,23 +5,22 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>当下，是手机还是家长的错？</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
-<link rel="icon" type="image/png" href="https://img.scdn.io/i/6ae6e11d21c3f_1793515805.png">
 <style>
   /* --- 紫色主题令牌 (Light) --- */
   :root {
-    --bg-page: #F9F5FF;        /* 极浅紫背景 */
+    --bg-page: #F9F5FF;
     --bg-card: #FFFFFF;
-    --primary: #6750A4;        /* 主紫色 */
+    --primary: #6750A4;
     --on-primary: #FFFFFF;
-    --primary-container: #EADDFF; /* 浅紫容器 */
+    --primary-container: #EADDFF;
     --on-primary-container: #21005D;
     
     --text-main: #1D1B20;
     --text-muted: #49454F;
-    --divider: #E8DEF8;
+    --divider: #CAC4D0;
+    --quote-bg: #F3EDF7;
     
     --shadow: 0 4px 20px rgba(103, 80, 164, 0.08);
-    --quote-bg: #F3EDF7;
   }
 
   /* --- 紫色主题令牌 (Dark) --- */
@@ -37,9 +36,9 @@
       --text-main: #E6E1E5;
       --text-muted: #CAC4D0;
       --divider: #49454F;
+      --quote-bg: #2B2930;
       
       --shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
-      --quote-bg: #2B2930;
     }
   }
 
@@ -56,7 +55,6 @@
     transition: background-color 0.3s;
   }
 
-  /* --- 主容器 --- */
   .article-card {
     background-color: var(--bg-card);
     width: 100%;
@@ -67,10 +65,10 @@
     transition: background-color 0.3s;
   }
 
-  /* --- 顶部 --- */
   .header {
-    padding: 48px 40px 24px;
+    padding: 48px 40px 32px;
     border-bottom: 1px solid var(--divider);
+    background: linear-gradient(135deg, var(--quote-bg), var(--bg-card));
   }
   
   .header .slogan {
@@ -90,7 +88,6 @@
     margin-bottom: 16px;
   }
 
-  /* --- 正文内容区 --- */
   .content {
     padding: 32px 40px 48px;
   }
@@ -107,13 +104,12 @@
     text-align: justify;
   }
 
-  /* 粗体和斜体 */
   b, strong {
     font-weight: 700;
     color: var(--primary);
   }
 
-  /* --- 章节标题 --- */
+  /* --- 标题层级 --- */
   h1.main-title {
     font-size: 26px;
     color: var(--text-main);
@@ -148,7 +144,7 @@
     color: var(--primary);
   }
 
-  /* --- 特殊样式：书籍引用 --- */
+  /* --- 教材引用块 --- */
   blockquote {
     margin: 20px 0;
     padding: 20px 24px;
@@ -158,19 +154,21 @@
     color: var(--text-muted);
     font-size: 15px;
     position: relative;
+    font-style: italic;
   }
   
   blockquote::before {
-    content: "📖 教材/引用";
+    content: "📖 教材原话 / 引用";
     display: block;
     font-size: 12px;
     font-weight: 700;
     color: var(--primary);
     margin-bottom: 8px;
     letter-spacing: 1px;
+    font-style: normal;
   }
 
-  /* --- 列表样式 --- */
+  /* --- 列表排版 --- */
   ul.list-group {
     margin: 16px 0 24px 20px;
   }
@@ -185,7 +183,6 @@
     color: var(--primary);
   }
 
-  /* AI 生成的列表（轻量化） */
   ul.ai-list {
     margin: 16px 0 24px 0;
     list-style: none;
@@ -209,17 +206,32 @@
     left: 0;
   }
 
-  /* --- 注记排版 --- */
-  .footer-note {
-    margin-top: 48px;
-    padding: 24px;
+  /* --- 高亮强调卡片 --- */
+  .highlight-box {
     background-color: var(--quote-bg);
+    border: 1px solid var(--divider);
+    padding: 24px;
     border-radius: 20px;
-    font-size: 15px;
-    color: var(--text-muted);
-    text-align: center;
+    margin: 28px 0;
   }
 
+  .highlight-box p {
+    margin-bottom: 0;
+    font-weight: 700;
+    color: var(--primary);
+    text-align: center;
+    font-size: 17px;
+  }
+
+  /* --- 提示语 --- */
+  .notice {
+    text-align: center;
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-top: 48px;
+    padding-top: 24px;
+    border-top: 1px solid var(--divider);
+  }
 </style>
 </head>
 <body>
@@ -247,9 +259,8 @@
     <blockquote>
       网络促进了人际交往。网络打破了传统人际交往的时空限制，使人际关系更加方便快捷。通过网络，我们可以随时随地的与他人交流互动，世界变成了地球村。纵使相隔万里，也如近在咫尺。
       <br><br>
-      <i>——人教版道德与法治八年级上册第18页第一段</i>
+      —— 人教版道德与法治八年级上册第18页第一段
     </blockquote>
-
     <p>这是原话。孩子们希望通过网络与别人沟通。</p>
     <p><i>不能不社交吗？为什么是别人不是家长？</i></p>
     <p>我知道你会问，听我说。孩子不跟家长沟通，有这几个原因：</p>
@@ -315,21 +326,56 @@
     <p>还记得嘛？<b>人们天生就喜欢做更轻松的事</b>，<b>推卸责任比解决问题更轻松啊……</b></p>
 
     <h1 class="main-title">总结</h1>
-    <p>说到底，手机只是个工具，它不主动勾引谁，也不主动毁掉谁。真正把孩子推向屏幕的，往往是现实里那些让人想逃开的东西：写不完的作业、说不通的大人、听腻了的"为你好"，还有一个越来越不知道怎么开口的自己。</p>
-    <p>家长当然有责任，但这话说给家长听，多半也没什么用——毕竟推卸责任比解决问题轻松多了，这是人性，不分大人小孩。所以这篇文章写出来，与其说是想劝动谁，不如说是替一群初中生把话说清楚：</p>
+    <p>说到底，手机只是个工具。它不主动勾引谁，也不主动毁掉谁。真正把孩子推向屏幕的，往往是现实里那些让人想逃开的东西：写不完的作业、说不通的大人、听腻了的"为你好"，还有一个越来越不知道怎么开口的自己。</p>
+    <p>家长当然有责任。但这话说给家长听，多半也没什么用——毕竟推卸责任比解决问题轻松多了，这是人性，不分大人小孩。所以这篇文章写出来，与其说是想劝动谁，不如说是替一群初中生把话说清楚：</p>
     
-    <div style="background-color: var(--quote-bg); padding: 24px; border-radius: 16px; margin: 24px 0;">
-      <p style="margin-bottom: 0; font-weight: 700; color: var(--primary); text-align: center; font-size: 18px;">
-        我们不是不知道沉迷不好，我们只是也需要一个能喘口气、被认真听一听的地方。
-      </p>
+    <div class="highlight-box">
+      <p>我们不是不知道沉迷不好，<br>我们只是也需要一个能喘口气、被认真听一听的地方。</p>
     </div>
 
+    <p>也想跟家长说一句：学习差，不是断网能断好的。真正有用的，是方法。</p>
+    <p>嗯……对了，你也许不太清楚该怎么学？:)</p>
     <p>有人看就得了。有人看懂，就更好了。</p>
+    <p>不过说句实话：我们查了那么久资料、把教科书页码甚至具体位置都标出来、整段整段地写，不是为了"有人看就得了"。<b>我们是想被认真看见一次。写得好就是写得好，想被听见就想被听见，这不丢人。</b></p>
 
-    <div class="footer-note">
-      <p style="margin-bottom: 8px;"><b>注：</b></p>
-      <p style="margin-bottom: 8px;">你知道吗？这篇文章最初也是用AI写的，但，额……看不懂啊……所以这页的绝大多数文字都是我们写的，AI只负责美化（不美化文字太小了）和小部分内容补充。</p>
-      <p style="margin-bottom: 0;">你知道我们查资料查了多久吗？ :)</p>
+    <h1 class="main-title">如何取得好成绩？</h1>
+    <p>惊喜吧？总结后面还有学习方法！我这伏笔埋得还行吧？哈哈。</p>
+    <p>说正事。</p>
+    <p>我们知道，你们断网、缴手机，不就是为了孩子的好成绩、好未来嘛……的确，童年，除了快乐、幸福，学习也要跟上。出发点没错，只是用错了方法。断网、缴手机，不好好学，照样没好成绩。</p>
+    <p>所以下面这些，不是写给家长的操作指南，是写给我们自己的——怎么在手机和学习之间，找到一个自己撑得住的位置。</p>
+    <p><b>如果你是家长，把这段给你孩子看。</b></p>
+
+    <h2>1. 先承认：手机不是敌人，失控才是</h2>
+    <p>不用逼自己"戒手机"，那基本做不到，还会让你一碰手机就愧疚，愧疚完继续刷。换个思路：<b>不是不玩，是玩之前先想好这次玩多久、玩完干什么。</b>定个闹钟，到点就停，停不下来就记一笔"今天超时了"，不骂自己，只记录。一周下来你会看到自己的真实节奏，比任何说教都管用。</p>
+    <p>再进一步：<b>给玩手机找个"名分"。</b>刷短视频、打游戏、跟朋友聊天，是不同的需求，别混成一笔糊涂账。聊天是社交，可以留时间；无目的地刷，最容易失控。分清楚了，你才知道该管的是哪一块，而不是笼统地恨自己。</p>
+
+    <h2>2. 把"写不完的作业"拆小</h2>
+    <p>作业让人想逃，常常不是因为多，是因为"一坐下来就是两小时"这个画面太吓人。试试<b>25分钟一段</b>：定25分钟，只做一科的一小部分，时间到就站起来走两分钟。四段之后休息久一点。你会发现真正难的是"开始"，不是"做完"。</p>
+    <p>拆的时候还有个技巧：<b>先挑最容易启动的那一科</b>，不是最难的。先做五分钟简单的，人进入状态了，再啃硬的。开局顺了，后面就不容易断。</p>
+
+    <h2>3. 手机放远一点，比"忍住不碰"有用</h2>
+    <p>意志力靠不住，环境靠得住。写作业时把手机放到另一个房间、或者交给家人保管一小时，比你在桌边跟它对视强一百倍。<b>别考验自己，绕开考验。</b></p>
+    <p>还可以给自己设个"物理开关"：写作业前把手机调成静音、关掉非必要通知，或者干脆用飞行模式。<b>看不见、听不见，比"我忍着"可靠得多。</b>需要查资料时，集中查完再放回去，别一边查一边刷。</p>
+
+    <h2>4. 找到那个"能说上话"的出口</h2>
+    <p>孩子需要被理解，但这个人不一定非得是家长——可以是同学、朋友、网友里真正懂你的那个，也可以是一本本子。<b>情绪有地方去，屏幕就没那么大的吸引力。</b>憋着不说的人，最容易一头扎进手机里。</p>
+    <p>具体点说：<b>每周固定跟一个人说一次真心话</b>，哪怕就十分钟。说说这周最烦的一件事、最开心的一件事。不用解决问题，说出来本身就减压。人一有出口，就不必靠刷屏来填。</p>
+
+    <h2>5. 成绩不好时，先问"卡在哪"，别先骂自己</h2>
+    <p>考砸了刷手机逃避，太正常了。但刷完问题还在。试着做一件事：<b>把错题按"不会""粗心""没时间"分三类</b>，只挑"不会"的那几道，找老师或同学问清楚。一次只解决一类，比"我要努力"这种口号实在得多。</p>
+    <p>再补一步：<b>每类错题记一句"下次怎么防"</b>。粗心的写"检查单位""回头看题干"，不会的写"这类题先想哪个公式"。错题本不是抄题本，是给自己留的提醒条。攒上一个月，你会发现自己反复栽的坑其实就那么几个。</p>
+
+    <h2>6. 给自己留一件"跟成绩无关"的事</h2>
+    <p>跑步、画画、拼模型、养盆花都行。<b>一个人有一件自己真心喜欢、又不被拿来比较的事，就不容易把全部情绪押在手机和分数上。</b>这也是"喘口气"的地方。</p>
+    <p>这件事最好<b>有进度、能看见</b>：跑步记里程，画画攒作品，养花看它长。人需要一种"我在变好"的感觉，成绩给不了的时候，别的地方得给。手机之所以迷人，有一部分就是它随时给你即时反馈——那就用一件真实的事，把这个位置占回来。</p>
+
+    <h2>7. 睡够，比多刷一套题重要</h2>
+    <p>这条最容易被忽略。<b>睡不够的人，第二天自控力是垮的</b>，越困越容易刷手机，越刷越困，恶性循环。定一个最晚放下手机的时间，比定一个最早起床的时间更管用。别拿睡眠换时间，换来的通常是低效和一肚子烦躁。</p>
+    <p>睡够了，第二天上课那45分钟才接得住。<b>课上接住了，晚上就不用熬夜补。</b></p>
+    <p>说到底，学习方法没有万能模板。上面这些，挑一两条你先试得动的，试两周，不行就换。<b>能自己调整方法的人，才真的在长大。</b></p>
+
+    <div class="notice">
+      Tiry 团队 · 随笔与学习指南
     </div>
 
   </div>
