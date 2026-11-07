@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="teal">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>欢迎投稿 - TiryHi</title>
+    <!-- 引入刚才生成的通用 M3E CSS -->
+    <link rel="stylesheet" href="./m3e.css">
+    <style>
+        /* 页面专属布局居中 */
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 24px;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 400px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 24px;
+            /* 添加一个轻微的回弹进入动画 */
+            animation: slideUp 0.5s var(--spring) both;
+        }
+
+        h1 {
+            font-size: 28px;
+            color: var(--md-on-surface);
+            margin: 0;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+
+        p {
+            font-size: 16px;
+            color: var(--md-on-surface-variant);
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* 增加一个装饰性的 emoji */
+        .icon-wrapper {
+            font-size: 64px;
+            margin-bottom: -10px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="icon-wrapper">✉️</div>
+        
+        <h1>想在我的网站上发点东西吗？</h1>
+        
+        <p>对于我们的同学或者朋友，我们欢迎你到我们的网站上发一些东西，具体内容取决于你给了什么。</p>
+        
+        <!-- 使用 m3e.css 中定义的 filled 按钮样式 -->
+        <a href="./contact.html" class="m3e-btn filled" style="width: 100%; max-width: 280px; margin-top: 12px;">
+            <span class="material-symbols-rounded">chat</span>
+            联系我们
+        </a>
+    </div>
+
+</body>
+</html>
