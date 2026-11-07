@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="teal">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Tiry 导航中心</title>
+    <!-- 引入同目录下的通用 M3E 样式 -->
+    <link rel="stylesheet" href="./m3e.css">
+    <style>
+        body {
+            padding-bottom: 32px;
+        }
+        .app-container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 16px;
+        }
+        .section-title {
+            font-size: 20px;
+            font-weight: 500;
+            color: var(--md-on-surface-variant);
+            margin: 24px 8px 12px;
+        }
+        /* 覆盖 m3e.css 里的 a 标签默认样式，让列表项可以作为链接点击 */
+        a.m3e-list-item {
+            text-decoration: none;
+            color: var(--md-on-surface);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 顶部应用栏 -->
+    <header class="m3e-appbar">
+        <div class="title" style="padding-left: 8px;">Tiry 导航</div>
+        <button class="m3e-icon-btn" onclick="window.location.reload()">
+            <span class="material-symbols-rounded">refresh</span>
+        </button>
+    </header>
+
+    <div class="app-container">
+        
+        <!-- 核心应用 -->
+        <div class="section-title">核心应用</div>
+        <div class="m3e-list">
+            <a href="./tiryhi.html" class="m3e-list-item">
+                <div class="lead"><span class="material-symbols-rounded">apps</span></div>
+                <div class="content">
+                    <div class="title">TiryHi 主应用</div>
+                    <div class="subtitle">进入 WebApp 工具箱</div>
+                </div>
+                <div class="trailing"><span class="material-symbols-rounded">chevron_right</span></div>
+            </a>
+            <a href="./index.html" class="m3e-list-item">
+                <div class="lead"><span class="material-symbols-rounded">home</span></div>
+                <div class="content">
+                    <div class="title">团队主页</div>
+                    <div class="subtitle">Tiry 团队介绍 (index)</div>
+                </div>
+                <div class="trailing"><span class="material-symbols-rounded">chevron_right</span></div>
+            </a>
+        </div>
+
+        <!-- 互动与分享 -->
+        <div class="section-title">互动与分享</div>
+        <div class="m3e-list">
+            <a href="./invite.html" class="m3e-list-item">
+                <div class="lead"><span class="material-symbols-rounded">mail</span></div>
+                <div class="content">
+                    <div class="title">投稿邀请</div>
+                    <div class="subtitle">想在我们的网站发点东西吗？</div>
+                </div>
+                <div class="trailing"><span class="material-symbols-rounded">chevron_right</span></div>
+            </a>
+            <a href="./ideas.html" class="m3e-list-item">
+                <div class="lead"><span class="material-symbols-rounded">lightbulb</span></div>
+                <div class="content">
+                    <div class="title">想法征集</div>
+                    <div class="subtitle">反馈 Bug 或提出新功能</div>
+                </div>
+                <div class="trailing"><span class="material-symbols-rounded">chevron_right</span></div>
+            </a>
+            <a href="./contact.html" class="m3e-list-item">
+                <div class="lead"><span class="material-symbols-rounded">support_agent</span></div>
+                <div class="content">
+                    <div class="title">联系我们</div>
+                    <div class="subtitle">查看团队联系方式</div>
+                </div>
+                <div class="trailing"><span class="material-symbols-rounded">chevron_right</span></div>
+            </a>
+        </div>
+
+        <!-- 隐藏彩蛋 / 测试页面 -->
+        <div class="section-title">扩展页面</div>
+        <div class="m3e-list">
+            <a href="./BifViz.html" class="m3e-list-item">
+                <div class="lead"><span class="material-symbols-rounded">auto_stories</span></div>
+                <div class="content">
+                    <div class="title">BifViz 随笔</div>
+                    <div class="subtitle">关于青春与网络的文章 (彩蛋)</div>
+                </div>
+                <div class="trailing"><span class="material-symbols-rounded">chevron_right</span></div>
+            </a>
+            <a href="./newyearcelebration.html" class="m3e-list-item">
+                <div class="lead"><span class="material-symbols-rounded">celebration</span></div>
+                <div class="content">
+                    <div class="title">跨年页面</div>
+                    <div class="subtitle">New Year Celebration</div>
+                </div>
+                <div class="trailing"><span class="material-symbols-rounded">chevron_right</span></div>
+            </a>
+            <a href="./thds.html" class="m3e-list-item">
+                <div class="lead"><span class="material-symbols-rounded">science</span></div>
+                <div class="content">
+                    <div class="title">THDS 页面</div>
+                    <div class="subtitle">测试/特殊页面</div>
+                </div>
+                <div class="trailing"><span class="material-symbols-rounded">chevron_right</span></div>
+            </a>
+        </div>
+
+        <!-- 开发测试区 -->
+        <div class="section-title">开发测试</div>
+        <div class="m3e-list">
+            <a href="./test.html" class="m3e-list-item">
+                <div class="lead" style="background-color: var(--md-error); color: var(--md-on-error);">
+                    <span class="material-symbols-rounded">bug_report</span>
+                </div>
+                <div class="content">
+                    <div class="title">测试沙盒 (test)</div>
+                    <div class="subtitle">用于调试和预览新功能</div>
+                </div>
+                <div class="trailing"><span class="material-symbols-rounded">chevron_right</span></div>
+            </a>
+        </div>
+
+    </div>
+
+</body>
+</html>
