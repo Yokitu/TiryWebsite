@@ -9,24 +9,55 @@
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
 <style>
+  /* --- 全新配色：暖阳黄 (Amber Theme) --- */
   :root {
-    --primary: #00696E; --on-primary: #FFFFFF; --primary-container: #9CF1F6; --on-primary-container: #002022;
-    --secondary: #4D6263; --secondary-container: #CCE8E9; --on-secondary-container: #051F20;
-    --surface: #F4FBFB; --surface-container-low: #EEF5F5; --surface-container: #E8EFEF;
-    --surface-container-high: #E2EAEA; --surface-container-highest: #DDE4E4;
-    --on-surface: #161D1D; --on-surface-variant: #3F4948; --outline: #6F7979; --outline-variant: #BEC8C8;
-    --shadow: rgba(0,0,0,0.15);
+    --primary: #F57C00;       /* 暖橙色（主色调） */
+    --on-primary: #FFFFFF;
+    --primary-container: #FFE0B2;
+    --on-primary-container: #4E2600;
+    
+    --secondary: #795548;     /* 暖棕色 */
+    --secondary-container: #FFCCBC;
+    --on-secondary-container: #3E2723;
+    
+    --surface: #FFFDF7;       /* 极浅的奶黄色背景 */
+    --surface-container-low: #FFF8E1;
+    --surface-container: #FFECB3;
+    --surface-container-high: #FFE082;
+    --surface-container-highest: #FFD54F;
+    
+    --on-surface: #212121;
+    --on-surface-variant: #5D4037;
+    --outline: #BCAAA4;
+    
+    --shadow: rgba(245, 124, 0, 0.15); /* 暖色阴影 */
   }
+
   @media (prefers-color-scheme: dark) {
     :root {
-      --primary: #83D4D8; --on-primary: #063639; --primary-container: #0B4F52; --on-primary-container: #9FF0F5;
-      --secondary: #B3CBCC; --secondary-container: #354A4C; --on-secondary-container: #CFE7E8;
-      --surface: #0D1515; --surface-container-low: #161D1D; --surface-container: #1A2121;
-      --surface-container-high: #252B2B; --surface-container-highest: #2F3636;
-      --on-surface: #DCE4E4; --on-surface-variant: #B7CACB; --outline: #819495; --outline-variant: #394A4B;
+      --primary: #FFB74D;       /* 亮橙色 */
+      --on-primary: #4E2600;
+      --primary-container: #E65100;
+      --on-primary-container: #FFE0B2;
+      
+      --secondary: #D7CCC8;
+      --secondary-container: #5D4037;
+      --on-secondary-container: #EFEBE9;
+      
+      --surface: #1A1512;       /* 深咖色背景 */
+      --surface-container-low: #241C17;
+      --surface-container: #2D231D;
+      --surface-container-high: #3E2F26;
+      --surface-container-highest: #4E3C30;
+      
+      --on-surface: #F5F5F5;
+      --on-surface-variant: #D7CCC8;
+      --outline: #8D6E63;
+      
       --shadow: rgba(0,0,0,0.5);
     }
   }
+
   * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
   html, body { height:100%; font-family:'Roboto', system-ui, -apple-system, sans-serif; background: var(--surface); color: var(--on-surface); overflow:hidden; }
   body { display:flex; justify-content:center; align-items:center; }
@@ -35,73 +66,105 @@
   @media (max-width: 412px), (max-height: 892px) { #app-frame { width:100vw; height:100vh; max-height:100vh; } }
   
   .screen-scroll { flex: 1; overflow-y: auto; overflow-x: hidden; padding-bottom: 32px; -webkit-overflow-scrolling: touch; }
-  .screen-scroll::-webkit-scrollbar { width: 3px; }
-  .screen-scroll::-webkit-scrollbar-thumb { background: var(--outline-variant); border-radius: 2px; }
+  .screen-scroll::-webkit-scrollbar { width: 4px; }
+  .screen-scroll::-webkit-scrollbar-thumb { background: var(--surface-container-highest); border-radius: 2px; }
 
-  .btn { height: 56px; min-height: 56px; padding: 0 24px; border-radius: 28px; border: none; font-family: inherit; font-size: 15px; font-weight: 500; display: inline-flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; transition: all 0.15s; white-space: nowrap; text-decoration: none; }
-  .btn .material-symbols-rounded { font-size: 20px; }
-  .btn-outlined { background: transparent; color: var(--primary); border: 1px solid var(--outline); }
-  .btn-outlined:hover { background: color-mix(in srgb, var(--primary) 8%, transparent); }
-  .btn-outlined:active { transform: scale(0.97); }
-  .btn-filled { background: var(--primary); color: var(--on-primary); }
+  /* --- 全新按钮样式 --- */
+  .btn { 
+    height: 56px; min-height: 56px; padding: 0 24px; border-radius: 16px; border: none; 
+    font-family: inherit; font-size: 16px; font-weight: 500; 
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px; 
+    cursor: pointer; transition: all 0.2s ease; text-decoration: none; 
+  }
+  .btn .material-symbols-rounded { font-size: 22px; }
+  
+  .btn-filled { background: var(--primary); color: var(--on-primary); box-shadow: 0 4px 10px var(--shadow); }
+  .btn-filled:hover { transform: translateY(-2px); box-shadow: 0 6px 14px var(--shadow); }
+  .btn-filled:active { transform: translateY(0); }
+  
+  .btn-outlined { background: var(--surface-container-low); color: var(--on-surface); border: 1px solid var(--outline); }
+  .btn-outlined:hover { background: var(--surface-container); }
+  .btn-outlined:active { background: var(--surface-container-high); }
   .btn.wide { width: 100%; max-width: 380px; }
 
-  .card { border-radius: 20px; background: var(--surface-container-highest); overflow: hidden; display: flex; flex-direction: column; }
-  .card.elevated { background: var(--surface-container-low); box-shadow: 0 1px 4px var(--shadow); }
-  .card-body { padding: 20px; display: flex; flex-direction: column; gap: 4px; }
-  .card-title { font-size: 16px; font-weight: 500; color: var(--on-surface); }
-  .card-text { font-size: 14px; color: var(--on-surface-variant); line-height: 1.5; }
+  /* --- 卡片样式：更加圆润、悬浮 --- */
+  .card { border-radius: 24px; background: var(--surface-container-low); overflow: hidden; display: flex; flex-direction: column; border: 1px solid var(--surface-container); }
+  .card.elevated { box-shadow: 0 8px 24px var(--shadow); border: none; }
+  .card-body { padding: 24px; display: flex; flex-direction: column; gap: 6px; }
+  .card-title { font-size: 18px; font-weight: 700; color: var(--on-surface); }
+  .card-text { font-size: 15px; color: var(--on-surface-variant); line-height: 1.5; }
 
-  .carousel { display: flex; gap: 8px; overflow-x: auto; padding: 4px 16px; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; }
+  /* --- 轮播与成员卡片 --- */
+  .carousel { display: flex; gap: 12px; overflow-x: auto; padding: 8px 16px 24px; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; }
   .carousel::-webkit-scrollbar { display: none; }
-  .carousel-card { flex-shrink: 0; border-radius: 16px; background: var(--surface-container-high); overflow: hidden; scroll-snap-align: start; display: flex; flex-direction: column; position: relative; }
-  .carousel-card .cc-img { flex: 1; background: var(--surface-container-highest); display: flex; align-items: center; justify-content: center; overflow: hidden; }
-  .carousel-card .cc-img img { width: 100%; height: 100%; object-fit: cover; }
-  .carousel-card .cc-title { position: absolute; bottom: 0; left: 0; right: 0; padding: 12px 16px; font-size: 16px; font-weight: 500; color: var(--on-surface); background: linear-gradient(transparent, var(--surface-container-high)); }
+  
+  .carousel-card { 
+    flex-shrink: 0; border-radius: 20px; background: var(--surface-container-high); 
+    overflow: hidden; scroll-snap-align: start; display: flex; flex-direction: column; 
+    position: relative; box-shadow: 0 4px 12px var(--shadow); 
+    transition: transform 0.2s;
+  }
+  .carousel-card:active { transform: scale(0.96); }
+  
+  .carousel-card .cc-img { flex: 1; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+  .carousel-card .cc-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s; }
+  .carousel-card:hover .cc-img img { transform: scale(1.05); }
+  
+  /* 底部渐变遮罩，让文字更清晰 */
+  .carousel-card .cc-title { 
+    position: absolute; bottom: 0; left: 0; right: 0; padding: 32px 16px 16px; 
+    font-size: 18px; font-weight: 700; color: #FFFFFF; 
+    background: linear-gradient(transparent, rgba(0,0,0,0.8)); 
+    text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+  }
 
-  .section-title { font-size: 28px; color: var(--on-surface); padding: 16px 16px 8px; }
+  .section-title { font-size: 24px; font-weight: 700; color: var(--primary); padding: 24px 16px 12px; display: flex; align-items: center; gap: 8px; }
+  .section-title::before { content: ""; display: inline-block; width: 8px; height: 24px; background: var(--primary); border-radius: 4px; }
 
-  .img-box { position: relative; overflow: hidden; background: var(--surface-container-highest); }
-  .img-box::after { content: ''; position: absolute; inset: 0; background: var(--surface-container-highest); opacity: 1; transition: opacity 0.35s ease; pointer-events: none; }
+  /* --- 图片加载动画 --- */
+  .img-box { position: relative; overflow: hidden; background: var(--surface-container); }
+  .img-box::after { content: ''; position: absolute; inset: 0; background: var(--surface-container); opacity: 1; transition: opacity 0.4s ease; pointer-events: none; }
   .img-box.loaded::after { opacity: 0; }
-  .img-box img { width: 100%; height: 100%; object-fit: cover; display: block; opacity: 0; transition: opacity 0.35s ease; }
+  .img-box img { width: 100%; height: 100%; object-fit: cover; display: block; opacity: 0; transition: opacity 0.4s ease; }
   .img-box.loaded img { opacity: 1; }
-  .img-box.logo-box img { object-fit: contain; padding: 12px; background: var(--surface-container-highest); }
+  .img-box.logo-box { background: var(--surface-container-highest); }
+  .img-box.logo-box img { object-fit: contain; padding: 20px; }
 
-  .material-symbols-rounded { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; user-select: none; line-height: 1; display: inline-block; }
+  .material-symbols-rounded { font-variation-settings: 'FILL' 1, 'wght' 500, 'GRAD' 0, 'opsz' 24; user-select: none; line-height: 1; display: inline-block; }
 </style>
 </head>
 <body>
 <div id="app-frame">
   <div class="screen-scroll">
+    
     <!-- 顶部介绍卡片 -->
-    <div style="padding:16px">
-      <div class="card elevated" style="height:292px">
-        <div class="img-box logo-box" style="height:192px;width:100%">
+    <div style="padding:20px 16px 8px">
+      <div class="card elevated" style="height:auto; padding-bottom: 8px;">
+        <div class="img-box logo-box" style="height:200px;width:100%">
           <img src="https://cloudflareimg.cdn.sn/i/6acb9606406df_1791727110.png" alt="Tiry" fetchpriority="high" decoding="async">
         </div>
         <div class="card-body">
-          <div class="card-title">欢迎来到Tiry的主页</div>
-          <div class="card-text">Tiry是一群初中生们自己的团队</div>
+          <div class="card-title">欢迎来到 Tiry 的主页</div>
+          <div class="card-text">Tiry 是一群初中生们自己的团队。我们在这里记录想法，一起开发有趣的东西。</div>
         </div>
       </div>
     </div>
 
     <!-- Slogan -->
-    <div style="text-align:center;padding:8px 16px;font-size:16px;color:var(--on-surface-variant)">
-      探索，开发，学习，互助……：Tiry存在的意义
+    <div style="text-align:center;padding:12px 24px;font-size:16px;color:var(--secondary); font-weight: 500;">
+      “探索，开发，学习，互助……这就是 Tiry 存在的意义。”
     </div>
 
     <!-- 开发者轮播 -->
-    <div class="section-title">开发者</div>
+    <div class="section-title">团队开发者</div>
     <div class="carousel">
-      <div class="carousel-card" style="width:260px;height:216px">
+      <div class="carousel-card" style="width:260px;height:240px">
         <div class="cc-img img-box">
           <img src="https://img.scdn.io/i/6acb97a301667_1791727523.webp" alt="天边橒" fetchpriority="high" decoding="async">
         </div>
-        <div class="cc-title">天边橒（团长）</div>
+        <div class="cc-title">天边橒 <span style="font-size:12px; font-weight:400; opacity:0.8; margin-left:8px;">团长</span></div>
       </div>
-      <div class="carousel-card" style="width:260px;height:216px">
+      <div class="carousel-card" style="width:260px;height:240px">
         <div class="cc-img img-box">
           <img src="https://img.scdn.io/i/6acb972f6f781_1791727407.webp" alt="Jidurt" fetchpriority="high" decoding="async">
         </div>
@@ -112,19 +175,19 @@
     <!-- 其他成员轮播 -->
     <div class="section-title">其他成员</div>
     <div class="carousel">
-      <div class="carousel-card" style="width:220px;height:228px">
+      <div class="carousel-card" style="width:200px;height:240px">
         <div class="cc-img img-box">
           <img src="https://img.scdn.io/i/6acb96b258c5b_1791727282.webp" alt="冉欣妍" loading="lazy" decoding="async">
         </div>
         <div class="cc-title">冉欣妍·ꦿ໊ོr.lin</div>
       </div>
-      <div class="carousel-card" style="width:220px;height:228px">
+      <div class="carousel-card" style="width:200px;height:240px">
         <div class="cc-img img-box">
           <img src="https://img.scdn.io/i/6acb9654c7c4b_1791727188.webp" alt="请输入文本" loading="lazy" decoding="async">
         </div>
         <div class="cc-title">请输入文本</div>
       </div>
-      <div class="carousel-card" style="width:220px;height:228px">
+      <div class="carousel-card" style="width:200px;height:240px">
         <div class="cc-img img-box">
           <img src="https://img.scdn.io/i/6acb967fc6981_1791727231.webp" alt="Sky双叶" loading="lazy" decoding="async">
         </div>
@@ -132,30 +195,30 @@
       </div>
     </div>
 
-    <!-- 底部按钮区（更新了链接） -->
-    <div style="padding:24px 16px;display:flex;flex-direction:column;gap:12px;align-items:center;">
+    <!-- 底部按钮区 -->
+    <div style="padding:24px 16px;display:flex;flex-direction:column;gap:16px;align-items:center;">
       
       <a href="./nav.html" class="btn btn-filled wide">
         <span class="material-symbols-rounded">apps</span>进入全站导航中心
       </a>
 
       <a href="./tiryhi.html" class="btn btn-outlined wide">
-        <span class="material-symbols-rounded">arrow_forward</span>来看看我们的项目：TiryHi
+        <span class="material-symbols-rounded">rocket_launch</span>来看看我们的项目：TiryHi
       </a>
 
       <a href="./contact.html" class="btn btn-outlined wide">
-        <span class="material-symbols-rounded">chat</span>联系我们
+        <span class="material-symbols-rounded">forum</span>联系我们
       </a>
 
       <a href="./invite.html" class="btn btn-outlined wide">
-        <span class="material-symbols-rounded">campaign</span>想在我们的网站发东西吗？
+        <span class="material-symbols-rounded">campaign</span>想在网站发点东西吗？
       </a>
       
     </div>
 
     <!-- 底部文字 -->
-    <div style="text-align:center;padding:8px 16px 24px;font-size:16px;color:var(--on-surface-variant)">
-      Tiry主页 · 学生团队出品
+    <div style="text-align:center;padding:16px 16px 32px;font-size:14px;color:var(--on-surface-variant); opacity:0.7;">
+      Tiry 团队出品 · 2026
     </div>
   </div>
 </div>
