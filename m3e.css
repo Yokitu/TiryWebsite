@@ -1,0 +1,467 @@
+/* ==========================================================================
+   Material 3 Expressive (M3E) - 通用 UI 样式库
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200');
+
+/* --- 1. 主题令牌定义 (Color Tokens) --- */
+:root {
+  --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease: cubic-bezier(0.2, 0, 0, 1);
+  --font-family: 'Roboto', system-ui, -apple-system, sans-serif;
+}
+
+/* 默认主题：Teal (浅色) */
+:root, [data-theme="teal"] {
+  --md-primary: #00696E;
+  --md-on-primary: #FFFFFF;
+  --md-primary-container: #9CF1F6;
+  --md-on-primary-container: #002022;
+  --md-secondary: #4D6263;
+  --md-secondary-container: #CCE8E9;
+  --md-on-secondary-container: #051F20;
+  --md-surface: #F4FBFB;
+  --md-surface-container-low: #EEF5F5;
+  --md-surface-container: #E8EFEF;
+  --md-surface-container-high: #E2EAEA;
+  --md-surface-container-highest: #DDE4E4;
+  --md-on-surface: #161D1D;
+  --md-on-surface-variant: #3F4948;
+  --md-outline: #6F7979;
+  --md-outline-variant: #BEC8C8;
+  --md-inverse-surface: #2B3232;
+  --md-inverse-on-surface: #ECF2F2;
+  --md-inverse-primary: #80D5DA;
+  --md-error: #B3261E;
+  --md-on-error: #FFFFFF;
+  color-scheme: light;
+}
+
+/* 深色模式覆盖 */
+@media (prefers-color-scheme: dark) {
+  :root, [data-theme="teal"] {
+    --md-primary: #83D4D8;
+    --md-on-primary: #063639;
+    --md-primary-container: #0B4F52;
+    --md-on-primary-container: #9FF0F5;
+    --md-secondary: #B3CBCC;
+    --md-secondary-container: #354A4C;
+    --md-on-secondary-container: #CFE7E8;
+    --md-surface: #0D1515;
+    --md-surface-container-low: #161D1D;
+    --md-surface-container: #1A2121;
+    --md-surface-container-high: #252B2B;
+    --md-surface-container-highest: #2F3636;
+    --md-on-surface: #DCE4E4;
+    --md-on-surface-variant: #B7CACB;
+    --md-outline: #819495;
+    --md-outline-variant: #394A4B;
+    --md-inverse-surface: #DCE4E4;
+    --md-inverse-on-surface: #2B3232;
+    --md-inverse-primary: #00696E;
+    --md-error: #F2B8B5;
+    --md-on-error: #601410;
+    color-scheme: dark;
+  }
+}
+
+/* --- 2. 基础重置与排版 --- */
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+body {
+  margin: 0;
+  font-family: var(--font-family);
+  background-color: var(--md-surface);
+  color: var(--md-on-surface);
+  line-height: 1.5;
+}
+.material-symbols-rounded {
+  font-family: 'Material Symbols Rounded';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+/* --- 3. 顶部应用栏 (App Bar) --- */
+.m3e-appbar {
+  height: 64px;
+  display: flex;
+  align-items: center;
+  padding: 0 4px;
+  background-color: var(--md-surface);
+  color: var(--md-on-surface);
+  transition: background-color 0.3s;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.m3e-appbar.scrolled {
+  background-color: var(--md-surface-container);
+}
+.m3e-appbar .title {
+  flex: 1;
+  font-size: 22px;
+  font-weight: 400;
+  margin-left: 12px;
+}
+
+/* --- 4. 按钮 (Buttons) --- */
+.m3e-btn {
+  height: 56px;
+  padding: 0 24px;
+  border-radius: 999px;
+  border: none;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: transform 0.2s var(--spring), background-color 0.2s;
+  text-decoration: none;
+}
+.m3e-btn:active { transform: scale(0.95); }
+.m3e-btn .material-symbols-rounded { font-size: 20px; }
+
+/* 按钮变体 */
+.m3e-btn.filled { background-color: var(--md-primary); color: var(--md-on-primary); }
+.m3e-btn.tonal { background-color: var(--md-secondary-container); color: var(--md-on-secondary-container); }
+.m3e-btn.outlined { background-color: transparent; color: var(--md-primary); border: 1px solid var(--md-outline); }
+.m3e-btn.text { background-color: transparent; color: var(--md-primary); padding: 0 12px; }
+
+/* 相连按钮组 (Connected Group) */
+.m3e-btn-group { display: inline-flex; gap: 3px; }
+.m3e-btn-group .m3e-btn { border-radius: 8px; }
+.m3e-btn-group .m3e-btn:first-child { border-radius: 999px 8px 8px 999px; }
+.m3e-btn-group .m3e-btn:last-child { border-radius: 8px 999px 999px 8px; }
+.m3e-btn-group .m3e-btn:only-child { border-radius: 999px; }
+
+/* --- 5. 图标按钮 (Icon Buttons) --- */
+.m3e-icon-btn {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: none;
+  background-color: transparent;
+  color: var(--md-on-surface-variant);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.2s var(--spring), background-color 0.2s;
+  flex-shrink: 0;
+}
+.m3e-icon-btn:hover { background-color: color-mix(in srgb, var(--md-on-surface) 8%, transparent); }
+.m3e-icon-btn:active { transform: scale(0.9); }
+.m3e-icon-btn.tonal { background-color: var(--md-secondary-container); color: var(--md-on-secondary-container); }
+.m3e-icon-btn.filled { background-color: var(--md-primary); color: var(--md-on-primary); }
+
+/* --- 6. 悬浮操作按钮 (FAB) --- */
+.m3e-fab {
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  border: none;
+  background-color: var(--md-primary-container);
+  color: var(--md-on-primary-container);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  transition: transform 0.2s var(--spring), box-shadow 0.2s;
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 20;
+}
+.m3e-fab:active { transform: scale(0.9); }
+
+/* --- 7. 列表 (Lists) --- */
+.m3e-list { display: flex; flex-direction: column; gap: 3px; }
+.m3e-list-item {
+  min-height: 72px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 16px;
+  background-color: var(--md-surface-container-low);
+  color: var(--md-on-surface);
+  cursor: pointer;
+  transition: background-color 0.2s;
+  border: none;
+  text-align: left;
+  width: 100%;
+}
+.m3e-list-item:active { background-color: var(--md-surface-container-high); }
+/* 相邻圆角处理 */
+.m3e-list-item:first-child { border-radius: 28px 28px 8px 8px; }
+.m3e-list-item:last-child { border-radius: 8px 8px 28px 28px; }
+.m3e-list-item:only-child { border-radius: 28px; }
+.m3e-list-item:not(:first-child):not(:last-child) { border-radius: 8px; }
+
+.m3e-list-item .lead {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: var(--md-primary-container);
+  color: var(--md-on-primary-container);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.m3e-list-item .content { flex: 1; display: flex; flex-direction: column; }
+.m3e-list-item .title { font-size: 16px; font-weight: 500; }
+.m3e-list-item .subtitle { font-size: 14px; color: var(--md-on-surface-variant); margin-top: 2px; }
+.m3e-list-item .trailing { color: var(--md-on-surface-variant); }
+
+/* --- 8. 文本输入框 (Text Fields) --- */
+.m3e-text-field {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 56px;
+  border: 1px solid var(--md-outline);
+  border-radius: 16px;
+  padding: 0 16px;
+  background-color: transparent;
+  transition: border 0.2s, box-shadow 0.2s;
+  margin-bottom: 16px;
+}
+.m3e-text-field:focus-within {
+  border: 2px solid var(--md-primary);
+  padding: 0 15px; /* 补偿边框宽度 */
+}
+.m3e-text-field .icon { color: var(--md-on-surface-variant); margin-right: 12px; }
+.m3e-text-field input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  color: var(--md-on-surface);
+  font-family: inherit;
+  font-size: 16px;
+  outline: none;
+}
+.m3e-text-field .label {
+  position: absolute;
+  left: 48px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--md-on-surface-variant);
+  font-size: 16px;
+  pointer-events: none;
+  transition: 0.2s var(--ease);
+  background-color: var(--md-surface);
+  padding: 0 4px;
+}
+.m3e-text-field input:focus + .label,
+.m3e-text-field input:not(:placeholder-shown) + .label {
+  top: 0;
+  font-size: 12px;
+  color: var(--md-primary);
+}
+
+/* --- 9. 容器框 / 卡片 (Containers & Cards) --- */
+.m3e-card {
+  border-radius: 20px;
+  background-color: var(--md-surface-container-highest);
+  padding: 20px;
+  overflow: hidden;
+  position: relative;
+}
+.m3e-card.elevated { background-color: var(--md-surface-container-low); box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+.m3e-card.outlined { background-color: var(--md-surface); border: 1px solid var(--md-outline-variant); }
+.m3e-card .card-title { font-size: 16px; font-weight: 500; margin-bottom: 4px; }
+.m3e-card .card-text { font-size: 14px; color: var(--md-on-surface-variant); }
+
+/* --- 10. 滑块 (Sliders) --- */
+.m3e-slider-row { display: flex; align-items: center; gap: 16px; margin-bottom: 16px; }
+.m3e-slider-row .label { font-size: 24px; white-space: nowrap; }
+.m3e-slider {
+  flex: 1;
+  position: relative;
+  height: 44px;
+  display: flex;
+  align-items: center;
+}
+.m3e-slider input[type="range"] {
+  width: 100%;
+  -webkit-appearance: none;
+  background: transparent;
+  z-index: 2;
+  margin: 0;
+}
+.m3e-slider input[type="range"]::-webkit-slider-runnable-track {
+  height: 16px;
+  border-radius: 8px;
+  background: linear-gradient(to right, var(--md-primary) 0%, var(--md-primary) var(--val, 50%), var(--md-secondary-container) var(--val, 50%), var(--md-secondary-container) 100%);
+}
+.m3e-slider input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 4px;
+  height: 44px;
+  border-radius: 2px;
+  background: var(--md-primary);
+  margin-top: -14px; /* 居中 */
+  box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+}
+
+/* --- 11. 进度条 (Progress) --- */
+.m3e-progress {
+  height: 4px;
+  border-radius: 2px;
+  background-color: var(--md-secondary-container);
+  overflow: hidden;
+  margin: 16px 0;
+}
+.m3e-progress .bar {
+  height: 100%;
+  background-color: var(--md-primary);
+  border-radius: 2px;
+}
+
+/* --- 12. 消息条 (Snackbar) --- */
+.m3e-snackbar {
+  position: fixed;
+  bottom: 16px;
+  left: 16px;
+  right: 16px;
+  min-height: 48px;
+  background-color: var(--md-inverse-surface);
+  color: var(--md-inverse-on-surface);
+  border-radius: 8px;
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  z-index: 100;
+  animation: slideUp 0.3s var(--spring);
+}
+.m3e-snackbar .action {
+  color: var(--md-inverse-primary);
+  font-weight: 500;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+@keyframes slideUp {
+  from { transform: translateY(100%); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+/* --- 13. 下拉菜单 (Dropdowns) --- */
+.m3e-select {
+  position: relative;
+  width: 100%;
+  margin-bottom: 16px;
+}
+.m3e-select .box {
+  height: 56px;
+  border: 1px solid var(--md-outline);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  background-color: transparent;
+  cursor: pointer;
+}
+.m3e-select .box .val { flex: 1; font-size: 16px; }
+.m3e-select .box .val.placeholder { color: var(--md-on-surface-variant); }
+.m3e-select .menu {
+  position: absolute;
+  top: 60px;
+  left: 0; right: 0;
+  background-color: var(--md-surface-container);
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  display: none;
+  z-index: 50;
+  padding: 8px 0;
+}
+.m3e-select .menu.open { display: block; }
+.m3e-select .menu-item {
+  height: 48px;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+.m3e-select .menu-item:hover { background-color: var(--md-surface-container-highest); }
+
+/* --- 14. 对话框 (Dialogs) --- */
+.m3e-dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+}
+.m3e-dialog {
+  width: 90%;
+  max-width: 340px;
+  background-color: var(--md-surface-container-high);
+  border-radius: 28px;
+  padding: 24px;
+  color: var(--md-on-surface);
+  animation: popIn 0.3s var(--spring);
+}
+.m3e-dialog h3 { margin: 0 0 16px; font-size: 24px; font-weight: 400; }
+.m3e-dialog .actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 24px;
+}
+@keyframes popIn {
+  from { transform: scale(0.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+/* --- 15. 工具类 (Utility) --- */
+.m3e-divider {
+  height: 1px;
+  background-color: var(--md-outline-variant);
+  margin: 8px 16px;
+}
+.m3e-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+}
+.m3e-checkbox input { display: none; }
+.m3e-checkbox .box {
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--md-on-surface-variant);
+  border-radius: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.m3e-checkbox input:checked + .box {
+  background-color: var(--md-primary);
+  border-color: var(--md-primary);
+}
+.m3e-checkbox .box::after {
+  content: "check";
+  font-family: 'Material Symbols Rounded';
+  font-size: 14px;
+  color: var(--md-on-primary);
+  display: none;
+}
+.m3e-checkbox input:checked + .box::after { display: block; }
