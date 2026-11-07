@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>你想坐我附近吗？</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F4F8FF;
+    --surface: #FFFFFF;
+    --primary: #1565C0;
+    --primary-light: #E3F2FD;
+    --text: #1A1C1E;
+    --text-muted: #43474E;
+    --border: #C4C6D0;
+    --error: #D32F2F;
+    --error-bg: #FFEBEE;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0F172A;
+      --surface: #1E293B;
+      --primary: #64B5F6;
+      --primary-light: #1E3A8A;
+      --text: #E2E8F0;
+      --text-muted: #94A3B8;
+      --border: #334155;
+      --error: #EF5350;
+      --error-bg: #421818;
+    }
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Noto Sans SC', system-ui, -apple-system, sans-serif;
+    background-color: var(--bg);
+    color: var(--text);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px 16px;
+  }
+
+  .container {
+    background-color: var(--surface);
+    width: 100%;
+    max-width: 420px;
+    border-radius: 32px;
+    padding: 32px 24px;
+    box-shadow: 0 8px 32px rgba(21, 101, 192, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+
+  h1 {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--primary);
+    text-align: center;
+  }
+
+  p.subtitle {
+    font-size: 14px;
+    color: var(--text-muted);
+    text-align: center;
+    margin-top: -10px;
+    line-height: 1.5;
+  }
+
+  /* 失败提示框 */
+  .error-box {
+    display: none;
+    width: 100%;
+    background-color: var(--error-bg);
+    border: 1px solid var(--error);
+    color: var(--error);
+    padding: 12px 16px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 500;
+    text-align: center;
+    line-height: 1.5;
+    animation: fadeIn 0.3s;
+  }
+  
+  .error-box.active { display: block; }
+
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* 3x3 网格 */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 84px);
+    grid-template-rows: repeat(3, 84px);
+    gap: 8px;
+    background-color: var(--border);
+    padding: 8px;
+    border-radius: 20px;
+    margin: 10px 0;
+  }
+
+  .seat {
+    background-color: var(--surface);
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    user-select: none;
+    border: 2px solid transparent;
+    position: relative;
+    overflow: hidden;
+    color: var(--text);
+  }
+
+  .seat:hover:not(.occupied):not(.fixed) {
+    background-color: var(--primary-light);
+  }
+
+  .seat.selected {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px var(--primary-light) inset;
+  }
+
+  .seat.fixed {
+    background-color: var(--primary);
+    color: #FFF;
+    border-color: var(--primary-light);
+    cursor: default;
+  }
+
+  .seat.occupied {
+    cursor: not-allowed;
+  }
+
+  /* 表单输入区 */
+  .input-group {
+    width: 100%;
+    display: flex;
+    gap: 10px;
+  }
+
+  input[type="text"] {
+    flex: 1;
+    padding: 14px 16px;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    background-color: transparent;
+    color: var(--text);
+    font-family: inherit;
+    font-size: 15px;
+    outline: none;
+    transition: all 0.2s;
+  }
+
+  input[type="text"]:focus {
+    border-color: var(--primary);
+  }
+
+  input[type="color"] {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    width: 48px;
+    height: 48px;
+    border: none;
+    border-radius: 16px;
+    cursor: pointer;
+    background-color: transparent;
+    padding: 0;
+    overflow: hidden;
+  }
+  input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
+  input[type="color"]::-webkit-color-swatch { border: 1px solid var(--border); border-radius: 16px; }
+
+  .btn {
+    width: 100%;
+    background-color: var(--primary);
+    color: #FFF;
+    border: none;
+    border-radius: 16px;
+    padding: 16px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .btn:hover { opacity: 0.9; }
+  .btn:active { transform: scale(0.98); }
+
+  .btn-outline {
+    background-color: transparent;
+    border: 1px solid var(--primary);
+    color: var(--primary);
+    margin-top: -10px;
+  }
+
+  .action-group {
+    display: none;
+    width: 100%;
+    gap: 10px;
+  }
+  .action-group.active {
+    display: flex;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>班上要换座位了</h1>
+  <p class="subtitle">如果自选座位，你想坐我附近吗？<br>选个位置，填上名字，点击保存。</p>
+
+  <!-- 自动冲突失败提示 -->
+  <div class="error-box" id="errorBox"></div>
+
+  <div class="grid" id="seatGrid"></div>
+
+  <div class="input-group">
+    <input type="text" id="studentName" placeholder="输入你的名字" maxlength="4">
+    <input type="color" id="seatColor" value="#4CAF50" title="选个喜欢的颜色">
+  </div>
+  
+  <button class="btn" onclick="saveSeat()">保存座位</button>
+  <button class="btn btn-outline action-group" id="downloadBtn" onclick="downloadPNG()">下载座位图 (PNG)</button>
+</div>
+
+<script>
+  /* =========================================================
+     【配置区 - 开发者随时可修改】
+     ========================================================= */
+  // 这是“原始数据库”，开发者在这里记录所有人的选座请求。
+  // 同一个格子可以写多人，代码会自动按 time（时间戳）排序，保留最早的。
+  // time 越小代表越早。你可以随便填数字，比如 1, 2, 3。
+  let RAW_SEATS_DATA = {
+    4: [{ name: "橒", color: "#1565C0", time: 1, isFixed: true }], // 橒的固定位置
+    
+    // 示例：如果张三和李四都抢了 0 号位，张三填 time: 2，李四填 time: 3
+    // 0: [
+    //   { name: "张三", color: "#FF9800", time: 2 },
+    //   { name: "李四", color: "#9C27B0", time: 3 }
+    // ]
+  };
+  /* ========================================================= */
+
+  let SEATS_DATA = {}; // 处理后的最终座位数据
+  let failedUsers = []; // 存放冲突失败的同学
+  let mySeatIndex = null;
+  let isSaved = false;
+  let generatedSvgCode = "";
+
+  // 页面加载
+  window.onload = () => {
+    processSeatData();
+    renderGrid();
+  };
+
+  // 核心逻辑：处理冲突，按 time 排序
+  function processSeatData() {
+    SEATS_DATA = {};
+    failedUsers = [];
+
+    for (let i = 0; i < 9; i++) {
+      const requests = RAW_SEATS_DATA[i];
+      if (!requests || requests.length === 0) continue;
+
+      // 按 time 从小到大排序（时间早的排前面）
+      requests.sort((a, b) => a.time - b.time);
+
+      // 第一个人（最早选的人）成功占领
+      const winner = requests[0];
+      SEATS_DATA[i] = winner;
+
+      // 如果同一个格子有多个人选，剩下的全都判定失败
+      if (requests.length > 1) {
+        for (let j = 1; j < requests.length; j++) {
+          failedUsers.push(requests[j].name);
+        }
+      }
+    }
+
+    // 如果有失败的同学，在页面上显示出来
+    if (failedUsers.length > 0) {
+      const errorBox = document.getElementById('errorBox');
+      errorBox.innerHTML = failedUsers.map(name => 
+        `${name} 的座位与他人重复且选择时间较晚，故选择失败`
+      ).join('<br>');
+      errorBox.classList.add('active');
+    } else {
+      document.getElementById('errorBox').classList.remove('active');
+    }
+  }
+
+  function renderGrid() {
+    const grid = document.getElementById('seatGrid');
+    grid.innerHTML = '';
+
+    for (let i = 0; i < 9; i++) {
+      const seat = document.createElement('div');
+      seat.className = 'seat';
+      
+      const data = SEATS_DATA[i];
+
+      if (data) {
+        seat.textContent = data.name;
+        seat.style.backgroundColor = data.color;
+        
+        const rgb = hexToRgb(data.color);
+        if (rgb) {
+          const brightness = (rgb.r * 299 + rgb.g * 587 + rgb.b * 114) / 1000;
+          seat.style.color = brightness > 125 ? '#000' : '#FFF';
+        }
+
+        if (data.isFixed) {
+          seat.classList.add('fixed');
+        } else {
+          seat.classList.add('occupied');
+        }
+      } else {
+        seat.textContent = `(${Math.floor(i/3)+1},${(i%3)+1})`;
+        seat.style.color = 'var(--text-muted)';
+      }
+
+      if (i === mySeatIndex) {
+        seat.classList.add('selected');
+      }
+
+      seat.onclick = () => {
+        if (data) return; // 已经有人的座位不给点
+        selectSeat(i);
+      };
+
+      grid.appendChild(seat);
+    }
+  }
+
+  function selectSeat(index) {
+    mySeatIndex = index;
+    document.getElementById('downloadBtn').classList.remove('active');
+    isSaved = false;
+    renderGrid();
+  }
+
+  function saveSeat() {
+    const nameInput = document.getElementById('studentName').value.trim();
+    const colorInput = document.getElementById('seatColor').value;
+
+    if (mySeatIndex === null) {
+      alert("请先在网格中选择一个座位！");
+      return;
+    }
+    if (!nameInput) {
+      alert("请输入你的名字！");
+      return;
+    }
+
+    // 写入数据
+    SEATS_DATA[mySeatIndex] = {
+      name: nameInput,
+      color: colorInput,
+      isFixed: false
+    };
+
+    renderGrid();
+
+    // 生成 SVG 并复制
+    generatedSvgCode = buildSVG();
+    copyToClipboard(generatedSvgCode);
+    
+    alert("图像代码已复制，可以分享给橒橒啦~");
+    
+    document.getElementById('downloadBtn').classList.add('active');
+    isSaved = true;
+  }
+
+  function buildSVG() {
+    const size = 84;
+    const gap = 8;
+    const padding = 8;
+    const totalSize = size * 3 + gap * 2 + padding * 2;
+    
+    let svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${totalSize} ${totalSize}" width="100%" height="100%">`;
+    svg += `<rect width="${totalSize}" height="${totalSize}" fill="#F4F8FF" rx="20"/>`;
+    svg += `<rect x="${padding}" y="${padding}" width="${size*3 + gap*2}" height="${size*3 + gap*2}" fill="#C4C6D0" rx="12"/>`;
+
+    for (let i = 0; i < 9; i++) {
+      const row = Math.floor(i / 3);
+      const col = i % 3;
+      const x = padding + col * (size + gap);
+      const y = padding + row * (size + gap);
+      const data = SEATS_DATA[i];
+
+      let fill = "#FFFFFF";
+      let text = `(${row+1},${col+1})`;
+      let textColor = "#94A3B8";
+      let stroke = "none";
+      let fontSize = 14;
+
+      if (data) {
+        fill = data.color;
+        text = data.name;
+        fontSize = data.name.length > 2 ? 16 : 20;
+        
+        const rgb = hexToRgb(data.color);
+        const brightness = (rgb.r * 299 + rgb.g * 587 + rgb.b * 114) / 1000;
+        textColor = brightness > 125 ? '#000000' : '#FFFFFF';
+        
+        if (data.isFixed) stroke = "#64B5F6";
+      }
+
+      svg += `<rect x="${x}" y="${y}" width="${size}" height="${size}" rx="12" fill="${fill}" stroke="${stroke}" stroke-width="2"/>`;
+      svg += `<text x="${x + size/2}" y="${y + size/2}" fill="${textColor}" font-family="sans-serif" font-size="${fontSize}" font-weight="bold" text-anchor="middle" dominant-baseline="central">${text}</text>`;
+    }
+
+    svg += `</svg>`;
+    return svg;
+  }
+
+  function downloadPNG() {
+    if (!isSaved || !generatedSvgCode) return;
+
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    const size = 600;
+    canvas.width = size;
+    canvas.height = size;
+
+    const img = new Image();
+    const svgBlob = new Blob([generatedSvgCode], {type: 'image/svg+xml;charset=utf-8'});
+    const url = URL.createObjectURL(svgBlob);
+
+    img.onload = () => {
+      ctx.fillStyle = "#F4F8FF";
+      ctx.fillRect(0, 0, size, size);
+      ctx.drawImage(img, 0, 0, size, size);
+      URL.revokeObjectURL(url);
+
+      const a = document.createElement('a');
+      a.download = `我的座位_${new Date().getTime()}.png`;
+      a.href = canvas.toDataURL('image/png');
+      a.click();
+    };
+    img.src = url;
+  }
+
+  function copyToClipboard(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).catch(err => {
+        fallbackCopy(text);
+      });
+    } else {
+      fallbackCopy(text);
+    }
+  }
+
+  function fallbackCopy(text) {
+    const textArea = document.createElement("textarea");
+    textArea.value = text;
+    textArea.style.position = "absolute";
+    textArea.style.left = "-999999px";
+    document.body.prepend(textArea);
+    textArea.select();
+    try {
+      document.execCommand('copy');
+    } catch (error) {
+      console.error(error);
+    } finally {
+      textArea.remove();
+    }
+  }
+
+  function hexToRgb(hex) {
+    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ? {
+      r: parseInt(result[1], 16),
+      g: parseInt(result[2], 16),
+      b: parseInt(result[3], 16)
+    } : null;
+  }
+</script>
+
+</body>
+</html>
