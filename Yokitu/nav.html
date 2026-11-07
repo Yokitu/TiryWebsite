@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="teal">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Yokitu的专属作品发布页</title>
+    <!-- 注意：因为你在 Yokitu 文件夹里，所以要向上一级寻找 m3e.css -->
+    <link rel="stylesheet" href="../m3e.css">
+    <style>
+        body {
+            padding-bottom: 32px;
+        }
+        .app-container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 16px;
+        }
+        .section-title {
+            font-size: 20px;
+            font-weight: 500;
+            color: var(--md-on-surface-variant);
+            margin: 24px 8px 12px;
+        }
+        a.m3e-list-item {
+            text-decoration: none;
+            color: var(--md-on-surface);
+        }
+        /* 给返回按钮加点样式 */
+        .back-bar {
+            padding: 8px 16px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 顶部应用栏 -->
+    <header class="m3e-appbar">
+        <button class="m3e-icon-btn" onclick="window.location.href='../nav.html'">
+            <span class="material-symbols-rounded">arrow_back</span>
+        </button>
+        <div class="title">Yokitu 的发布</div>
+    </header>
+
+    <div class="app-container">
+        
+        <!-- 文件夹/项目 -->
+        <div class="section-title">开源代码</div>
+        <div class="m3e-list">
+            <a href="./AndroidJavaAppHelper/index.html" class="m3e-list-item">
+                <div class="lead" style="background-color: var(--md-primary); color: var(--md-on-primary);">
+                    <span class="material-symbols-rounded">code</span>
+                </div>
+                <div class="content">
+                    <div class="title">AndroidJavaAppHelper</div>
+                    <div class="subtitle">安卓 Java 开发辅助库</div>
+                </div>
+                <div class="trailing"><span class="material-symbols-rounded">chevron_right</span></div>
+            </a>
+        </div>
+
+        <!-- 网页应用 -->
+        <div class="section-title">网页工具</div>
+        <div class="m3e-list">
+            <a href="./seat.html" class="m3e-list-item">
+                <div class="lead"><span class="material-symbols-rounded">event_seat</span></div>
+                <div class="content">
+                    <div class="title">自选座位表</div>
+                    <div class="subtitle">班级换座位互动工具</div>
+                </div>
+                <div class="trailing"><span class="material-symbols-rounded">chevron_right</span></div>
+            </a>
+        </div>
+
+        <!-- 返回主站导航 -->
+        <div style="margin-top: 40px;">
+            <a href="../nav.html" class="m3e-btn text" style="width: 100%; justify-content: flex-start; padding-left: 16px;">
+                <span class="material-symbols-rounded">arrow_back</span>
+                返回主站导航
+            </a>
+        </div>
+
+    </div>
+
+</body>
+</html>
