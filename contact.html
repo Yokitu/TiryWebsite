@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>联系我们 - Tiry</title>
-    <!-- 引入 M3E 通用样式 -->
+    <!-- 引入同目录下的通用 M3E 样式 -->
     <link rel="stylesheet" href="./m3e.css">
     <style>
         body { padding-bottom: 32px; }
@@ -12,7 +12,7 @@
         .section-title { font-size: 20px; font-weight: 500; color: var(--md-on-surface-variant); margin: 24px 8px 12px; }
         a.m3e-list-item { text-decoration: none; color: var(--md-on-surface); }
         
-        /* 复制功能的视觉反馈 */
+        /* 复制提示弹窗 */
         .copy-toast {
             position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(100px);
             background: var(--md-inverse-surface); color: var(--md-inverse-on-surface);
@@ -34,7 +34,21 @@
 
     <div class="app-container">
         
-        <!-- 团队成员 -->
+        <!-- 交流群 -->
+        <div class="m3e-list">
+            <div class="m3e-list-item" onclick="copyText('1093730235')" style="border: 2px solid var(--md-primary);">
+                <div class="lead" style="background-color: var(--md-primary); color: var(--md-on-primary);">
+                    <span class="material-symbols-rounded">forum</span>
+                </div>
+                <div class="content">
+                    <div class="title" style="color: var(--md-primary); font-weight: 700;">交流群（可下载 APK）</div>
+                    <div class="subtitle" style="color: var(--md-primary);">QQ群: 1093730235</div>
+                </div>
+                <div class="trailing"><span class="material-symbols-rounded">content_copy</span></div>
+            </div>
+        </div>
+
+        <!-- 天边橒 -->
         <div class="section-title">天边橒（团长）</div>
         <div class="m3e-list">
             <div class="m3e-list-item" onclick="copyText('3623633553')">
@@ -42,6 +56,14 @@
                 <div class="content">
                     <div class="title">QQ</div>
                     <div class="subtitle">3623633553</div>
+                </div>
+                <div class="trailing"><span class="material-symbols-rounded">content_copy</span></div>
+            </div>
+            <div class="m3e-list-item" onclick="copyText('yunran99@outlook.com')">
+                <div class="lead"><span class="material-symbols-rounded">mail</span></div>
+                <div class="content">
+                    <div class="title">邮箱</div>
+                    <div class="subtitle">yunran99@outlook.com</div>
                 </div>
                 <div class="trailing"><span class="material-symbols-rounded">content_copy</span></div>
             </div>
@@ -53,17 +75,9 @@
                 </div>
                 <div class="trailing"><span class="material-symbols-rounded">open_in_new</span></div>
             </a>
-            <div class="m3e-list-item" onclick="copyText('3623633553@qq.com')">
-                <div class="lead"><span class="material-symbols-rounded">mail</span></div>
-                <div class="content">
-                    <div class="title">邮箱</div>
-                    <div class="subtitle">3623633553@qq.com</div>
-                </div>
-                <div class="trailing"><span class="material-symbols-rounded">content_copy</span></div>
-            </div>
         </div>
 
-        <!-- 其他团队成员 -->
+        <!-- Jidurt -->
         <div class="section-title">Jidurt</div>
         <div class="m3e-list">
             <div class="m3e-list-item" onclick="copyText('3427780794')">
@@ -76,7 +90,36 @@
             </div>
         </div>
 
-        <!-- 鸣谢 / 外部支持者 -->
+        <!-- 非开发者成员 -->
+        <div class="section-title">其他成员</div>
+        <div class="m3e-list">
+            <div class="m3e-list-item" onclick="copyText('rxy620Aaaa119yy')">
+                <div class="lead"><span class="material-symbols-rounded">person</span></div>
+                <div class="content">
+                    <div class="title">冉欣妍·ꦿ໊ོr.lin (快手)</div>
+                    <div class="subtitle">rxy620Aaaa119yy</div>
+                </div>
+                <div class="trailing"><span class="material-symbols-rounded">content_copy</span></div>
+            </div>
+            <div class="m3e-list-item" onclick="copyText('41074590062')">
+                <div class="lead"><span class="material-symbols-rounded">person</span></div>
+                <div class="content">
+                    <div class="title">请输入文本 (抖音)</div>
+                    <div class="subtitle">41074590062</div>
+                </div>
+                <div class="trailing"><span class="material-symbols-rounded">content_copy</span></div>
+            </div>
+            <div class="m3e-list-item" onclick="copyText('1927127987')">
+                <div class="lead"><span class="material-symbols-rounded">person</span></div>
+                <div class="content">
+                    <div class="title">Sky双叶 (快手)</div>
+                    <div class="subtitle">1927127987</div>
+                </div>
+                <div class="trailing"><span class="material-symbols-rounded">content_copy</span></div>
+            </div>
+        </div>
+
+        <!-- 特别鸣谢 -->
         <div class="section-title">特别鸣谢</div>
         <div class="m3e-list">
             <a href="https://github.com/jingluohuan" target="_blank" class="m3e-list-item">
