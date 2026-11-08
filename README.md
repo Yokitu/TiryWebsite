@@ -86,11 +86,7 @@ TiryHi 是一个（不止）面向 Tiry 团队的工具箱应用，包含倒计�
 
 ### 其他非成员（鸣谢）
 
-暂无
-
-<!-- 加一行？
-- 靖落欢 • [GitHub @jingluohuan](https://github.com/jingluohuan)
--->
+- 靖落欢 • [GitHub @jingluohuan](https://github.com/jingluohuan)（感谢猫猫的域名~）
 
 *对此项目作出贡献且允许展示在此处，你的名字就会写在这里哦~*
 
