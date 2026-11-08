@@ -67,24 +67,29 @@ TiryHi 是一款面向 Tiry 团队（及所有人）的工具箱应用，包含�
 
 ## 📢 最新消息
 
-- 🎉 **二级域名过审啦！** 欢迎访问新网址：[tiry.itlaozai.top](https://tiry.itlaozai.top/) （注：很多东西一时来不及改，以后来）
+- 🎉 **二级域名过审啦！** 欢迎访问新网址：[tiry.itlaozai.top](https://tiry.itlaozai.top/) （注：代码里的部分旧跳转链接还没来得及改，虽然无伤大雅，但……给我两个星期！）
 - Android App 正在筹备开源版本。
 - 已更新跨年交互系统。
 
 ## 👥 团队成员
 
-| 人员 | GitHub | 类别 | 注 |
-|---|---|---|---|
-| **天边橒** | [@Yokitu](https://github.com/Yokitu) | 开发者（团长） | 负责核心开发与维护 |
-| **Jidurt** | - | 开发者 | 参与核心开发 |
-| **冉欣妍·ꦿ໊ོr.lin** | - | 其他成员 | 团队重要成员（橒的宝~） |
-| **请输入文本** | - | 其他成员 | 团队重要成员 |
-| **Sky双叶** | - | 其他成员 | 团队重要成员 |
-| **靖落欢** | [@jingluohuan](https://github.com/jingluohuan) | 鸣谢 | 感谢猫猫的域名～给猫猫宣传一波：[牢仔科技 - 牢仔科技的小站~](https://itlaozai.top) |
+### 👑 开发者
+- 天边橒（团长）· [GitHub @Yokitu](https://github.com/Yokitu)
+- Jidurt
+
+### 🌟 其他成员
+- 冉欣妍·ꦿ໊ོr.lin（橒的宝~）
+- 请输入文本
+- Sky双叶
+
+### 🤝 其他非成员（鸣谢）
+- 靖落欢 · [GitHub @jingluohuan](https://github.com/jingluohuan)
+  
+  > 感谢猫猫的域名~给猫猫宣传一波：[牢仔科技 - 牢仔科技的小站~](https://itlaozai.top)
 
 *对此项目作出贡献且允许展示在此处，你的名字就会写在这里哦~*
 
-> 都是学生党，更新慢请谅解。没有标注代表此成员没有 GitHub 账号。
+> 都是学生党，更新慢请谅解。没有标记代表此成员没有 GitHub 账号。
 
 ## 📬 联系我们
 
