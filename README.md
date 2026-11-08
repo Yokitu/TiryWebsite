@@ -82,7 +82,8 @@ TiryHi 是一款面向 Tiry 团队（及所有人）的工具箱应用，包含�
 - Sky双叶
 
 ### 🤝 其他非成员（鸣谢）
-- 靖落欢 · [GitHub @jingluohuan](https://github.com/jingluohuan)（感谢猫猫的域名~给猫猫宣传一波：[牢仔科技的小站~](https://itlaozai.top)）
+- 靖落欢 · [GitHub @jingluohuan](https://github.com/jingluohuan)
+  （感谢猫猫的域名~给猫猫宣传一波：[牢仔科技的小站~](https://itlaozai.top)）
 
 *对此项目作出贡献且允许展示在此处，你的名字就会写在这里哦~*
 
