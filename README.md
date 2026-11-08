@@ -67,7 +67,7 @@ TiryHi 是一款面向 Tiry 团队（及所有人）的工具箱应用，包含�
 
 ## 📢 最新消息
 
-- 🎉 **二级域名过审啦！** 欢迎访问新网址：[tiry.itlaozai.top](https://tiry.itlaozai.top/) （注：代码里的部分旧跳转链接还没来得及改，虽然无伤大雅，但……给我两个星期！）
+- 🎉 **二级域名过审啦！** 欢迎访问新网址：[tiry.itlaozai.top](https://tiry.itlaozai.top/) （注：很多东西一时来不及改，以后来）
 - Android App 正在筹备开源版本。
 - 已更新跨年交互系统。
 
