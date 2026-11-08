@@ -34,10 +34,11 @@ TiryHi 是一款面向 Tiry 团队（及所有人）的工具箱应用，包含�
 直接访问新官网：[**https://tiry.itlaozai.top/**](https://tiry.itlaozai.top/)
 
 如果你希望体验 TiryHi WebApp：
-1. Tiry官网 或 导航 点击 「看看我们的项目：TiryHi」
+1. 在 Tiry 官网或导航中心，点击「来看看我们的项目：TiryHi」。
 2. 首次进入会显示欢迎页，点击「开始吧」。
 3. 输入暗号 → 解锁全部功能。
-> 直接登录 功能已删除
+
+> **注：直接登录功能已删除。**
 
 ### ⚠️ 你有必要注意
 
@@ -72,34 +73,29 @@ TiryHi 是一款面向 Tiry 团队（及所有人）的工具箱应用，包含�
 
 ## 👥 团队成员
 
-### 👑 开发者
-- 天边橒（团长）· [GitHub @Yokitu](https://github.com/Yokitu)
-- Jidurt
-
-### 🌟 其他成员
-- 冉欣妍·ꦿ໊ོr.lin
-- 请输入文本
-- Sky双叶
-
-### 🤝 其他非成员（鸣谢）
-- 靖落欢 · [GitHub @jingluohuan](https://github.com/jingluohuan)
-
-  （感谢猫猫的域名~给猫猫宣传一波：[牢仔科技 - 牢仔科技的小站~](https://itlaozai.top)）
+| 人员 | GitHub | 类别 | 注 |
+|---|---|---|---|
+| **天边橒** | [@Yokitu](https://github.com/Yokitu) | 开发者（团长） | 负责核心开发与维护 |
+| **Jidurt** | - | 开发者 | 参与核心开发 |
+| **冉欣妍·ꦿ໊ོr.lin** | - | 其他成员 | 团队重要成员（橒的宝~） |
+| **请输入文本** | - | 其他成员 | 团队重要成员 |
+| **Sky双叶** | - | 其他成员 | 团队重要成员 |
+| **靖落欢** | [@jingluohuan](https://github.com/jingluohuan) | 鸣谢 | 感谢猫猫的域名～给猫猫宣传一波：[牢仔科技 - 牢仔科技的小站~](https://itlaozai.top) |
 
 *对此项目作出贡献且允许展示在此处，你的名字就会写在这里哦~*
 
-> 都是学生党，更新慢请谅解。没有标记代表此成员没有 GitHub 账号。
+> 都是学生党，更新慢请谅解。没有标注代表此成员没有 GitHub 账号。
 
 ## 📬 联系我们
 
 | 渠道 | 联系方式 |
 |---|---|
-| QQ 交流群 | 1093730235 |
-| 天边橒 QQ | 3623633553 |
-| 天边橒 GitHub | [@Yokitu](https://github.com/Yokitu) |
-| Jidurt QQ | 3427780794 |
-| 邮箱 | 3623633553@qq.com |
-| 哔哩哔哩 | 是橒儿呀 |
+| **QQ 交流群** | 1093730235 |
+| **天边橒（团长）** | QQ: 3623633553 |
+| **天边橒（GitHub）** | [@Yokitu](https://github.com/Yokitu) |
+| **Jidurt** | QQ: 3427780794 |
+| **邮箱** | 3623633553@qq.com |
+| **哔哩哔哩** | 是橒儿呀 |
 
 > 官网中的 [联系我们页](https://tiry.itlaozai.top/contact.html) 信息更全。
 
