@@ -65,7 +65,6 @@
     font-weight: 700;
     color: var(--text);
   }
-  /* 状态提示标签 */
   .status-badge {
     display: inline-flex;
     align-items: center;
@@ -138,7 +137,7 @@
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     grid-template-rows: repeat(3, 1fr);
-    gap: 6px; /* 3x3大区块之间的间隔 */
+    gap: 6px;
     background-color: var(--grid-bg);
     padding: 6px;
     border-radius: 12px;
@@ -149,7 +148,6 @@
     box-shadow: 0 4px 12px var(--shadow);
   }
 
-  /* 3x3 小九宫格 */
   .mini-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -173,23 +171,21 @@
     transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
     border-radius: 2px;
   }
-  /* 已固定的座位 */
-  .seat.occupied {
-    background-color: var(--primary-light);
-    color: var(--primary);
+  
+  /* 已固定的座位 / 选好的座位 (通用高亮态) */
+  .seat.filled {
+    color: #FFF;
     font-weight: 700;
     font-size: 12px;
     cursor: not-allowed;
   }
 
-  /* 选中的座位 */
+  /* 选中的座位（放大状态） */
   .seat.selected {
     z-index: 50;
     transform: scale(3);
     box-shadow: 0 10px 30px var(--shadow);
     border-radius: 8px;
-    background-color: var(--primary);
-    color: #FFF !important;
   }
 
   /* 模糊控制 */
@@ -214,13 +210,13 @@
     pointer-events: none;
     z-index: 100;
     background: var(--surface);
-    padding: 12px;
+    padding: 16px;
     border-radius: 16px;
     box-shadow: 0 4px 16px var(--shadow);
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    width: 170px;
+    gap: 12px;
+    width: 200px;
     transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
   .input-area.active {
@@ -228,7 +224,7 @@
     pointer-events: auto;
     transform: translate(-50%, -50%) scale(1);
   }
-  .input-area input {
+  .input-area input[type="text"] {
     width: 100%;
     border: 1px solid var(--border);
     background: transparent;
@@ -239,15 +235,40 @@
     text-align: center;
     outline: none;
   }
-  .input-area input:focus { border-color: var(--primary); }
+  .input-area input[type="text"]:focus { border-color: var(--primary); }
+  
+  /* 颜色选择器容器 */
+  .color-picker-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 14px;
+    color: var(--text-muted);
+  }
+  .input-area input[type="color"] {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    background: none;
+    padding: 0;
+  }
+  .input-area input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
+  .input-area input[type="color"]::-webkit-color-swatch { border: 2px solid var(--border); border-radius: 50%; }
+
   .input-area button {
     background: var(--primary);
     color: #fff;
     border: none;
-    padding: 8px;
+    padding: 10px;
     border-radius: 8px;
     font-weight: 600;
     cursor: pointer;
+    font-size: 15px;
   }
   .input-area button:disabled {
     background: var(--border);
@@ -338,15 +359,12 @@
     </div>
   </div>
 
-  <!-- 9x9 网格 -->
   <div class="grid-container" id="grid"></div>
 
-  <!-- 下载按钮 -->
   <button class="download-btn" id="downloadBtn" onclick="downloadSeatMap()">
     ⬇️ 下载座位表
   </button>
 
-  <!-- 全屏提示遮罩 -->
   <div class="overlay" id="overlay">
     <h2>已发起下载请求</h2>
     <p>请将座位表发给橒橒<br>如需查看其他座位请刷新页面</p>
@@ -354,15 +372,15 @@
 
 <script>
   /* =========================================================
-     【数据管理区】开发者在这里修改数据
+     【数据管理区】开发者在这里修改数据和颜色
      ========================================================= */
-  // 提前占用的座位，格式为：'座位号': '名字'
+  // 格式为：'座位号': { name: '名字', color: '#颜色' }
   const OCCUPIED_DATA = {
     'v': { 
-      'D5': '橒'  // Vetir 班，D列 第5排
+      'D5': { name: '橒', color: '#007981' } // Vetir 班，D列 第5排
     },
-    's': {},      // Sixut 班（目前为空）
-    'm': {}       // Midel 班（目前为空）
+    's': {}, 
+    'm': {}  
   };
   
   const CLASS_DATA = {
@@ -391,13 +409,10 @@
     updateStatus();
   };
 
-  // 更新顶部状态提示
   function updateStatus() {
     const badge = document.getElementById('statusBadge');
     const text = document.getElementById('statusText');
     
-    // 如果是通过参数进来的，或者有固定座位，默认预览状态
-    // 只有手动切换到无占座的班级，或者点击空位后，才提示可选
     const urlParams = new URLSearchParams(window.location.search);
     const clutu = urlParams.get('clutu');
     
@@ -450,21 +465,17 @@
     document.getElementById('downloadBtn').classList.remove('show');
   }
 
-  // 生成网格
   function initGrid() {
     const grid = document.getElementById('grid');
     grid.innerHTML = '';
     
-    // 遍历 9 个 3x3 大区块
     for (let blockRow = 0; blockRow < 3; blockRow++) {
       for (let blockCol = 0; blockCol < 3; blockCol++) {
         const miniGrid = document.createElement('div');
         miniGrid.className = 'mini-grid';
         
-        // 遍历大区块里的 9 个座位
         for (let cellRow = 0; cellRow < 3; cellRow++) {
           for (let cellCol = 0; cellCol < 3; cellCol++) {
-            // 计算全局的行和列
             const row = blockRow * 3 + cellRow;
             const col = blockCol * 3 + cellCol;
             
@@ -476,11 +487,13 @@
             seat.dataset.index = row * 9 + col;
             
             // 检查是否是固定座位
-            if (OCCUPIED_DATA[currentClassCode][label]) {
-              seat.classList.add('occupied');
-              seat.textContent = OCCUPIED_DATA[currentClassCode][label];
+            const data = OCCUPIED_DATA[currentClassCode][label];
+            if (data) {
+              seat.classList.add('filled');
+              seat.textContent = data.name;
+              seat.style.backgroundColor = data.color;
             } else {
-              seat.textContent = label; // 默认显示编号
+              seat.textContent = label; 
               seat.onclick = () => handleSelect(row * 9 + col, label, seat);
             }
             
@@ -498,16 +511,25 @@
     selectedIndex = index;
     selectedLabel = label;
     
+    // 设置初始颜色为默认主题蓝
+    seatElement.style.backgroundColor = 'var(--primary)';
+    seatElement.style.color = '#FFF';
+    
     seatElement.classList.add('selected');
-    seatElement.textContent = ''; // 放大时清空文字，准备输入
+    seatElement.textContent = ''; 
+    
     document.getElementById('grid').classList.add('has-selection');
     document.getElementById('topBar').classList.add('blurred');
 
     const inputArea = document.createElement('div');
     inputArea.className = 'input-area';
     inputArea.innerHTML = `
-      <div style="font-weight:bold;text-align:center;color:var(--primary);">${label}</div>
+      <div style="font-weight:bold;text-align:center;color:var(--text);font-size:18px;">${label}</div>
       <input type="text" id="nameInput" placeholder="输入简写" maxlength="8">
+      <div class="color-picker-row">
+        <span>专属颜色</span>
+        <input type="color" id="colorInput" value="#1565C0">
+      </div>
       <div class="hint">限4字 (中文算2字)</div>
       <button id="confirmBtn" disabled>确认位置</button>
     `;
@@ -516,8 +538,15 @@
     setTimeout(() => inputArea.classList.add('active'), 10);
 
     const input = document.getElementById('nameInput');
+    const colorInput = document.getElementById('colorInput');
     const confirmBtn = document.getElementById('confirmBtn');
 
+    // 实时预览颜色
+    colorInput.addEventListener('input', (e) => {
+      seatElement.style.backgroundColor = e.target.value;
+    });
+
+    // 输入验证
     input.addEventListener('input', () => {
       let val = input.value;
       let length = 0;
@@ -534,15 +563,22 @@
       confirmBtn.disabled = length === 0;
     });
 
+    // 点击确认
     confirmBtn.onclick = () => {
       const name = input.value.trim();
       if (!name) return;
 
       inputArea.remove();
-      seatElement.textContent = name;
-      seatElement.style.fontSize = '12px';
-      seatElement.style.fontWeight = 'bold';
       
+      // 1. 取消模糊和放大状态
+      document.getElementById('grid').classList.remove('has-selection');
+      seatElement.classList.remove('selected');
+      
+      // 2. 变成已填充状态
+      seatElement.classList.add('filled');
+      seatElement.textContent = name;
+      
+      // 3. 恢复顶部
       document.getElementById('topBar').classList.remove('blurred');
       document.getElementById('downloadBtn').classList.add('show');
     };
@@ -563,32 +599,25 @@
     canvas.width = size;
     canvas.height = size;
     
-    // 背景
     ctx.fillStyle = '#F4F8FF';
     ctx.fillRect(0, 0, size, size);
     
-    // 标题
     ctx.fillStyle = '#1A1C1E';
     ctx.font = 'bold 40px "Noto Sans SC", sans-serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillText(`${CLASS_DATA[currentClassCode]} 座位表`, size/2, 80);
 
-    // 网格参数
     const gridStartX = 100;
     const gridStartY = 150;
     const cellSize = 80;
     const blockGap = 10;
     const cellGap = 4;
-    
-    // 计算总宽度：3个单元格 + 内部间隙 + 外部大区块间隙
     const blockSize = cellSize * 3 + cellGap * 2; 
-    const totalGridSize = blockSize * 3 + blockGap * 2;
 
     for (let blockRow = 0; blockRow < 3; blockRow++) {
       for (let blockCol = 0; blockCol < 3; blockCol++) {
         
-        // 画大区块的底背景（灰色边框效果）
         ctx.fillStyle = '#CBD5E1';
         const bgX = gridStartX + blockCol * (blockSize + blockGap);
         const bgY = gridStartY + blockRow * (blockSize + blockGap);
@@ -605,35 +634,26 @@
             const x = bgX + 4 + cellCol * (cellSize + cellGap);
             const y = bgY + 4 + cellRow * (cellSize + cellGap);
             
-            // 画单个座位背景
             ctx.fillStyle = '#FFFFFF';
             ctx.beginPath();
             ctx.roundRect(x, y, cellSize, cellSize, 4);
             ctx.fill();
 
-            // 判断状态
-            if (OCCUPIED_DATA[currentClassCode][label]) {
-              // 固定座位
-              ctx.fillStyle = '#E3F2FD';
-              ctx.beginPath();
-              ctx.roundRect(x, y, cellSize, cellSize, 4);
-              ctx.fill();
+            // 获取当前格子的DOM元素来取颜色
+            const domSeat = document.querySelector(`.seat[data-label="${label}"]`);
+
+            if (domSeat.classList.contains('filled')) {
+              // 已经确定的座位（包括提前配置的和刚刚选的）
+              const computedColor = getComputedStyle(domSeat).backgroundColor;
               
-              ctx.fillStyle = '#1565C0';
-              ctx.font = 'bold 24px "Noto Sans SC", sans-serif';
-              ctx.fillText(OCCUPIED_DATA[currentClassCode][label], x + cellSize/2, y + cellSize/2);
-              
-            } else if (label === selectedLabel) {
-              // 当前选中的座位
-              ctx.fillStyle = '#1565C0';
+              ctx.fillStyle = computedColor;
               ctx.beginPath();
               ctx.roundRect(x, y, cellSize, cellSize, 4);
               ctx.fill();
               
               ctx.fillStyle = '#FFFFFF';
               ctx.font = 'bold 24px "Noto Sans SC", sans-serif';
-              const name = document.querySelector('.seat.selected').textContent || '我';
-              ctx.fillText(name, x + cellSize/2, y + cellSize/2);
+              ctx.fillText(domSeat.textContent, x + cellSize/2, y + cellSize/2);
               
             } else {
               // 空座位
