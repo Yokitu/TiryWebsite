@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>选座 - Tiry</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F4F8FF;
+    --surface: #FFFFFF;
+    --primary: #1565C0;
+    --primary-light: #E3F2FD;
+    --text: #1A1C1E;
+    --text-muted: #43474E;
+    --border: #C4C6D0;
+    --glass: rgba(255, 255, 255, 0.7);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0F172A;
+      --surface: #1E293B;
+      --primary: #64B5F6;
+      --primary-light: #1E3A8A;
+      --text: #E2E8F0;
+      --text-muted: #94A3B8;
+      --border: #334155;
+      --glass: rgba(15, 23, 42, 0.7);
+    }
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body {
+    font-family: 'Noto Sans SC', system-ui, -apple-system, sans-serif;
+    background-color: var(--bg);
+    color: var(--text);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    overflow: hidden; /* 防止页面滚动 */
+    padding: 16px;
+  }
+
+  /* 顶部信息 */
+  .header {
+    text-align: center;
+    margin-bottom: 16px;
+    transition: filter 0.3s;
+  }
+  .header h1 { font-size: 24px; color: var(--primary); font-weight: 700; }
+  .header p { font-size: 14px; color: var(--text-muted); margin-top: 4px; }
+
+  /* 网格容器 */
+  .grid-container {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(9, 1fr);
+    grid-template-rows: repeat(9, 1fr);
+    gap: 2px;
+    background-color: var(--border);
+    padding: 4px;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 380px;
+    aspect-ratio: 1 / 1;
+    transition: all 0.3s ease;
+  }
+
+  /* 坐标标签 */
+  .axis-label {
+    position: absolute;
+    font-size: 10px;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 500;
+    pointer-events: none;
+  }
+
+  /* 座位格子 */
+  .seat {
+    background-color: var(--surface);
+    border-radius: 4px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 10px;
+    color: var(--border);
+    cursor: pointer;
+    position: relative;
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  /* 十字交叉加粗边框，区分 3x3 区块 */
+  .seat:nth-child(9n+4) { margin-left: 1px; }
+  .seat:nth-child(9n+7) { margin-left: 1px; }
+  .seat:nth-child(n+28):nth-child(-n+36) { margin-top: 1px; }
+  .seat:nth-child(n+55):nth-child(-n+63) { margin-top: 1px; }
+
+  /* 被点击选中的座位 */
+  .seat.selected {
+    z-index: 50;
+    transform: scale(3);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    border-radius: 8px;
+    background-color: var(--primary-light);
+    color: var(--primary);
+  }
+
+  /* 模糊效果 */
+  .blurred {
+    filter: blur(6px) !important;
+    pointer-events: none;
+    opacity: 0.6;
+  }
+  .grid-container.has-selection .seat:not(.selected) {
+    filter: blur(4px);
+    pointer-events: none;
+    opacity: 0.5;
+  }
+
+  /* 输入框弹出区 */
+  .input-area {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.8);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 100;
+    background: var(--surface);
+    padding: 12px;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 160px;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .input-area.active {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  .input-area input {
+    width: 100%;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text);
+    font-size: 16px;
+    padding: 8px;
+    border-radius: 8px;
+    text-align: center;
+    outline: none;
+  }
+  .input-area input:focus { border-color: var(--primary); }
+  .input-area button {
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    padding: 8px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .input-area button:disabled {
+    background: var(--border);
+    cursor: not-allowed;
+  }
+  .input-area .hint {
+    font-size: 12px;
+    color: var(--text-muted);
+    text-align: center;
+  }
+
+  /* 下载按钮 */
+  .download-btn {
+    margin-top: 24px;
+    width: 100%;
+    max-width: 380px;
+    height: 56px;
+    border-radius: 999px;
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    font-size: 16px;
+    font-weight: 600;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: all 0.3s;
+    z-index: 10;
+  }
+  .download-btn.show {
+    display: flex;
+    animation: slideUp 0.4s var(--spring);
+  }
+  @keyframes slideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+
+  /* 全屏遮罩 */
+  .overlay {
+    position: fixed;
+    inset: 0;
+    background: var(--glass);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    z-index: 999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    padding: 24px;
+    text-align: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+  }
+  .overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .overlay h2 { font-size: 24px; color: var(--primary); margin-bottom: 12px; }
+  .overlay p { font-size: 15px; color: var(--text); line-height: 1.6; }
+
+</style>
+</head>
+<body>
+
+  <div class="header" id="header">
+    <h1 id="class-name">加载中...</h1>
+    <p>点击九宫格选择你的座位</p>
+  </div>
+
+  <!-- 9x9 网格 -->
+  <div class="grid-container" id="grid"></div>
+
+  <!-- 下载按钮 -->
+  <button class="download-btn" id="downloadBtn" onclick="downloadSeatMap()">
+    ⬇️ 下载座位表
+  </button>
+
+  <!-- 全屏提示遮罩 -->
+  <div class="overlay" id="overlay">
+    <h2>已发起下载请求</h2>
+    <p>请将座位表发给橒橒<br>如需查看其他座位请刷新页面</p>
+  </div>
+
+<script>
+  // 班级映射
+  const CLASS_MAP = {
+    'v': 'Vetir 班',
+    's': 'Sixut 班',
+    'm': 'Midel 班'
+  };
+  // 列标字母 (从左到右 I ~ A)
+  const COL_LABELS = ['I', 'H', 'G', 'F', 'E', 'D', 'C', 'B', 'A'];
+
+  let currentClass = '';
+  let selectedIndex = -1;
+  let selectedLabel = '';
+
+  // 初始化
+  window.onload = () => {
+    // 获取 URL 参数
+    const urlParams = new URLSearchParams(window.location.search);
+    const clutu = urlParams.get('clutu');
+
+    if (!CLASS_MAP[clutu]) {
+      document.getElementById('class-name').textContent = "参数错误";
+      document.body.innerHTML = `<h2 style="margin-top:100px;text-align:center;color:var(--text);">请添加正确的班级参数<br>(如 ?clutu=v)</h2>`;
+      return;
+    }
+
+    currentClass = CLASS_MAP[clutu];
+    document.getElementById('class-name').textContent = currentClass;
+    
+    initGrid();
+  };
+
+  // 生成 9x9 网格
+  function initGrid() {
+    const grid = document.getElementById('grid');
+    for (let row = 0; row < 9; row++) {
+      for (let col = 0; col < 9; col++) {
+        const seat = document.createElement('div');
+        seat.className = 'seat';
+        // 计算座位号，例如 A1, B2
+        const label = COL_LABELS[col] + (row + 1);
+        seat.dataset.label = label;
+        
+        seat.onclick = () => handleSelect(row * 9 + col, label, seat);
+        grid.appendChild(seat);
+      }
+    }
+  }
+
+  // 处理座位选择
+  function handleSelect(index, label, seatElement) {
+    if (selectedIndex !== -1) return; // 已选过则不可再选
+
+    selectedIndex = index;
+    selectedLabel = label;
+    
+    // 1. 放大当前格子，模糊其他元素
+    seatElement.classList.add('selected');
+    document.getElementById('grid').classList.add('has-selection');
+    document.getElementById('header').classList.add('blurred');
+
+    // 2. 创建输入框
+    const inputArea = document.createElement('div');
+    inputArea.className = 'input-area';
+    inputArea.innerHTML = `
+      <div style="font-weight:bold;text-align:center;color:var(--primary);">${label}</div>
+      <input type="text" id="nameInput" placeholder="输入简写" maxlength="8">
+      <div class="hint">限4字 (中文算2字)</div>
+      <button id="confirmBtn" disabled>确认位置</button>
+    `;
+    
+    // 将输入框放置在网格正中央 (因为选中的格子被放大了，绝对定位在中间效果最好)
+    document.body.appendChild(inputArea);
+    
+    // 强制重绘后添加 active 类以触发动画
+    setTimeout(() => inputArea.classList.add('active'), 10);
+
+    const input = document.getElementById('nameInput');
+    const confirmBtn = document.getElementById('confirmBtn');
+
+    // 监听输入，验证字数
+    input.addEventListener('input', () => {
+      let val = input.value;
+      let length = 0;
+      for (let char of val) {
+        length += /[\u4e00-\u9fa5]/.test(char) ? 2 : 1;
+      }
+      
+      if (length > 4) {
+        // 超出限制则截断（简单的截断逻辑，实际可能需要更严谨，这里为了体验直接限制）
+        input.value = val.slice(0, -1);
+      }
+      
+      // 重新计算长度
+      length = 0;
+      for (let char of input.value) {
+        length += /[\u4e00-\u9fa5]/.test(char) ? 2 : 1;
+      }
+
+      // 必须至少输入一个字符
+      confirmBtn.disabled = length === 0;
+    });
+
+    // 确认按钮
+    confirmBtn.onclick = () => {
+      const name = input.value.trim();
+      if (!name) return;
+
+      inputArea.remove(); // 移除输入框
+      seatElement.textContent = name;
+      seatElement.style.fontSize = '8px'; // 显示在格子里的字稍微小一点
+      seatElement.style.color = 'var(--text)';
+      seatElement.style.backgroundColor = 'var(--primary)';
+      seatElement.style.color = '#FFF';
+
+      // 取消模糊，显示下载按钮
+      document.getElementById('header').classList.remove('blurred');
+      document.getElementById('downloadBtn').classList.add('show');
+    };
+  }
+
+  // 下载座位表
+  function downloadSeatMap() {
+    // 1. 触发全屏模糊遮罩
+    document.getElementById('overlay').classList.add('active');
+    
+    // 2. 生成并下载图片 (模拟，仅生成一张简单的图片)
+    // 此处为了纯前端轻量化，不引入 html2canvas，直接通过 Canvas 绘制一个简单的图
+    // 如果你需要完美截图，建议引入 html2canvas 库
+    setTimeout(() => {
+      generateAndDownloadPNG();
+    }, 500); // 等待遮罩生效
+  }
+
+  // 纯 Canvas 绘制下载图片
+  function generateAndDownloadPNG() {
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    const size = 900; // 900x900
+    canvas.width = size;
+    canvas.height = size;
+    
+    // 背景
+    ctx.fillStyle = '#F4F8FF';
+    ctx.fillRect(0, 0, size, size);
+    
+    // 画网格
+    const cellSize = 90;
+    const padding = 45;
+    for (let r = 0; r < 9; r++) {
+      for (let c = 0; c < 9; c++) {
+        const x = padding + c * cellSize;
+        const y = padding + r * cellSize;
+        
+        // 默认格子
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fillRect(x + 2, y + 2, cellSize - 4, cellSize - 4);
+        
+        // 如果是选中的格子
+        if (r * 9 + c === selectedIndex) {
+          ctx.fillStyle = '#1565C0';
+          ctx.fillRect(x + 2, y + 2, cellSize - 4, cellSize - 4);
+          ctx.fillStyle = '#FFFFFF';
+          ctx.font = 'bold 30px sans-serif';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(document.getElementById('nameInput')?.value || '我', x + cellSize/2, y + cellSize/2);
+        }
+      }
+    }
+    
+    // 导出图片
+    const link = document.createElement('a');
+    link.download = `${currentClass}_座位表.png`;
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  }
+</script>
+</body>
+</html>
