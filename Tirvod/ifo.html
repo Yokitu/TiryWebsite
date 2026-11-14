@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="teal">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Tirvod Rilet 世界观 - Tiry</title>
+    <!-- 引入 M3E 样式 -->
+    <link rel="stylesheet" href="../m3e.css">
+    <style>
+        body {
+            padding-bottom: 48px;
+            background-color: var(--md-surface-container-lowest);
+        }
+        .app-container {
+            max-width: 680px;
+            margin: 0 auto;
+            padding: 16px;
+        }
+        /* 头部卡片 */
+        .hero-card {
+            background: linear-gradient(135deg, var(--md-primary-container), var(--md-surface-container));
+            border-radius: 28px;
+            padding: 32px 24px;
+            text-align: center;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        .hero-card h1 {
+            font-size: 28px;
+            color: var(--md-on-primary-container);
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+        .hero-card p {
+            font-size: 15px;
+            color: var(--md-on-surface-variant);
+            line-height: 1.6;
+        }
+        .hero-card a {
+            color: var(--md-primary);
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        /* 章节标题 */
+        .section-title {
+            font-size: 24px;
+            color: var(--md-on-surface);
+            margin: 32px 8px 16px;
+            padding-bottom: 8px;
+            border-bottom: 2px dashed var(--md-outline-variant);
+            font-weight: 700;
+        }
+
+        /* 区域卡片 */
+        .region-card {
+            background: var(--md-surface);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            border: 1px solid var(--md-outline-variant);
+        }
+        .region-card.good {
+            border-left: 6px solid #4CAF50; /* 优国绿 */
+        }
+        .region-card.evil {
+            border-left: 6px solid #F44336; /* 恶国红 */
+        }
+        
+        .region-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--md-on-surface);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .region-desc {
+            font-size: 15px;
+            color: var(--md-on-surface-variant);
+            font-style: italic;
+            background: var(--md-surface-container-low);
+            padding: 12px;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            line-height: 1.5;
+        }
+
+        /* 城区列表 */
+        .city-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--md-primary);
+            margin: 16px 0 8px;
+        }
+        .pir-list {
+            list-style: none;
+            padding-left: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .pir-list li {
+            background: var(--md-surface-container-lowest);
+            padding: 12px 16px;
+            border-radius: 12px;
+            border: 1px solid var(--md-outline-variant);
+            font-size: 15px;
+            color: var(--md-on-surface);
+        }
+        .pir-list li b {
+            color: var(--md-primary);
+            display: block;
+            margin-bottom: 4px;
+        }
+        .pir-list li span {
+            color: var(--md-on-surface-variant);
+            font-size: 14px;
+        }
+
+        /* 学校与人物链接按钮 */
+        .action-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background: var(--md-primary);
+            color: var(--md-on-primary);
+            text-decoration: none;
+            padding: 16px;
+            border-radius: 16px;
+            font-size: 16px;
+            font-weight: 600;
+            margin: 16px 8px;
+            transition: transform 0.2s;
+        }
+        .action-btn:active { transform: scale(0.96); }
+
+    </style>
+</head>
+<body>
+
+    <!-- 顶部应用栏 -->
+    <header class="m3e-appbar">
+        <button class="m3e-icon-btn" onclick="window.location.href='../nav.html'">
+            <span class="material-symbols-rounded">arrow_back</span>
+        </button>
+        <div class="title">Tirvod Rilet 设定集</div>
+    </header>
+
+    <div class="app-container">
+        
+        <!-- 简介 -->
+        <div class="hero-card">
+            <h1>Tirvod Rilet</h1>
+            <p>
+                <b>童世界生活</b><br>
+                这是 <a href="https://tiry.itlaozai.top" target="_blank">Tiry 团队</a> 成员写的一篇故事。<br>
+                我们不是专业的作家，内容全是我们写的，写得不好见谅 :)
+            </p>
+        </div>
+
+        <h2 class="section-title">🌍 什么是 Tirvod</h2>
+        <div class="region-card" style="border-left-color: var(--md-primary);">
+            <p style="font-size: 15px; line-height: 1.7; color: var(--md-on-surface-variant);">
+                Tirvod，童世界，是个有魔法的世界，（真的）不存在语言不通（吗？）。<br><br>
+                Tirvod 地区的最大单位为 <b>国</b>，其次是 <b>城</b>，最后是 <b>区</b>，各地区相互合作或竞争。
+            </p>
+        </div>
+
+        <h2 class="section-title">🗺️ 国、城、区分布</h2>
+
+        <!-- 优国 -->
+        <div class="region-card good">
+            <div class="region-title">
+                <span class="material-symbols-rounded" style="color: #4CAF50;">shield</span>
+                Gustroco 国（优国）
+            </div>
+            <div class="region-desc">
+                “在里面就肯定是正派的啦~ 里面的城市全是法治社会，就像现在中国这么美好。”
+            </div>
+
+            <div class="city-title">Tropen 城（童城）</div>
+            <div class="region-desc" style="margin-bottom: 12px;">
+                不止 <a href="https://tiry.itlaozai.top/contact" target="_blank" style="color: var(--md-primary);">Tirian</a>，还有 <a href="https://tiry.itlaozai.top/Tirvod/prop#Yk" target="_blank" style="color: var(--md-primary);">Yk</a> 的同学或朋友（真的只有这些吗？）
+            </div>
+            <ul class="pir-list">
+                <li>
+                    <b>Vetir pir 区（森区）</b>
+                    <span>Tirian、Yk 的乡下同学 及 Yk 的朋友</span>
+                </li>
+                <li>
+                    <b>Sixut pir 区（繁区）</b>
+                    <span>（现实）和 Yk 在小县城关系好的小学同学</span>
+                </li>
+                <li>
+                    <b>Yok pir 区（橒区）</b>
+                    <span>各位……懂我意思（和 Yk 忒好的）</span>
+                </li>
+                <li>
+                    <b>Tirpir 区（童区）</b>
+                    <span>商业区及 Tiry 的区域</span>
+                </li>
+            </ul>
+
+            <div class="city-title">Wurotu 城（水城）</div>
+            <div class="region-desc" style="margin-bottom: 0;">
+                以（基本全是）水路著称，有很多个区。
+            </div>
+        </div>
+
+        <!-- 恶国 -->
+        <div class="region-card evil">
+            <div class="region-title">
+                <span class="material-symbols-rounded" style="color: #F44336;">swords</span>
+                Mustopis 国（恶国）
+            </div>
+            <div class="region-desc">
+                “顾名思义，反派国，至于法……你觉得他们是不是帝制呢？”
+            </div>
+            <ul class="pir-list">
+                <li>
+                    <b>Bifupir（阴区）</b>
+                    <span>都是 Bifalimer</span>
+                </li>
+                <li>
+                    <b>Midelpir（黯区）</b>
+                    <span>与上同理</span>
+                </li>
+            </ul>
+        </div>
+
+        <h2 class="section-title">🏫 Tropen 的学校</h2>
+        <div class="region-card">
+            <p style="font-size: 15px; line-height: 1.7; color: var(--md-on-surface-variant); margin-bottom: 16px;">
+                位于 Tirpir 的 <b>Yosigecip（橒校）</b>，有三个班级：<br>
+                <span style="color: #4CAF50; font-weight: bold;">Vetir 森班</span>、<span style="color: #FF9800; font-weight: bold;">Sixut 繁班</span>、<span style="color: #F44336; font-weight: bold;">Midel 恶班</span>。
+                <br><br>
+                学校实行 <b>座位自选</b>。在这里，学生也可以当老师——嗯对，也就是说除了语数英政史地物化生德体美劳等常规课程，其他的都是同学们知道什么教什么。
+                <br><br>
+                我们的学习笔记网站也将随此故事一起更新！
+            </p>
+            
+            <a href="https://tiry.itlaozai.top/Tirvod/seat" class="action-btn" target="_blank">
+                <span class="material-symbols-rounded">event_seat</span>
+                前往座位自选系统
+            </a>
+            <a href="https://tiry.itlaozai.top/study" class="action-btn" style="background: var(--md-secondary-container); color: var(--md-on-secondary-container);" target="_blank">
+                <span class="material-symbols-rounded">menu_book</span>
+                前往学习笔记网站
+            </a>
+        </div>
+
+        <h2 class="section-title">👥 人物设定</h2>
+        <a href="https://tiry.itlaozai.top/Tirvod/prop" class="action-btn" style="background: var(--md-tertiary-container); color: var(--md-on-tertiary-container);" target="_blank">
+            <span class="material-symbols-rounded">person_search</span>
+            查看人物设定档案
+        </a>
+
+    </div>
+
+</body>
+</html>
