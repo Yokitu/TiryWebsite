@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="teal">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>人物设定集 - Tirvod</title>
+    <!-- 引入通用 M3E 样式 -->
+    <link rel="stylesheet" href="../m3e.css">
+    <style>
+        body {
+            padding-bottom: 48px;
+            background-color: var(--md-surface-container-lowest);
+        }
+        .app-container {
+            max-width: 680px;
+            margin: 0 auto;
+            padding: 16px;
+        }
+
+        /* 搜索区 */
+        .search-section {
+            background: var(--md-surface);
+            padding: 16px;
+            border-radius: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            margin-bottom: 24px;
+            position: sticky;
+            top: 64px;
+            z-index: 10;
+            border: 1px solid var(--md-outline-variant);
+        }
+        .search-box {
+            display: flex;
+            align-items: center;
+            background: var(--md-surface-container-high);
+            border-radius: 999px;
+            padding: 0 16px;
+            height: 48px;
+            margin-bottom: 12px;
+        }
+        .search-box input {
+            flex: 1;
+            border: none;
+            background: transparent;
+            outline: none;
+            font-size: 16px;
+            color: var(--md-on-surface);
+            font-family: inherit;
+            margin-left: 8px;
+        }
+        
+        /* 快捷筛选标签 */
+        .filter-chips {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+            scrollbar-width: none;
+        }
+        .filter-chips::-webkit-scrollbar { display: none; }
+        .chip {
+            padding: 6px 14px;
+            border-radius: 999px;
+            background: var(--md-surface-container-low);
+            border: 1px solid var(--md-outline-variant);
+            color: var(--md-on-surface-variant);
+            font-size: 13px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+        .chip.active {
+            background: var(--md-secondary-container);
+            color: var(--md-on-secondary-container);
+            border-color: transparent;
+        }
+
+        /* 图鉴提示 */
+        .tips {
+            font-size: 13px;
+            color: var(--md-on-surface-variant);
+            margin: 8px 4px;
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        /* 人物卡片 */
+        .character-card {
+            background: var(--md-surface);
+            border-radius: 24px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            border: 1px solid var(--md-outline-variant);
+            border-left: 6px solid var(--md-outline-variant); /* 默认边框 */
+            transition: transform 0.2s;
+            display: none; /* 默认隐藏，通过 JS 控制显示 */
+        }
+        .character-card.good { border-left-color: #4CAF50; } /* 正派 */
+        .character-card.evil { border-left-color: #F44336; } /* 反派 */
+
+        .char-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 8px;
+        }
+        .char-name {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--md-on-surface);
+        }
+        .char-birthday {
+            font-size: 13px;
+            color: var(--md-on-surface-variant);
+            background: var(--md-surface-container);
+            padding: 4px 8px;
+            border-radius: 8px;
+        }
+        
+        .char-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 16px;
+        }
+        .char-tags span {
+            font-size: 12px;
+            padding: 2px 8px;
+            border-radius: 6px;
+            background: var(--md-surface-container-high);
+            color: var(--md-on-surface-variant);
+        }
+        
+        .char-desc {
+            font-size: 15px;
+            color: var(--md-on-surface-variant);
+            line-height: 1.6;
+            text-align: justify;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: var(--md-on-surface-variant);
+            display: none;
+        }
+
+    </style>
+</head>
+<body>
+
+    <header class="m3e-appbar">
+        <button class="m3e-icon-btn" onclick="window.location.href='./ifo.html'">
+            <span class="material-symbols-rounded">arrow_back</span>
+        </button>
+        <div class="title">人物设定查询</div>
+    </header>
+
+    <div class="app-container">
+        
+        <!-- 搜索与筛选区 -->
+        <div class="search-section">
+            <div class="search-box">
+                <span class="material-symbols-rounded" style="color: var(--md-on-surface-variant);">search</span>
+                <input type="text" id="searchInput" placeholder="搜索名字，或输入 #标签" oninput="filterCards()">
+            </div>
+            <div class="filter-chips">
+                <div class="chip" onclick="toggleDateFilter(this, '2012～2014')">2012~2014年</div>
+                <div class="chip" onclick="toggleDateFilter(this, '2000～2012')">2000~2012年</div>
+                <div class="chip" onclick="toggleDateFilter(this, '2000前')">2000前</div>
+                <div class="chip" onclick="toggleDateFilter(this, '2014后')">2014后</div>
+            </div>
+            <div class="tips">
+                <span>💡 输入 #正派 或 #男 可精准筛选标签</span>
+                <span>🔍 支持多标签 (如: #正派 #Yogafulimio)</span>
+            </div>
+        </div>
+
+        <!-- 卡片渲染区 -->
+        <div id="charactersList"></div>
+        <div class="empty-state" id="emptyState">
+            <span class="material-symbols-rounded" style="font-size: 48px; opacity: 0.5; margin-bottom: 8px;">search_off</span>
+            <div>没有找到匹配的人物</div>
+        </div>
+
+    </div>
+
+<script>
+    // ==========================================
+    // 数据源：你可以在这里直接增删改查数据
+    // ==========================================
+    const characters = [
+        {
+            name: 'Jd (吉达尔)',
+            tags: ['#JJY', '#Tirian', '#Veyir', '#正派', '#Yogafulimio', '#男', '#无原型'],
+            birthday: '2012年7月4日',
+            dateTag: '2012～2014',
+            camp: 'good',
+            desc: '缩写全称是 Jidurt，Jt 第一人格具象化，Yog 中 Jt 的哥哥。“相对”消极、内向，只在相信的人面前表现的外向、健谈，背地里总是偷偷跑去天台（懂我意思），靠他朋友，他才活到了现在。（现实中）他学习不是很好，但 Bif 对他抱有极大希望，以至于所有学科加起来扣分不超过 50 他们才会给他喘息的机会，他受不了了……他尝试过在网上寻求帮助，但 Bif 对其极其反感。他是一个行动远大于语言的人，话不多，却用行动给予他相信的人最好的回答，同时，他也希望有人真正懂他，真正读懂他的心，真正听他好好说话。'
+        },
+        {
+            name: 'Jt (健健)',
+            tags: ['#JJY', '#Tirian', '#Veyir', '#正派', '#Yogafulimio', '#男', '#有原型'],
+            birthday: '2013年1月19日',
+            dateTag: '2012～2014',
+            camp: 'good',
+            desc: '缩写全称是 Jiturd，自身的第二人格（本作中属于第二人格的具象化），Yog 中 Jd 的弟弟。他是个相对积极外向的人，学习不是很好（相比 Jd 好一点），（现实中）平时不负责自身的行为，但经常负责思考与决策（其实我说白了，Jt 的意识体是个模糊的概念，设定不会很多）。'
+        },
+        {
+            name: 'Yk (橒橒)',
+            tags: ['#JJY', '#Tirian', '#Veyir', '#正派', '#Yogafulimio', '#男', '#无原型'],
+            birthday: '2013年6月1日',
+            dateTag: '2012～2014',
+            camp: 'good',
+            desc: '缩写全称是 Yokitu，Jt 第三人格的具象化，他是个相对幼稚、积极、聪明、外向的人，学习不是很好（Jd 与 Jt 中间），（现实中）在和关系非常好的人相处时，他才会出现。Ra 是 Yk 的宝（懂我意思），自然 Ra 是 Yog 中最大的那个。他会尽他所能宠着和她关系好的人。他同样希望有真正懂他的人。'
+        },
+        {
+            name: 'Ra (冉宝)',
+            tags: ['#Veyir', '#正派', '#Yogafulimio', '#女', '#有原型'],
+            birthday: '2010年8月5日',
+            dateTag: '2000～2012',
+            camp: 'good',
+            desc: '缩写全称是 Rayuti，Yk 的宝，一个可爱、略微幼稚、外向、积极的人。他真的认真会听 Yk 与 Jd 说。爱看剧（尤其是蜡笔小新）。'
+        },
+        {
+            name: 'Hk (皓皓)',
+            tags: ['#Veyir', '#正派', '#Yogafulimio', '#男', '#有原型'],
+            birthday: '2013年',
+            dateTag: '2012～2014',
+            camp: 'good',
+            desc: '中文名皓皓，Yog 中 Yk 的弟弟，现实中 Jt 的异班朋友，一个相对幼稚的人，爱玩光遇，学习不太好。'
+        },
+        {
+            name: 'Msä (母亲)',
+            tags: ['#Bifälimusto', '#反派', '#有原型'],
+            birthday: '2000年前',
+            dateTag: '2000前',
+            camp: 'evil',
+            desc: '严格、脾气不好、控制欲爆表、无脑语录能出本书。'
+        },
+        {
+            name: 'Msf (父亲)',
+            tags: ['#Bifälimusto', '#反派', '#有原型'],
+            birthday: '2000年前',
+            dateTag: '2000前',
+            camp: 'evil',
+            desc: '严格、脾气不好、控制欲爆表、无脑语录能出本书。'
+        },
+        {
+            name: 'Msgm (奶奶)',
+            tags: ['#Bifälimusto', '#反派', '#有原型'],
+            birthday: '2000年前',
+            dateTag: '2000前',
+            camp: 'evil',
+            desc: '表面慈祥（至于心情差的时候吗……），实际封建思想还留着，表达能力不太好。'
+        },
+        {
+            name: 'Msgf (爷爷)',
+            tags: ['#Bifälimusto', '#反派', '#有原型'],
+            birthday: '2000年前',
+            dateTag: '2000前',
+            camp: 'evil',
+            desc: '表面慈祥（至于心情差的时候吗……），实际封建思想还留着，表达能力不太好。'
+        },
+        {
+            name: 'Mssu (妹妹)',
+            tags: ['#Bifälimusto', '#反派', '#有原型'],
+            birthday: '2017年5月3日',
+            dateTag: '2014后',
+            camp: 'evil',
+            desc: '差生，文具多（一年能攒 365 个文具），特别贪吃，非常喜欢买买买，情商几乎为零，家里的东西她总能把主人分的过分的清清楚楚，上厕所总不关门，不冲水，妄想控制 Jt。想跟她聊天？看她什么时候装可爱吧，她平时的语言表达能把你气死。'
+        },
+        {
+            name: 'Msbu (哥哥)',
+            tags: ['#Bifälimusto', '#反派', '#有原型'],
+            birthday: '2010年1月29日',
+            dateTag: '2000～2012',
+            camp: 'evil',
+            desc: '差生，网瘾少年（网络成瘾晚期的那种），非常之傲慢。'
+        }
+    ];
+
+    // 状态变量
+    let activeDateFilter = '';
+    let searchQuery = '';
+
+    // 初始化渲染
+    window.onload = () => {
+        renderCards();
+    };
+
+    // 渲染卡片
+    function renderCards() {
+        const container = document.getElementById('charactersList');
+        container.innerHTML = '';
+        
+        characters.forEach(char => {
+            const card = document.createElement('div');
+            card.className = `character-card ${char.camp}`;
+            card.dataset.searchString = `${char.name} ${char.tags.join(' ')} ${char.desc}`;
+            card.dataset.dateTag = char.dateTag;
+            
+            // 标签拼装
+            const tagsHTML = char.tags.map(t => `<span>${t}</span>`).join('');
+            
+            card.innerHTML = `
+                <div class="char-header">
+                    <div class="char-name">${char.name}</div>
+                    <div class="char-birthday">${char.birthday}</div>
+                </div>
+                <div class="char-tags">${tagsHTML}</div>
+                <div class="char-desc">${char.desc}</div>
+            `;
+            
+            container.appendChild(card);
+        });
+        
+        filterCards(); // 渲染后执行一次筛选
+    }
+
+    // 切换日期快捷筛选
+    function toggleDateFilter(element, dateStr) {
+        // 视觉切换
+        if (activeDateFilter === dateStr) {
+            activeDateFilter = '';
+            element.classList.remove('active');
+        } else {
+            activeDateFilter = dateStr;
+            document.querySelectorAll('.filter-chips .chip').forEach(c => c.classList.remove('active'));
+            element.classList.add('active');
+        }
+        filterCards();
+    }
+
+    // 核心过滤逻辑
+    function filterCards() {
+        searchQuery = document.getElementById('searchInput').value.trim().toLowerCase();
+        const cards = document.querySelectorAll('.character-card');
+        
+        let hasResult = false;
+
+        // 解析搜索词
+        let isTagSearch = searchQuery.includes('#');
+        let searchTags = [];
+        let normalText = searchQuery;
+
+        if (isTagSearch) {
+            // 提取所有以 # 开头的词
+            const matches = searchQuery.match(/#[^\s#]+/g);
+            if (matches) {
+                searchTags = matches.map(t => t.replace('#', '')); // 去掉 # 方便匹配
+            }
+        }
+
+        cards.forEach(card => {
+            let matchSearch = false;
+            let matchDate = true;
+
+            // 1. 检查日期筛选
+            if (activeDateFilter) {
+                matchDate = (card.dataset.dateTag === activeDateFilter);
+            }
+
+            // 2. 检查搜索
+            if (isTagSearch && searchTags.length > 0) {
+                // 标签搜索模式：必须包含所有的标签
+                matchSearch = searchTags.every(tag => {
+                    // 在 dataset 包含的所有标签文本中查找
+                    return card.dataset.searchString.includes(tag) || 
+                           card.querySelector('.char-tags').textContent.includes(tag);
+                });
+            } else {
+                // 普通文本搜索
+                matchSearch = card.dataset.searchString.toLowerCase().includes(normalText);
+            }
+
+            // 综合判断
+            if (matchSearch && matchDate) {
+                card.style.display = 'block';
+                hasResult = true;
+            } else {
+                card.style.display = 'none';
+            }
+        });
+
+        // 空状态提示
+        document.getElementById('emptyState').style.display = hasResult ? 'none' : 'block';
+    }
+</script>
+</body>
+</html>
