@@ -55,7 +55,7 @@
             background: var(--md-surface);
             border-radius: 24px;
             padding: 24px;
-            margin-bottom: 32px;
+            margin-bottom: 24px;
             border: 1px solid var(--md-outline-variant);
             box-shadow: 0 2px 8px rgba(0,0,0,0.03);
             line-height: 1.7;
@@ -65,6 +65,50 @@
         }
         .intro-card b {
             color: var(--md-primary);
+        }
+
+        /* 历法卡片 (特殊强调) */
+        .calendar-card {
+            background: var(--md-tertiary-container);
+            color: var(--md-on-tertiary-container);
+            border-radius: 24px;
+            padding: 24px;
+            margin-bottom: 32px;
+            border: 1px solid var(--md-tertiary);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        .calendar-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            border-bottom: 1px dashed var(--md-on-tertiary-container);
+            padding-bottom: 12px;
+        }
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            font-size: 14px;
+            margin-bottom: 16px;
+        }
+        .calendar-grid div {
+            background: rgba(255,255,255,0.2);
+            padding: 8px 12px;
+            border-radius: 8px;
+        }
+        .live-time {
+            background: var(--md-surface);
+            color: var(--md-primary);
+            padding: 12px;
+            border-radius: 12px;
+            text-align: center;
+            font-weight: 700;
+            font-size: 16px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            margin-top: 8px;
         }
 
         /* 导航区块标题 */
@@ -146,12 +190,33 @@
             </p>
         </div>
 
+        <!-- 历法系统 -->
+        <div class="calendar-card">
+            <div class="calendar-header">
+                <span class="material-symbols-rounded">hourglass_empty</span>
+                童世历法 (TrVR Calendar)
+            </div>
+            <div class="calendar-grid">
+                <div><b>1年</b> = 15个月 = 520天</div>
+                <div><b>1天</b> = 30小时 (昼16夜14)</div>
+                <div><b>寒季</b> = 4个月</div>
+                <div><b>暖季</b> = 7个月</div>
+                <div><b>炎季</b> = 4个月</div>
+                <div><b>1小时</b> = 60分钟</div>
+            </div>
+            <p style="font-size: 13px; line-height: 1.5; margin-bottom: 12px; opacity: 0.8;">
+                * 每年 1 月 1 日为暖季第一天。每三个月有一个大月（36天），其余为小月（34天）。
+            </p>
+            <div class="live-time" id="trvr-time">
+                正在计算当前时间...
+            </div>
+        </div>
+
         <!-- 导航目录 -->
         <div class="section-title">
             <span class="material-symbols-rounded" style="color: var(--md-primary);">auto_stories</span> 探索世界
         </div>
 
-        <!-- 世界观 -->
         <a href="./ifo.html" class="m3e-list-item">
             <div class="item-icon"><span class="material-symbols-rounded">public</span></div>
             <div class="item-content">
@@ -161,7 +226,6 @@
             <span class="material-symbols-rounded" style="color: var(--md-outline);">chevron_right</span>
         </a>
 
-        <!-- 人物图鉴 -->
         <a href="./prop.html" class="m3e-list-item">
             <div class="item-icon" style="background: var(--md-secondary-container); color: var(--md-on-secondary-container);">
                 <span class="material-symbols-rounded">groups</span>
@@ -173,7 +237,6 @@
             <span class="material-symbols-rounded" style="color: var(--md-outline);">chevron_right</span>
         </a>
 
-        <!-- 座位系统 -->
         <a href="./seat.html?clutu=v" class="m3e-list-item">
             <div class="item-icon" style="background: var(--md-tertiary-container); color: var(--md-on-tertiary-container);">
                 <span class="material-symbols-rounded">event_seat</span>
@@ -185,11 +248,22 @@
             <span class="material-symbols-rounded" style="color: var(--md-outline);">chevron_right</span>
         </a>
 
+        <a href="./invite.html" class="m3e-list-item">
+            <div class="item-icon" style="background: var(--md-surface-container-high); color: var(--md-on-surface-variant);">
+                <span class="material-symbols-rounded">edit_note</span>
+            </div>
+            <div class="item-content">
+                <div class="item-title">视角征集邀请</div>
+                <div class="item-sub">拿起笔，与我们共创 Tirvod 的世界</div>
+            </div>
+            <span class="material-symbols-rounded" style="color: var(--md-outline);">chevron_right</span>
+        </a>
+
         <div class="section-title" style="margin-top: 32px;">
             <span class="material-symbols-rounded" style="color: var(--md-error);">menu_book</span> 故事正文
         </div>
 
-        <!-- 正文占位（你可以随时把链接换掉） -->
+        <!-- 正文占位 -->
         <a href="#" class="m3e-list-item" style="opacity: 0.6; pointer-events: none;">
             <div class="item-icon" style="background: var(--md-surface-container-high); color: var(--md-on-surface-variant);">
                 <span class="material-symbols-rounded">edit_document</span>
@@ -202,5 +276,73 @@
 
     </div>
 
+    <!-- 实时历法计算脚本 -->
+    <script>
+        function updateTrvrTime() {
+            // 现实起点：2024-10-16 00:00:00
+            const realStart = new Date('2024-10-16T00:00:00').getTime();
+            const now = new Date().getTime();
+            
+            // 现实流逝的毫秒数，换算为 TrVR 秒
+            const elapsedRealSeconds = (now - realStart) / 1000;
+            
+            // TrVR 时间常量
+            const SEC_PER_MIN = 60;
+            const MIN_PER_HOUR = 60;
+            const SEC_PER_HOUR = SEC_PER_MIN * MIN_PER_HOUR;
+            const HOUR_PER_DAY = 30;
+            const SEC_PER_DAY = SEC_PER_HOUR * HOUR_PER_DAY; // 108,000 秒
+            
+            // 总 TrVR 天数与剩余秒数
+            const totalDays = Math.floor(elapsedRealSeconds / SEC_PER_DAY);
+            const remainSeconds = elapsedRealSeconds % SEC_PER_DAY;
+            
+            // 计算年份与当年剩余天数 (一年 520 天)
+            const DAYS_PER_YEAR = 520;
+            const years = Math.floor(totalDays / DAYS_PER_YEAR) + 1; // 童世1年开始
+            let daysInYear = totalDays % DAYS_PER_YEAR;
+            
+            // 月份天数定义：每三个月一个36天，两个34天
+            const monthDays = [36,34,34, 36,34,34, 36,34,34, 36,34,34, 36,34,34];
+            
+            let month = 0;
+            let currentMonthDays = 0;
+            for (let i = 0; i < 15; i++) {
+                if (daysInYear < monthDays[i]) {
+                    month = i + 1;
+                    currentMonthDays = daysInYear;
+                    break;
+                }
+                daysInYear -= monthDays[i];
+            }
+            
+            const day = currentMonthDays + 1;
+            
+            // 计算时间 (时:分:秒)
+            const currentHour = Math.floor(remainSeconds / SEC_PER_HOUR);
+            const currentMinute = Math.floor((remainSeconds % SEC_PER_HOUR) / SEC_PER_MIN);
+            const currentSecond = Math.floor(remainSeconds % SEC_PER_MIN);
+            
+            // 计算季节 (1-3暖, 4-6炎, 7-10寒, 11-15暖)
+            let season = '';
+            if (month >= 1 && month <= 3) season = '暖季';
+            else if (month >= 4 && month <= 6) season = '炎季';
+            else if (month >= 7 && month <= 10) season = '寒季';
+            else if (month >= 11 && month <= 15) season = '暖季';
+            
+            const h = currentHour.toString().padStart(2, '0');
+            const m = currentMinute.toString().padStart(2, '0');
+            const s = currentSecond.toString().padStart(2, '0');
+            
+            // 组合输出字符串
+            const timeString = `童世 ${years} 年 ${month} 月 ${day} 日 ${h}:${m}:${s}<br><span style="font-size:14px; font-weight:normal;">(此时为 ${season})</span>`;
+            
+            document.getElementById('trvr-time').innerHTML = timeString;
+        }
+
+        // 启动时立即更新一次，然后每秒更新
+        updateTrvrTime();
+        setInterval(updateTrvrTime, 1000);
+    </script>
 </body>
 </html>
