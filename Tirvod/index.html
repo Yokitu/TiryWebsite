@@ -252,14 +252,14 @@
             <span class="material-symbols-rounded" style="color: var(--md-error);">menu_book</span> 故事正文
         </div>
 
-        <!-- 正式的第一章链接 -->
-        <a href="./main/psj1.html" class="m3e-list-item" style="border: 2px solid var(--md-primary);">
+        <!-- 指向根目录 reader.html 的链接，读取 md 文件 -->
+        <a href="../reader.html?file=./Tirvod/main/psj1.md" class="m3e-list-item" style="border: 2px solid var(--md-primary);">
             <div class="item-icon" style="background: var(--md-primary); color: var(--md-on-primary);">
                 <span class="material-symbols-rounded">auto_stories</span>
             </div>
             <div class="item-content">
                 <div class="item-title" style="color: var(--md-primary);">第一集：童世2年3月20日</div>
-                <div class="item-sub">作者：天边橒、Jidurt · 主分支 · 默认角度</div>
+                <div class="item-sub">主分支 · 默认视角 · 天边橒、Jidurt</div>
             </div>
             <span class="material-symbols-rounded" style="color: var(--md-primary);">chevron_right</span>
         </a>
@@ -273,7 +273,7 @@
             const now = new Date().getTime();
             const elapsedRealSeconds = (now - realStart) / 1000;
             const SEC_PER_HOUR = 3600;
-            const SEC_PER_DAY = SEC_PER_HOUR * 30; // 108,000 秒
+            const SEC_PER_DAY = SEC_PER_HOUR * 30;
             
             const totalDays = Math.floor(elapsedRealSeconds / SEC_PER_DAY);
             const remainSeconds = elapsedRealSeconds % SEC_PER_DAY;
