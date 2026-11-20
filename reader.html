@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="teal">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>阅读 - Tiry</title>
+    <!-- 根目录下直接引入同级的 m3e.css -->
+    <link rel="stylesheet" href="./m3e.css">
+    <!-- 引入 Markdown 解析库 -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        body {
+            padding-bottom: 48px;
+            background-color: var(--md-surface-container-lowest);
+        }
+        .app-container {
+            max-width: 680px;
+            margin: 0 auto;
+            padding: 16px;
+        }
+        
+        /* 阅读器容器 */
+        .markdown-body {
+            background: var(--md-surface);
+            border-radius: 20px;
+            padding: 32px 24px;
+            border: 1px solid var(--md-outline-variant);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            font-size: 16px;
+            line-height: 1.8;
+            color: var(--md-on-surface);
+        }
+
+        /* 针对 Markdown 渲染出来的元素进行 M3E 风格美化 */
+        .markdown-body h1 {
+            font-size: 26px;
+            color: var(--md-primary);
+            margin-bottom: 8px;
+            border-bottom: 2px solid var(--md-primary-container);
+            padding-bottom: 12px;
+        }
+        .markdown-body h2 {
+            font-size: 20px;
+            color: var(--md-primary);
+            margin-top: 24px;
+            margin-bottom: 12px;
+        }
+        .markdown-body h3 {
+            font-size: 18px;
+            color: var(--md-tertiary);
+            margin-top: 20px;
+        }
+        .markdown-body p {
+            margin-bottom: 16px;
+            text-align: justify;
+        }
+        .markdown-body blockquote {
+            border-left: 4px solid var(--md-primary);
+            background: var(--md-surface-container);
+            margin: 16px 0;
+            padding: 12px 16px;
+            border-radius: 0 8px 8px 0;
+            color: var(--md-on-surface-variant);
+        }
+        .markdown-body blockquote p { margin-bottom: 0; }
+        .markdown-body strong {
+            color: var(--md-primary);
+        }
+        .markdown-body hr {
+            border: none;
+            border-top: 1px dashed var(--md-outline-variant);
+            margin: 32px 0;
+        }
+        .markdown-body ul, .markdown-body ol {
+            margin-bottom: 16px;
+            padding-left: 24px;
+        }
+        .markdown-body li { margin-bottom: 8px; }
+        .markdown-body img {
+            max-width: 100%;
+            border-radius: 12px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--md-on-surface-variant);
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="m3e-appbar">
+        <!-- 使用 history.back() 返回上一页，这样从哪来的就回哪去 -->
+        <button class="m3e-icon-btn" onclick="history.back()">
+            <span class="material-symbols-rounded">arrow_back</span>
+        </button>
+        <div class="title" id="page-title">加载中...</div>
+    </header>
+
+    <div class="app-container">
+        <div class="markdown-body" id="content">
+            <div class="loading">正在加载文档...</div>
+        </div>
+    </div>
+
+    <script>
+        // 获取 URL 参数中的文件路径
+        const urlParams = new URLSearchParams(window.location.search);
+        const filePath = urlParams.get('file');
+
+        if (!filePath) {
+            document.getElementById('content').innerHTML = '<h2>未指定文件</h2><p>请在网址后加上 ?file=文件路径，例如：<br>?file=./Tirvod/main/psj1.md</p>';
+            document.getElementById('page-title').textContent = '错误';
+        } else {
+            fetch(filePath)
+                .then(response => {
+                    if (!response.ok) throw new Error('找不到文件');
+                    return response.text();
+                })
+                .then(mdText => {
+                    // 使用 marked 渲染
+                    const htmlContent = marked.parse(mdText);
+                    document.getElementById('content').innerHTML = htmlContent;
+                    
+                    // 自动提取第一个标题作为网页标题
+                    const match = mdText.match(/^#\s+(.+)$/m);
+                    if (match && match[1]) {
+                        document.getElementById('page-title').textContent = match[1];
+                    } else {
+                        document.getElementById('page-title').textContent = '阅读';
+                    }
+                })
+                .catch(error => {
+                    document.getElementById('content').innerHTML = `<div class="loading" style="color:var(--md-error)">读取失败：${error.message}<br>请检查文件路径是否正确。</div>`;
+                    document.getElementById('page-title').textContent = '出错了';
+                });
+        }
+    </script>
+</body>
+</html>
