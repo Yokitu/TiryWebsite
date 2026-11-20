@@ -7,25 +7,10 @@
     <!-- 引入同目录下的通用 M3E 样式 -->
     <link rel="stylesheet" href="./m3e.css">
     <style>
-        body {
-            padding-bottom: 32px;
-        }
-        .app-container {
-            max-width: 500px;
-            margin: 0 auto;
-            padding: 16px;
-        }
-        .section-title {
-            font-size: 20px;
-            font-weight: 500;
-            color: var(--md-on-surface-variant);
-            margin: 24px 8px 12px;
-        }
-        /* 覆盖 m3e.css 里的 a 标签默认样式，让列表项可以作为链接点击 */
-        a.m3e-list-item {
-            text-decoration: none;
-            color: var(--md-on-surface);
-        }
+        body { padding-bottom: 32px; }
+        .app-container { max-width: 500px; margin: 0 auto; padding: 16px; }
+        .section-title { font-size: 20px; font-weight: 500; color: var(--md-on-surface-variant); margin: 24px 8px 12px; }
+        a.m3e-list-item { text-decoration: none; color: var(--md-on-surface); }
     </style>
 </head>
 <body>
@@ -90,9 +75,28 @@
             </a>
         </div>
 
+        <!-- 故事宇宙 (新增) -->
+        <div class="section-title" style="display: flex; justify-content: space-between; align-items: baseline;">
+            <span>探索魔法世界</span>
+            <span style="font-size: 14px; font-weight: 400; color: var(--md-primary);">Tirvod</span>
+        </div>
+        <div class="m3e-list">
+            <a href="./Tirvod/index.html" class="m3e-list-item">
+                <div class="lead" style="background-color: var(--md-tertiary-container); color: var(--md-on-tertiary-container);">
+                    <span class="material-symbols-rounded">auto_stories</span>
+                </div>
+                <div class="content">
+                    <div class="title">Tirvod Rilet</div>
+                    <div class="subtitle">童世界生活 - Tiry 团队原创故事</div>
+                </div>
+                <div class="trailing"><span class="material-symbols-rounded">chevron_right</span></div>
+            </a>
+        </div>
+
         <!-- 特定作者导航 -->
         <div class="section-title" style="display: flex; justify-content: space-between; align-items: baseline;">
             <span>想查看特定作者的导航页吗？</span>
+            <span style="font-size: 14px; font-weight: 400; color: var(--md-primary);">按作者查看</span>
         </div>
         <div class="m3e-list">
             <a href="./Yokitu/nav.html" class="m3e-list-item">
@@ -100,7 +104,7 @@
                     <span class="material-symbols-rounded">person</span>
                 </div>
                 <div class="content">
-                    <div class="title">Yokitu的专属作品发布页</div>
+                    <div class="title">Yokitu的发布</div>
                     <div class="subtitle">查看由 Yokitu 创建和整理的页面</div>
                 </div>
                 <div class="trailing"><span class="material-symbols-rounded">chevron_right</span></div>
@@ -111,7 +115,7 @@
         <div class="section-title">扩展页面</div>
         <div class="m3e-list">
             <a href="./BifViz.html" class="m3e-list-item">
-                <div class="lead"><span class="material-symbols-rounded">auto_stories</span></div>
+                <div class="lead"><span class="material-symbols-rounded">description</span></div>
                 <div class="content">
                     <div class="title">BifViz 随笔</div>
                     <div class="subtitle">关于青春与网络的文章 (彩蛋)</div>
@@ -130,7 +134,7 @@
                 <div class="lead"><span class="material-symbols-rounded">science</span></div>
                 <div class="content">
                     <div class="title">THDS 页面</div>
-                    <div class="subtitle">TiryHi旧版</div>
+                    <div class="subtitle">测试/特殊页面</div>
                 </div>
                 <div class="trailing"><span class="material-symbols-rounded">chevron_right</span></div>
             </a>
@@ -145,7 +149,7 @@
                 </div>
                 <div class="content">
                     <div class="title">测试沙盒 (test)</div>
-                    <div class="subtitle">用于调试</div>
+                    <div class="subtitle">用于调试和预览新功能</div>
                 </div>
                 <div class="trailing"><span class="material-symbols-rounded">chevron_right</span></div>
             </a>
