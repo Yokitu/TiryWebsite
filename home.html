@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>打开新的标签页 - Tiry</title>
+    <title>起始页</title>
     <!-- 引入通用 M3E 样式 -->
     <link rel="stylesheet" href="./m3e.css">
     <style>
@@ -13,13 +13,27 @@
             align-items: center;
             justify-content: center;
             min-height: 100vh;
-            background: var(--md-surface-container-lowest);
+            background-color: var(--md-surface-container-lowest);
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            transition: background-image 0.5s ease, background-color 0.5s;
             padding: 24px;
             box-sizing: border-box;
             margin: 0;
         }
 
-        /* 时钟区 (点击彩蛋) */
+        /* 为了在有壁纸时文字依然清晰，加个动态模糊遮罩 */
+        body.has-bg::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(2px);
+            z-index: -1;
+        }
+
+        /* 时钟区 */
         .clock-container {
             text-align: center;
             margin-bottom: 48px;
@@ -27,9 +41,7 @@
             user-select: none;
             transition: transform 0.2s;
         }
-        .clock-container:active {
-            transform: scale(0.95);
-        }
+        .clock-container:active { transform: scale(0.95); }
         .time {
             font-size: 80px;
             font-weight: 700;
@@ -37,20 +49,24 @@
             line-height: 1;
             letter-spacing: -2px;
             font-variant-numeric: tabular-nums;
-            transition: color 0.3s;
+            transition: color 0.3s, text-shadow 0.3s;
         }
+        body.has-bg .time { color: #fff; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
+        
         .date {
             font-size: 18px;
             color: var(--md-on-surface-variant);
             margin-top: 12px;
             font-weight: 500;
-            transition: color 0.3s;
+            transition: color 0.3s, text-shadow 0.3s;
         }
+        body.has-bg .date { color: rgba(255,255,255,0.8); text-shadow: 0 1px 5px rgba(0,0,0,0.5); }
 
         /* 搜索框 */
         .search-wrapper {
             width: 100%;
             max-width: 500px;
+            z-index: 10;
         }
         .search-box {
             display: flex;
@@ -63,8 +79,9 @@
             border: 1px solid var(--md-outline-variant);
             transition: box-shadow 0.3s, border-color 0.3s;
         }
+        body.has-bg .search-box { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(10px); border: none; }
         .search-box:focus-within {
-            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
             border-color: var(--md-primary);
         }
         .search-box select {
@@ -111,25 +128,40 @@
             gap: 24px;
             opacity: 0.3;
             transition: opacity 0.3s;
+            z-index: 10;
         }
-        .footer-links:hover {
-            opacity: 1;
-        }
+        .footer-links:hover { opacity: 1; }
         .footer-links a {
             font-size: 13px;
             color: var(--md-on-surface-variant);
             text-decoration: none;
             cursor: pointer;
         }
-        .footer-links a:hover {
-            text-decoration: underline;
-        }
+        body.has-bg .footer-links a { color: #fff; }
+        .footer-links a:hover { text-decoration: underline; }
 
-        /* 弹窗 */
+        /* 一言 */
+        .hitokoto {
+            position: fixed;
+            bottom: 60px;
+            font-size: 14px;
+            color: var(--md-on-surface-variant);
+            opacity: 0.7;
+            text-align: center;
+            width: 100%;
+            padding: 0 24px;
+            box-sizing: border-box;
+            font-style: italic;
+            transition: opacity 0.3s;
+            z-index: 10;
+        }
+        body.has-bg .hitokoto { color: rgba(255,255,255,0.8); text-shadow: 0 1px 4px rgba(0,0,0,0.5); }
+
+        /* 弹窗 (M3E 风格) */
         .dialog-scrim {
             position: fixed;
             inset: 0;
-            background: rgba(0,0,0,0.4);
+            background: rgba(0,0,0,0.5);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -137,47 +169,85 @@
             opacity: 0;
             pointer-events: none;
             transition: opacity 0.3s;
+            backdrop-filter: blur(4px);
         }
-        .dialog-scrim.open {
-            opacity: 1;
-            pointer-events: auto;
-        }
+        .dialog-scrim.open { opacity: 1; pointer-events: auto; }
         .dialog {
             background: var(--md-surface-container-high);
             border-radius: 28px;
             padding: 24px;
             width: 90%;
-            max-width: 340px;
+            max-width: 360px;
             color: var(--md-on-surface);
             transform: translateY(20px) scale(0.95);
             transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
             box-shadow: 0 10px 40px rgba(0,0,0,0.2);
         }
-        .dialog-scrim.open .dialog {
-            transform: translateY(0) scale(1);
-        }
-        .dialog h3 {
-            margin: 0 0 16px 0;
-            font-size: 22px;
-            font-weight: 600;
-        }
-        .dialog p {
-            font-size: 14px;
-            line-height: 1.6;
-            color: var(--md-on-surface-variant);
-            margin-bottom: 24px;
-        }
-        .dialog .btn {
+        .dialog-scrim.open .dialog { transform: translateY(0) scale(1); }
+        
+        .dialog h3 { margin: 0 0 20px 0; font-size: 22px; font-weight: 600; }
+        .setting-group { margin-bottom: 20px; }
+        .setting-group label { display: block; font-size: 14px; font-weight: 500; margin-bottom: 8px; color: var(--md-on-surface-variant); }
+        
+        /* 下拉框与输入框 */
+        .dialog select, .dialog input[type="text"] {
             width: 100%;
             padding: 12px;
-            border-radius: 999px;
-            background: var(--md-primary);
-            color: var(--md-on-primary);
-            border: none;
+            border-radius: 12px;
+            border: 1px solid var(--md-outline);
+            background: var(--md-surface);
+            color: var(--md-on-surface);
             font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
+            font-family: inherit;
+            outline: none;
+            box-sizing: border-box;
+            margin-bottom: 8px;
         }
+        .dialog select:focus, .dialog input[type="text"]:focus { border-color: var(--md-primary); }
+        
+        /* 开关 */
+        .switch-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+        }
+        .switch-row label { margin: 0; font-size: 16px; color: var(--md-on-surface); }
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 24px;
+        }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: var(--md-surface-container-highest);
+            transition: .4s;
+            border-radius: 24px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px; width: 18px;
+            left: 3px; bottom: 3px;
+            background-color: var(--md-outline);
+            transition: .4s;
+            border-radius: 50%;
+        }
+        .switch input:checked + .slider { background-color: var(--md-primary); }
+        .switch input:checked + .slider:before { transform: translateX(20px); background-color: var(--md-on-primary); }
+
+        .dialog-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 24px;
+        }
+        .btn-text { background: transparent; border: none; color: var(--md-primary); font-size: 15px; font-weight: 600; cursor: pointer; padding: 8px 16px; border-radius: 999px; }
+        .btn-filled { background: var(--md-primary); border: none; color: var(--md-on-primary); font-size: 15px; font-weight: 600; cursor: pointer; padding: 10px 24px; border-radius: 999px; }
 
         @media (max-width: 600px) {
             .time { font-size: 64px; }
@@ -187,7 +257,7 @@
 </head>
 <body>
 
-    <!-- 时钟（点击切换时间） -->
+    <!-- 时钟 -->
     <div class="clock-container" id="clockContainer" title="点击切换 TrV 时间">
         <div class="time" id="clock">00:00</div>
         <div class="date" id="date">加载中...</div>
@@ -208,7 +278,10 @@
         </div>
     </div>
 
-    <!-- 底部极其不显眼的链接 -->
+    <!-- 一言 -->
+    <div class="hitokoto" id="hitokoto"></div>
+
+    <!-- 底部链接 -->
     <div class="footer-links">
         <a href="https://tiry.itlaozai.top/nav.html">Tiry导航</a>
         <a onclick="openSettings()">网站设置</a>
@@ -218,19 +291,151 @@
     <div class="dialog-scrim" id="settingsScrim">
         <div class="dialog">
             <h3>网站设置</h3>
-            <p>
-                • <b>设为浏览器主页</b>：请在浏览器设置中，将启动页设为当前网址。<br><br>
-                • <b>更换壁纸</b>：本页面暂不支持直接上传壁纸，你可以安装浏览器的“新标签页扩展”来实现更丰富的壁纸功能。
-            </p>
-            <button class="btn" onclick="closeSettings()">我知道了</button>
+            
+            <div class="setting-group">
+                <label>壁纸设置</label>
+                <select id="bgType" onchange="toggleBgInputs()">
+                    <option value="none">无壁纸（纯色）</option>
+                    <option value="random">随机二次元壁纸</option>
+                    <option value="url">图片直链</option>
+                    <option value="local">本地上传</option>
+                </select>
+                <input type="text" id="bgUrl" placeholder="输入 https://... 图片链接" style="display:none;">
+                <input type="file" id="bgFile" accept="image/*" style="display:none; margin-bottom: 8px;">
+            </div>
+
+            <div class="setting-group switch-row">
+                <label>显示一言（随机语录）</label>
+                <label class="switch">
+                    <input type="checkbox" id="toggleHitokoto" onchange="toggleHitokoto()">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="dialog-actions">
+                <button class="btn-text" onclick="closeSettings()">取消</button>
+                <button class="btn-filled" onclick="saveSettings()">保存设置</button>
+            </div>
         </div>
     </div>
 
     <script>
-        // 状态变量：当前是现实时间还是 TrV 时间
+        // 状态变量
         let isTrvTime = false;
+        let hitokotoText = "探索，开发，学习，互助…… — Tiry 团队";
 
-        // 现实时间更新
+        // --- 设置逻辑 ---
+        // 从本地存储加载设置
+        let settings = JSON.parse(localStorage.getItem('tiry_home_settings')) || {
+            bgType: 'none',
+            bgUrl: '',
+            bgLocal: '',
+            showHitokoto: true
+        };
+
+        // 应用设置
+        function applySettings() {
+            const body = document.body;
+            
+            // 壁纸逻辑
+            body.classList.remove('has-bg');
+            body.style.backgroundImage = 'none';
+
+            if (settings.bgType === 'random') {
+                // 使用必应每日一图作为随机壁纸
+                body.style.backgroundImage = `url('https://api.dujin.org/bing/1920.php?t=${Date.now()}')`;
+                body.classList.add('has-bg');
+            } else if (settings.bgType === 'url' && settings.bgUrl) {
+                body.style.backgroundImage = `url('${settings.bgUrl}')`;
+                body.classList.add('has-bg');
+            } else if (settings.bgType === 'local' && settings.bgLocal) {
+                body.style.backgroundImage = `url('${settings.bgLocal}')`;
+                body.classList.add('has-bg');
+            }
+
+            // 一言逻辑
+            const hk = document.getElementById('hitokoto');
+            const toggle = document.getElementById('toggleHitokoto');
+            toggle.checked = settings.showHitokoto;
+            
+            if (settings.showHitokoto) {
+                hk.style.display = 'block';
+                if (!hitokotoText) fetchHitokoto();
+                else hk.textContent = hitokotoText;
+            } else {
+                hk.style.display = 'none';
+            }
+        }
+
+        // 打开设置弹窗并回显当前设置
+        function openSettings() {
+            document.getElementById('bgType').value = settings.bgType;
+            document.getElementById('bgUrl').value = settings.bgUrl || '';
+            document.getElementById('toggleHitokoto').checked = settings.showHitokoto;
+            toggleBgInputs();
+            document.getElementById('settingsScrim').classList.add('open');
+        }
+
+        function closeSettings() {
+            document.getElementById('settingsScrim').classList.remove('open');
+        }
+
+        // 控制壁纸输入框的显示
+        function toggleBgInputs() {
+            const type = document.getElementById('bgType').value;
+            document.getElementById('bgUrl').style.display = type === 'url' ? 'block' : 'none';
+            document.getElementById('bgFile').style.display = type === 'local' ? 'block' : 'none';
+        }
+
+        // 本地图片读取
+        document.getElementById('bgFile').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    // 保存 base64 图片数据
+                    settings.bgLocal = event.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // 保存设置
+        function saveSettings() {
+            settings.bgType = document.getElementById('bgType').value;
+            settings.bgUrl = document.getElementById('bgUrl').value.trim();
+            settings.showHitokoto = document.getElementById('toggleHitokoto').checked;
+
+            // 如果选择了直链但没填链接，退回无壁纸
+            if (settings.bgType === 'url' && !settings.bgUrl) {
+                settings.bgType = 'none';
+            }
+
+            localStorage.setItem('tiry_home_settings', JSON.stringify(settings));
+            applySettings();
+            closeSettings();
+        }
+
+        // 一言控制
+        function toggleHitokoto() {
+            // 只是 UI 变化，保存时生效
+        }
+
+        function fetchHitokoto() {
+            if (!settings.showHitokoto) return;
+            fetch('https://v1.hitokoto.cn/')
+                .then(res => res.json())
+                .then(data => {
+                    hitokotoText = `“${data.hitokoto}” — ${data.from}`;
+                    document.getElementById('hitokoto').textContent = hitokotoText;
+                })
+                .catch(() => {
+                    hitokotoText = `“探索，开发，学习，互助……” — Tiry 团队`;
+                    document.getElementById('hitokoto').textContent = hitokotoText;
+                });
+        }
+
+        // --- 时钟逻辑 ---
         function updateRealTime() {
             if (isTrvTime) return;
             const now = new Date();
@@ -238,21 +443,17 @@
             const minutes = String(now.getMinutes()).padStart(2, '0');
             document.getElementById('clock').textContent = `${hours}:${minutes}`;
 
-            const year = now.getFullYear();
-            const month = now.getMonth() + 1;
-            const day = now.getDate();
             const weekDays = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
-            document.getElementById('date').textContent = `${year}年${month}月${day}日 ${weekDays[now.getDay()]}`;
+            document.getElementById('date').textContent = `${now.getFullYear()}年${now.getMonth()+1}月${now.getDate()}日 ${weekDays[now.getDay()]}`;
         }
 
-        // TrV 时间计算与更新
         function updateTrvTime() {
             if (!isTrvTime) return;
             const realStart = new Date('2024-10-16T00:00:00').getTime();
             const now = new Date().getTime();
             const elapsedRealSeconds = (now - realStart) / 1000;
             const SEC_PER_HOUR = 3600;
-            const SEC_PER_DAY = SEC_PER_HOUR * 30; // TrV一天30小时
+            const SEC_PER_DAY = SEC_PER_HOUR * 30; 
             
             const totalDays = Math.floor(elapsedRealSeconds / SEC_PER_DAY);
             const remainSeconds = elapsedRealSeconds % SEC_PER_DAY;
@@ -277,81 +478,60 @@
             const currentHour = Math.floor(remainSeconds / SEC_PER_HOUR);
             const currentMinute = Math.floor((remainSeconds % SEC_PER_HOUR) / 60);
             
-            let season = '';
-            if (month >= 1 && month <= 3) season = '暖季';
-            else if (month >= 4 && month <= 6) season = '炎季';
-            else if (month >= 7 && month <= 10) season = '寒季';
-            else if (month >= 11 && month <= 15) season = '暖季';
+            let season = (month >= 1 && month <= 3) || (month >= 11) ? '暖季' : (month <= 6 ? '炎季' : '寒季');
             
-            const h = currentHour.toString().padStart(2, '0');
-            const m = currentMinute.toString().padStart(2, '0');
-            
-            // 替换显示内容
-            document.getElementById('clock').textContent = `${h}:${m}`;
+            document.getElementById('clock').textContent = `${String(currentHour).padStart(2, '0')}:${String(currentMinute).padStart(2, '0')}`;
             document.getElementById('date').textContent = `童世 ${years} 年 ${month} 月 ${day} 日 · ${season}`;
             
-            // 让 TrV 的时间变成紫色，提示用户当前处于彩蛋模式
             document.getElementById('clock').style.color = 'var(--md-tertiary)';
             document.getElementById('date').style.color = 'var(--md-tertiary)';
+            if (document.body.classList.contains('has-bg')) {
+                document.getElementById('clock').style.textShadow = '0 2px 10px rgba(0,0,0,0.8)';
+            }
         }
 
-        // 定时器，每秒更新
         setInterval(() => {
             updateRealTime();
             updateTrvTime();
         }, 1000);
         
-        // 页面初始化
-        updateRealTime();
-
-        // 点击时钟切换
         document.getElementById('clockContainer').addEventListener('click', () => {
             isTrvTime = !isTrvTime;
-            
             if (isTrvTime) {
                 updateTrvTime();
             } else {
-                // 恢复现实时间的颜色和内容
-                document.getElementById('clock').style.color = 'var(--md-primary)';
-                document.getElementById('date').style.color = 'var(--md-on-surface-variant)';
+                document.getElementById('clock').style.color = document.body.classList.contains('has-bg') ? '#fff' : 'var(--md-primary)';
+                document.getElementById('date').style.color = document.body.classList.contains('has-bg') ? 'rgba(255,255,255,0.8)' : 'var(--md-on-surface-variant)';
                 updateRealTime();
             }
         });
 
-        // 搜索功能
+        // --- 搜索逻辑 ---
         function doSearch() {
             const query = document.getElementById('searchInput').value.trim();
             if (!query) return;
             
             if (query.includes('.') && !query.includes(' ')) {
-                if (!/^https?:\/\//i.test(query)) {
-                    window.location.href = 'https://' + query;
-                } else {
-                    window.location.href = query;
-                }
+                window.location.href = /^https?:\/\//i.test(query) ? query : 'https://' + query;
             } else {
                 const engine = document.getElementById('engine').value;
                 window.location.href = engine + encodeURIComponent(query);
             }
         }
 
-        document.getElementById('searchInput').addEventListener('keypress', function (e) {
+        document.getElementById('searchInput').addEventListener('keypress', e => {
             if (e.key === 'Enter') doSearch();
         });
 
-        // 设置弹窗控制
-        function openSettings() {
-            document.getElementById('settingsScrim').classList.add('open');
-        }
-        function closeSettings() {
-            document.getElementById('settingsScrim').classList.remove('open');
-        }
-        
         // 点击遮罩关闭弹窗
         document.getElementById('settingsScrim').addEventListener('click', function(e) {
             if (e.target === this) closeSettings();
         });
-    </script>
 
+        // 初始化
+        applySettings();
+        updateRealTime();
+        if (settings.showHitokoto) fetchHitokoto();
+    </script>
 </body>
 </html>
