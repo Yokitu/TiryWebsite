@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="teal">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Tiry 起始页</title>
+    <!-- 引入通用 M3E 样式 -->
+    <link rel="stylesheet" href="./m3e.css">
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: var(--md-surface-container-lowest);
+            padding: 24px;
+            box-sizing: border-box;
+        }
+
+        /* 顶部时钟区 */
+        .clock-container {
+            text-align: center;
+            margin-bottom: 48px;
+            animation: fadeInDown 0.8s ease-out;
+        }
+        .time {
+            font-size: 72px;
+            font-weight: 700;
+            color: var(--md-primary);
+            line-height: 1;
+            letter-spacing: -2px;
+            font-variant-numeric: tabular-nums;
+        }
+        .date {
+            font-size: 18px;
+            color: var(--md-on-surface-variant);
+            margin-top: 12px;
+            font-weight: 500;
+        }
+
+        /* 搜索框 */
+        .search-wrapper {
+            width: 100%;
+            max-width: 600px;
+            margin-bottom: 48px;
+            animation: fadeInUp 0.8s ease-out;
+        }
+        .search-box {
+            display: flex;
+            align-items: center;
+            background: var(--md-surface);
+            border-radius: 999px;
+            padding: 8px 16px;
+            height: 64px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+            border: 1px solid var(--md-outline-variant);
+            transition: box-shadow 0.3s, border-color 0.3s;
+        }
+        .search-box:focus-within {
+            box-shadow: 0 12px 32px rgba(0,0,0,0.12);
+            border-color: var(--md-primary);
+        }
+        .search-box select {
+            border: none;
+            background: transparent;
+            font-size: 16px;
+            color: var(--md-on-surface-variant);
+            outline: none;
+            cursor: pointer;
+            padding-right: 12px;
+            border-right: 1px solid var(--md-outline-variant);
+            margin-right: 12px;
+            font-family: inherit;
+        }
+        .search-box input {
+            flex: 1;
+            border: none;
+            background: transparent;
+            font-size: 18px;
+            color: var(--md-on-surface);
+            outline: none;
+            font-family: inherit;
+        }
+        .search-box button {
+            background: var(--md-primary);
+            color: var(--md-on-primary);
+            border: none;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .search-box button:active { transform: scale(0.9); }
+
+        /* 快捷导航网格 */
+        .shortcuts {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+            gap: 16px;
+            width: 100%;
+            max-width: 600px;
+            animation: fadeInUp 1s ease-out;
+        }
+        .shortcut-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            background: var(--md-surface);
+            padding: 16px 8px;
+            border-radius: 20px;
+            border: 1px solid transparent;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        .shortcut-item:hover {
+            background: var(--md-surface-container-low);
+            border-color: var(--md-outline-variant);
+            transform: translateY(-4px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.05);
+        }
+        .shortcut-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 16px;
+            background: var(--md-primary-container);
+            color: var(--md-on-primary-container);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 12px;
+        }
+        .shortcut-name {
+            font-size: 13px;
+            color: var(--md-on-surface);
+            font-weight: 500;
+            text-align: center;
+        }
+
+        /* 底部语录 */
+        .hitokoto {
+            position: fixed;
+            bottom: 24px;
+            font-size: 14px;
+            color: var(--md-on-surface-variant);
+            opacity: 0.7;
+            text-align: center;
+            width: 100%;
+            padding: 0 24px;
+            box-sizing: border-box;
+            font-style: italic;
+        }
+
+        /* 动画 */
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 600px) {
+            .time { font-size: 56px; }
+            .search-box { height: 56px; }
+            .search-box input { font-size: 16px; }
+            .search-box button { width: 40px; height: 40px; }
+            .shortcuts { grid-template-columns: repeat(3, 1fr); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 时钟 -->
+    <div class="clock-container">
+        <div class="time" id="clock">00:00</div>
+        <div class="date" id="date">加载中...</div>
+    </div>
+
+    <!-- 搜索框 -->
+    <div class="search-wrapper">
+        <div class="search-box">
+            <select id="engine">
+                <option value="https://www.bing.com/search?q=">Bing</option>
+                <option value="https://www.baidu.com/s?wd=">百度</option>
+                <option value="https://www.google.com/search?q=">Google</option>
+            </select>
+            <input type="text" id="searchInput" placeholder="搜索，或输入网址..." autocomplete="off">
+            <button onclick="doSearch()">
+                <span class="material-symbols-rounded">search</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- 快捷导航 -->
+    <div class="shortcuts">
+        <a href="https://tiry.itlaozai.top" class="shortcut-item">
+            <div class="shortcut-icon"><span class="material-symbols-rounded">home</span></div>
+            <div class="shortcut-name">Tiry 官网</div>
+        </a>
+        <a href="https://tiry.itlaozai.top/nav.html" class="shortcut-item">
+            <div class="shortcut-icon" style="background: var(--md-secondary-container); color: var(--md-on-secondary-container);"><span class="material-symbols-rounded">apps</span></div>
+            <div class="shortcut-name">全站导航</div>
+        </a>
+        <a href="https://github.com/Yokitu" class="shortcut-item">
+            <div class="shortcut-icon" style="background: var(--md-tertiary-container); color: var(--md-on-tertiary-container);"><span class="material-symbols-rounded">code</span></div>
+            <div class="shortcut-name">GitHub</div>
+        </a>
+        <a href="https://tiry.itlaozai.top/Tirvod/index.html" class="shortcut-item">
+            <div class="shortcut-icon" style="background: var(--md-error-container); color: var(--md-on-error-container);"><span class="material-symbols-rounded">auto_stories</span></div>
+            <div class="shortcut-name">TrVR 故事</div>
+        </a>
+        <a href="https://tiry.itlaozai.top/study.html" class="shortcut-item">
+            <div class="shortcut-icon" style="background: #FFF3E0; color: #E65100;"><span class="material-symbols-rounded">menu_book</span></div>
+            <div class="shortcut-name">学习资料</div>
+        </a>
+        <a href="https://tiry.itlaozai.top/BifViz.html" class="shortcut-item">
+            <div class="shortcut-icon" style="background: #E8F5E9; color: #2E7D32;"><span class="material-symbols-rounded">description</span></div>
+            <div class="shortcut-name">BifViz</div>
+        </a>
+    </div>
+
+    <!-- 底部一言 -->
+    <div class="hitokoto" id="hitokoto">正在获取今日语录...</div>
+
+    <script>
+        // 时钟功能
+        function updateClock() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            document.getElementById('clock').textContent = `${hours}:${minutes}`;
+
+            const year = now.getFullYear();
+            const month = now.getMonth() + 1;
+            const day = now.getDate();
+            const weekDays = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+            const weekDay = weekDays[now.getDay()];
+            document.getElementById('date').textContent = `${year}年${month}月${day}日 ${weekDay}`;
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // 搜索功能
+        function doSearch() {
+            const query = document.getElementById('searchInput').value.trim();
+            if (!query) return;
+            
+            // 简单的判断：如果包含 . 且没有空格，可能是个网址
+            if (query.includes('.') && !query.includes(' ')) {
+                if (!/^https?:\/\//i.test(query)) {
+                    window.location.href = 'https://' + query;
+                } else {
+                    window.location.href = query;
+                }
+            } else {
+                // 否则进行搜索
+                const engine = document.getElementById('engine').value;
+                window.location.href = engine + encodeURIComponent(query);
+            }
+        }
+
+        // 支持回车搜索
+        document.getElementById('searchInput').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') doSearch();
+        });
+
+        // 获取一言（调用免费的公共 API，若失败则显示默认文案）
+        fetch('https://v1.hitokoto.cn/')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('hitokoto').textContent = `“${data.hitokoto}” — ${data.from}`;
+            })
+            .catch(() => {
+                document.getElementById('hitokoto').textContent = `“探索，开发，学习，互助……” — Tiry 团队`;
+            });
+    </script>
+
+</body>
+</html>
