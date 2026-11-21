@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Tiry 起始页</title>
+    <title>打开新的标签页 - Tiry</title>
     <!-- 引入通用 M3E 样式 -->
     <link rel="stylesheet" href="./m3e.css">
     <style>
@@ -16,35 +16,41 @@
             background: var(--md-surface-container-lowest);
             padding: 24px;
             box-sizing: border-box;
+            margin: 0;
         }
 
-        /* 顶部时钟区 */
+        /* 时钟区 (点击彩蛋) */
         .clock-container {
             text-align: center;
             margin-bottom: 48px;
-            animation: fadeInDown 0.8s ease-out;
+            cursor: pointer;
+            user-select: none;
+            transition: transform 0.2s;
+        }
+        .clock-container:active {
+            transform: scale(0.95);
         }
         .time {
-            font-size: 72px;
+            font-size: 80px;
             font-weight: 700;
             color: var(--md-primary);
             line-height: 1;
             letter-spacing: -2px;
             font-variant-numeric: tabular-nums;
+            transition: color 0.3s;
         }
         .date {
             font-size: 18px;
             color: var(--md-on-surface-variant);
             margin-top: 12px;
             font-weight: 500;
+            transition: color 0.3s;
         }
 
         /* 搜索框 */
         .search-wrapper {
             width: 100%;
-            max-width: 600px;
-            margin-bottom: 48px;
-            animation: fadeInUp 0.8s ease-out;
+            max-width: 500px;
         }
         .search-box {
             display: flex;
@@ -52,19 +58,19 @@
             background: var(--md-surface);
             border-radius: 999px;
             padding: 8px 16px;
-            height: 64px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+            height: 60px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
             border: 1px solid var(--md-outline-variant);
             transition: box-shadow 0.3s, border-color 0.3s;
         }
         .search-box:focus-within {
-            box-shadow: 0 12px 32px rgba(0,0,0,0.12);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
             border-color: var(--md-primary);
         }
         .search-box select {
             border: none;
             background: transparent;
-            font-size: 16px;
+            font-size: 15px;
             color: var(--md-on-surface-variant);
             outline: none;
             cursor: pointer;
@@ -77,7 +83,7 @@
             flex: 1;
             border: none;
             background: transparent;
-            font-size: 18px;
+            font-size: 16px;
             color: var(--md-on-surface);
             outline: none;
             font-family: inherit;
@@ -86,8 +92,8 @@
             background: var(--md-primary);
             color: var(--md-on-primary);
             border: none;
-            width: 48px;
-            height: 48px;
+            width: 44px;
+            height: 44px;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -97,89 +103,92 @@
         }
         .search-box button:active { transform: scale(0.9); }
 
-        /* 快捷导航网格 */
-        .shortcuts {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
-            gap: 16px;
-            width: 100%;
-            max-width: 600px;
-            animation: fadeInUp 1s ease-out;
-        }
-        .shortcut-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-decoration: none;
-            background: var(--md-surface);
-            padding: 16px 8px;
-            border-radius: 20px;
-            border: 1px solid transparent;
-            transition: all 0.2s;
-            cursor: pointer;
-        }
-        .shortcut-item:hover {
-            background: var(--md-surface-container-low);
-            border-color: var(--md-outline-variant);
-            transform: translateY(-4px);
-            box-shadow: 0 6px 16px rgba(0,0,0,0.05);
-        }
-        .shortcut-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 16px;
-            background: var(--md-primary-container);
-            color: var(--md-on-primary-container);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 12px;
-        }
-        .shortcut-name {
-            font-size: 13px;
-            color: var(--md-on-surface);
-            font-weight: 500;
-            text-align: center;
-        }
-
-        /* 底部语录 */
-        .hitokoto {
+        /* 底部不显眼的链接 */
+        .footer-links {
             position: fixed;
             bottom: 24px;
-            font-size: 14px;
+            display: flex;
+            gap: 24px;
+            opacity: 0.3;
+            transition: opacity 0.3s;
+        }
+        .footer-links:hover {
+            opacity: 1;
+        }
+        .footer-links a {
+            font-size: 13px;
             color: var(--md-on-surface-variant);
-            opacity: 0.7;
-            text-align: center;
-            width: 100%;
-            padding: 0 24px;
-            box-sizing: border-box;
-            font-style: italic;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .footer-links a:hover {
+            text-decoration: underline;
         }
 
-        /* 动画 */
-        @keyframes fadeInDown {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
+        /* 弹窗 */
+        .dialog-scrim {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
         }
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        .dialog-scrim.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .dialog {
+            background: var(--md-surface-container-high);
+            border-radius: 28px;
+            padding: 24px;
+            width: 90%;
+            max-width: 340px;
+            color: var(--md-on-surface);
+            transform: translateY(20px) scale(0.95);
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        .dialog-scrim.open .dialog {
+            transform: translateY(0) scale(1);
+        }
+        .dialog h3 {
+            margin: 0 0 16px 0;
+            font-size: 22px;
+            font-weight: 600;
+        }
+        .dialog p {
+            font-size: 14px;
+            line-height: 1.6;
+            color: var(--md-on-surface-variant);
+            margin-bottom: 24px;
+        }
+        .dialog .btn {
+            width: 100%;
+            padding: 12px;
+            border-radius: 999px;
+            background: var(--md-primary);
+            color: var(--md-on-primary);
+            border: none;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
         }
 
         @media (max-width: 600px) {
-            .time { font-size: 56px; }
+            .time { font-size: 64px; }
             .search-box { height: 56px; }
-            .search-box input { font-size: 16px; }
-            .search-box button { width: 40px; height: 40px; }
-            .shortcuts { grid-template-columns: repeat(3, 1fr); }
         }
     </style>
 </head>
 <body>
 
-    <!-- 时钟 -->
-    <div class="clock-container">
+    <!-- 时钟（点击切换时间） -->
+    <div class="clock-container" id="clockContainer" title="点击切换 TrV 时间">
         <div class="time" id="clock">00:00</div>
         <div class="date" id="date">加载中...</div>
     </div>
@@ -199,40 +208,31 @@
         </div>
     </div>
 
-    <!-- 快捷导航 -->
-    <div class="shortcuts">
-        <a href="https://tiry.itlaozai.top" class="shortcut-item">
-            <div class="shortcut-icon"><span class="material-symbols-rounded">home</span></div>
-            <div class="shortcut-name">Tiry 官网</div>
-        </a>
-        <a href="https://tiry.itlaozai.top/nav.html" class="shortcut-item">
-            <div class="shortcut-icon" style="background: var(--md-secondary-container); color: var(--md-on-secondary-container);"><span class="material-symbols-rounded">apps</span></div>
-            <div class="shortcut-name">全站导航</div>
-        </a>
-        <a href="https://github.com/Yokitu" class="shortcut-item">
-            <div class="shortcut-icon" style="background: var(--md-tertiary-container); color: var(--md-on-tertiary-container);"><span class="material-symbols-rounded">code</span></div>
-            <div class="shortcut-name">GitHub</div>
-        </a>
-        <a href="https://tiry.itlaozai.top/Tirvod/index.html" class="shortcut-item">
-            <div class="shortcut-icon" style="background: var(--md-error-container); color: var(--md-on-error-container);"><span class="material-symbols-rounded">auto_stories</span></div>
-            <div class="shortcut-name">TrVR 故事</div>
-        </a>
-        <a href="https://tiry.itlaozai.top/study.html" class="shortcut-item">
-            <div class="shortcut-icon" style="background: #FFF3E0; color: #E65100;"><span class="material-symbols-rounded">menu_book</span></div>
-            <div class="shortcut-name">学习资料</div>
-        </a>
-        <a href="https://tiry.itlaozai.top/BifViz.html" class="shortcut-item">
-            <div class="shortcut-icon" style="background: #E8F5E9; color: #2E7D32;"><span class="material-symbols-rounded">description</span></div>
-            <div class="shortcut-name">BifViz</div>
-        </a>
+    <!-- 底部极其不显眼的链接 -->
+    <div class="footer-links">
+        <a href="https://tiry.itlaozai.top/nav.html">Tiry导航</a>
+        <a onclick="openSettings()">网站设置</a>
     </div>
 
-    <!-- 底部一言 -->
-    <div class="hitokoto" id="hitokoto">正在获取今日语录...</div>
+    <!-- 设置弹窗 -->
+    <div class="dialog-scrim" id="settingsScrim">
+        <div class="dialog">
+            <h3>网站设置</h3>
+            <p>
+                • <b>设为浏览器主页</b>：请在浏览器设置中，将启动页设为当前网址。<br><br>
+                • <b>更换壁纸</b>：本页面暂不支持直接上传壁纸，你可以安装浏览器的“新标签页扩展”来实现更丰富的壁纸功能。
+            </p>
+            <button class="btn" onclick="closeSettings()">我知道了</button>
+        </div>
+    </div>
 
     <script>
-        // 时钟功能
-        function updateClock() {
+        // 状态变量：当前是现实时间还是 TrV 时间
+        let isTrvTime = false;
+
+        // 现实时间更新
+        function updateRealTime() {
+            if (isTrvTime) return;
             const now = new Date();
             const hours = String(now.getHours()).padStart(2, '0');
             const minutes = String(now.getMinutes()).padStart(2, '0');
@@ -242,18 +242,87 @@
             const month = now.getMonth() + 1;
             const day = now.getDate();
             const weekDays = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
-            const weekDay = weekDays[now.getDay()];
-            document.getElementById('date').textContent = `${year}年${month}月${day}日 ${weekDay}`;
+            document.getElementById('date').textContent = `${year}年${month}月${day}日 ${weekDays[now.getDay()]}`;
         }
-        setInterval(updateClock, 1000);
-        updateClock();
+
+        // TrV 时间计算与更新
+        function updateTrvTime() {
+            if (!isTrvTime) return;
+            const realStart = new Date('2024-10-16T00:00:00').getTime();
+            const now = new Date().getTime();
+            const elapsedRealSeconds = (now - realStart) / 1000;
+            const SEC_PER_HOUR = 3600;
+            const SEC_PER_DAY = SEC_PER_HOUR * 30; // TrV一天30小时
+            
+            const totalDays = Math.floor(elapsedRealSeconds / SEC_PER_DAY);
+            const remainSeconds = elapsedRealSeconds % SEC_PER_DAY;
+            
+            const DAYS_PER_YEAR = 520;
+            const years = Math.floor(totalDays / DAYS_PER_YEAR) + 1;
+            let daysInYear = totalDays % DAYS_PER_YEAR;
+            
+            const monthDays = [36,34,34, 36,34,34, 36,34,34, 36,34,34, 36,34,34];
+            let month = 0;
+            let currentMonthDays = 0;
+            for (let i = 0; i < 15; i++) {
+                if (daysInYear < monthDays[i]) {
+                    month = i + 1;
+                    currentMonthDays = daysInYear;
+                    break;
+                }
+                daysInYear -= monthDays[i];
+            }
+            const day = currentMonthDays + 1;
+            
+            const currentHour = Math.floor(remainSeconds / SEC_PER_HOUR);
+            const currentMinute = Math.floor((remainSeconds % SEC_PER_HOUR) / 60);
+            
+            let season = '';
+            if (month >= 1 && month <= 3) season = '暖季';
+            else if (month >= 4 && month <= 6) season = '炎季';
+            else if (month >= 7 && month <= 10) season = '寒季';
+            else if (month >= 11 && month <= 15) season = '暖季';
+            
+            const h = currentHour.toString().padStart(2, '0');
+            const m = currentMinute.toString().padStart(2, '0');
+            
+            // 替换显示内容
+            document.getElementById('clock').textContent = `${h}:${m}`;
+            document.getElementById('date').textContent = `童世 ${years} 年 ${month} 月 ${day} 日 · ${season}`;
+            
+            // 让 TrV 的时间变成紫色，提示用户当前处于彩蛋模式
+            document.getElementById('clock').style.color = 'var(--md-tertiary)';
+            document.getElementById('date').style.color = 'var(--md-tertiary)';
+        }
+
+        // 定时器，每秒更新
+        setInterval(() => {
+            updateRealTime();
+            updateTrvTime();
+        }, 1000);
+        
+        // 页面初始化
+        updateRealTime();
+
+        // 点击时钟切换
+        document.getElementById('clockContainer').addEventListener('click', () => {
+            isTrvTime = !isTrvTime;
+            
+            if (isTrvTime) {
+                updateTrvTime();
+            } else {
+                // 恢复现实时间的颜色和内容
+                document.getElementById('clock').style.color = 'var(--md-primary)';
+                document.getElementById('date').style.color = 'var(--md-on-surface-variant)';
+                updateRealTime();
+            }
+        });
 
         // 搜索功能
         function doSearch() {
             const query = document.getElementById('searchInput').value.trim();
             if (!query) return;
             
-            // 简单的判断：如果包含 . 且没有空格，可能是个网址
             if (query.includes('.') && !query.includes(' ')) {
                 if (!/^https?:\/\//i.test(query)) {
                     window.location.href = 'https://' + query;
@@ -261,26 +330,27 @@
                     window.location.href = query;
                 }
             } else {
-                // 否则进行搜索
                 const engine = document.getElementById('engine').value;
                 window.location.href = engine + encodeURIComponent(query);
             }
         }
 
-        // 支持回车搜索
         document.getElementById('searchInput').addEventListener('keypress', function (e) {
             if (e.key === 'Enter') doSearch();
         });
 
-        // 获取一言（调用免费的公共 API，若失败则显示默认文案）
-        fetch('https://v1.hitokoto.cn/')
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('hitokoto').textContent = `“${data.hitokoto}” — ${data.from}`;
-            })
-            .catch(() => {
-                document.getElementById('hitokoto').textContent = `“探索，开发，学习，互助……” — Tiry 团队`;
-            });
+        // 设置弹窗控制
+        function openSettings() {
+            document.getElementById('settingsScrim').classList.add('open');
+        }
+        function closeSettings() {
+            document.getElementById('settingsScrim').classList.remove('open');
+        }
+        
+        // 点击遮罩关闭弹窗
+        document.getElementById('settingsScrim').addEventListener('click', function(e) {
+            if (e.target === this) closeSettings();
+        });
     </script>
 
 </body>
