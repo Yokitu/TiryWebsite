@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="zh-CN" data-theme="teal">
+<html lang="zh-CN" data-theme="purple">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>视角征集 - Tirvod Rilet</title>
+    <title>创作邀请 - Tirvod Rilet</title>
     <!-- 引入通用样式 -->
     <link rel="stylesheet" href="../m3e.css">
     <style>
@@ -21,17 +21,18 @@
         .invite-header {
             text-align: center;
             padding: 40px 24px;
-            background: linear-gradient(135deg, var(--md-surface-container-high), var(--md-surface-container));
+            background: linear-gradient(135deg, var(--md-primary-container), var(--md-tertiary-container));
             border-radius: 32px;
             margin-bottom: 24px;
             border: 1px solid var(--md-outline-variant);
             box-shadow: 0 4px 12px rgba(0,0,0,0.05);
         }
         .invite-header h1 {
-            font-size: 28px;
-            color: var(--md-primary);
+            font-size: 26px;
+            color: var(--md-on-primary-container);
             font-weight: 700;
-            margin-bottom: 8px;
+            margin-bottom: 12px;
+            line-height: 1.4;
         }
         .invite-header p {
             font-size: 15px;
@@ -39,64 +40,68 @@
             line-height: 1.6;
         }
 
-        /* 卡片容器 */
-        .info-card {
+        /* 创作选项卡片 */
+        .option-card {
             background: var(--md-surface);
             border-radius: 20px;
-            padding: 24px;
-            margin-bottom: 20px;
-            border-left: 6px solid var(--md-primary);
+            padding: 20px;
+            margin-bottom: 16px;
+            border: 1px solid var(--md-outline-variant);
             box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+        }
+        .option-icon {
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            background: var(--md-primary-container);
+            color: var(--md-on-primary-container);
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+            font-weight: 700;
+            font-size: 18px;
+        }
+        .option-content h3 {
+            font-size: 17px;
+            color: var(--md-on-surface);
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+        .option-content p {
+            font-size: 14px;
+            color: var(--md-on-surface-variant);
+            line-height: 1.6;
+        }
+
+        /* 警告提示区 */
+        .warning-box {
+            background: var(--md-error-container);
+            color: var(--md-on-error-container);
+            border-left: 6px solid var(--md-error);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 32px;
             font-size: 15px;
             line-height: 1.7;
-            color: var(--md-on-surface-variant);
         }
-        .info-card h2 {
-            font-size: 18px;
-            color: var(--md-on-surface);
+        .warning-box h3 {
+            font-size: 16px;
+            font-weight: 700;
             margin-bottom: 12px;
             display: flex;
             align-items: center;
             gap: 8px;
         }
-
-        /* 视角列表 */
-        .view-list {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-top: 16px;
+        .warning-box ul {
+            padding-left: 20px;
+            margin: 0;
         }
-        .view-item {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            padding: 16px;
-            background: var(--md-surface-container-low);
-            border-radius: 16px;
-            border: 1px solid var(--md-outline-variant);
+        .warning-box li {
+            margin-bottom: 8px;
         }
-        .view-icon {
-            width: 40px; height: 40px;
-            border-radius: 50%;
-            background: var(--md-secondary-container);
-            color: var(--md-on-secondary-container);
-            display: flex; align-items: center; justify-content: center;
-            flex-shrink: 0;
-        }
-        .view-content { flex: 1; }
-        .view-title { font-size: 16px; font-weight: 600; color: var(--md-on-surface); }
-        .view-desc { font-size: 13px; color: var(--md-on-surface-variant); margin-top: 4px; }
-
-        /* 温馨提示 */
-        .tips {
-            font-size: 13px;
-            color: var(--md-on-surface-variant);
-            padding: 16px;
-            background: var(--md-tertiary-container);
-            color: var(--md-on-tertiary-container);
-            border-radius: 16px;
-            margin-bottom: 24px;
+        .warning-box li:last-child {
+            margin-bottom: 0;
         }
 
         /* 提交按钮 */
@@ -117,6 +122,16 @@
             transition: transform 0.2s;
         }
         .btn-primary:active { transform: scale(0.96); }
+
+        /* 代码块样式 */
+        code {
+            background: var(--md-surface-container-high);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 14px;
+            color: var(--md-primary);
+        }
     </style>
 </head>
 <body>
@@ -125,74 +140,59 @@
         <button class="m3e-icon-btn" onclick="window.location.href='./index.html'">
             <span class="material-symbols-rounded">arrow_back</span>
         </button>
-        <div class="title">视角征集</div>
+        <div class="title">创作邀请</div>
     </header>
 
     <div class="app-container">
         
         <div class="invite-header">
-            <h1>✒️ 执笔邀请</h1>
-            <p>Tirvod Rilet 正在寻找其他的声音<br>与我们一起完善这个魔法世界</p>
-        </div>
-
-        <div class="info-card">
-            <h2><span class="material-symbols-rounded" style="color: var(--md-primary);">visibility</span> 为什么征集？</h2>
+            <h1>一起成为 Tirvod 的创世主！</h1>
             <p>
-                草稿已经出炉，但我们知道，一个人的眼睛只能看到世界的一面。我们诚挚邀请各位朋友，以不同角色的视角，来续写或补全这个世界的故事。你可以写官方已有的角色，也可以创造新的路人、商人、甚至反派。字数不限，文风自由。
+                Tirvod Rilet（以下简称 TrVR）只有我们几个作者的剧情不够看，<br>
+                我们邀请你创作不同的剧情！
             </p>
         </div>
 
-        <div class="info-card">
-            <h2><span class="material-symbols-rounded" style="color: var(--md-secondary);">person_search</span> 推荐视角</h2>
-            <p>如果你不知道从哪里下笔，可以参考以下几个视角：</p>
-            
-            <div class="view-list">
-                <!-- 视角 1 -->
-                <div class="view-item">
-                    <div class="view-icon"><span class="material-symbols-rounded">shield</span></div>
-                    <div class="view-content">
-                        <div class="view-title">优国平民 / 巡逻卫兵</div>
-                        <div class="view-desc">在 Gustroco 国，法治社会下普通人的日常是什么样的？</div>
-                    </div>
-                </div>
-                <!-- 视角 2 -->
-                <div class="view-item">
-                    <div class="view-icon"><span class="material-symbols-rounded">swords</span></div>
-                    <div class="view-content">
-                        <div class="view-title">恶国反抗者 / 帝国执行官</div>
-                        <div class="view-desc">帝制阴影下的 Mustopis 国，除了压迫，是否也有暗流涌动？</div>
-                    </div>
-                </div>
-                <!-- 视角 3 -->
-                <div class="view-item">
-                    <div class="view-icon"><span class="material-symbols-rounded">school</span></div>
-                    <div class="view-content">
-                        <div class="view-title">Yosigecip 的旁听生</div>
-                        <div class="view-desc">在森区、繁区或黯区的课堂上，同学们又在教着怎样离谱又好玩的知识？</div>
-                    </div>
-                </div>
-                <!-- 视角 4 -->
-                <div class="view-item">
-                    <div class="view-icon"><span class="material-symbols-rounded">water</span></div>
-                    <div class="view-content">
-                        <div class="view-title">水城 Wurotu 的船夫</div>
-                        <div class="view-desc">穿梭在水路之间，最常听到的秘密和八卦是什么？</div>
-                    </div>
-                </div>
+        <!-- 创作方向 ① -->
+        <div class="option-card">
+            <div class="option-icon">①</div>
+            <div class="option-content">
+                <h3>含有新角色的</h3>
+                <p>根据你的想法在 TrVR 中创建属于你的角色！可以是某个你虚构的角色、你的 OC、你的朋友、甚至是你自己！</p>
             </div>
         </div>
 
-        <div class="tips">
-            <b>📜 写作规范：</b><br>
-            1. 请不要破坏已有的主线设定（如 JJY 的关系网）。<br>
-            2. 可以写悲剧、喜剧或悬疑，但不要搞纯黑深残。<br>
-            3. 提交时请注明你的 <b>笔名</b> 和 <b>投稿视角</b>。
+        <!-- 创作方向 ② -->
+        <div class="option-card">
+            <div class="option-icon" style="background: var(--md-secondary-container); color: var(--md-on-secondary-container);">②</div>
+            <div class="option-content">
+                <h3>以新视角写的</h3>
+                <p>以不同的视角写出你想要的剧情！比如，以默认视角注重全局，而某个角色的视角注重 ta 的感受，等等。</p>
+            </div>
         </div>
 
-        <!-- 指向 QQ 群或邮箱 -->
+        <!-- 创作方向 ③ -->
+        <div class="option-card">
+            <div class="option-icon" style="background: var(--md-tertiary-container); color: var(--md-on-tertiary-container);">③</div>
+            <div class="option-content">
+                <h3>含有新地区的</h3>
+                <p>新的区域、城市，甚至是国家！（其实与 TrVR 剧情交织的另一个世界的剧情也可以！）</p>
+            </div>
+        </div>
+
+        <!-- 注意事项 -->
+        <div class="warning-box">
+            <h3><span class="material-symbols-rounded">warning</span> 注意（划重点）</h3>
+            <ul>
+                <li>不能破坏已有的角色关系、剧情（包括与已有剧情发生冲突等）、设定（包括历法、世界观、人设等）。</li>
+                <li>不要出现太 nèi 个的片段（懂我意思 :)）。</li>
+                <li>会写 <code>.md</code> 文件的尽量用 <code>.md</code> 格式（我不想帮别人改格式改一亿年 :)）。</li>
+            </ul>
+        </div>
+
         <a href="https://tiry.itlaozai.top/contact.html" class="btn-primary">
             <span class="material-symbols-rounded">send</span>
-            带着你的故事联系我们
+            联系我们提交你的作品
         </a>
 
     </div>
