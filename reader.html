@@ -4,10 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>阅读 - Tiry</title>
-    <!-- 根目录下直接引入同级的 m3e.css -->
+    <!-- 引入同级的 m3e.css -->
     <link rel="stylesheet" href="./m3e.css">
-    <!-- 引入 Markdown 解析库 -->
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <style>
         body {
             padding-bottom: 48px;
@@ -65,6 +63,10 @@
         .markdown-body blockquote p { margin-bottom: 0; }
         .markdown-body strong {
             color: var(--md-primary);
+            font-weight: 700;
+        }
+        .markdown-body em {
+            color: var(--md-on-surface-variant);
         }
         .markdown-body hr {
             border: none;
@@ -80,6 +82,11 @@
             max-width: 100%;
             border-radius: 12px;
         }
+        .markdown-body a {
+            color: var(--md-primary);
+            text-decoration: none;
+            border-bottom: 1px solid var(--md-primary);
+        }
 
         .loading {
             text-align: center;
@@ -92,7 +99,6 @@
 <body>
 
     <header class="m3e-appbar">
-        <!-- 使用 history.back() 返回上一页，这样从哪来的就回哪去 -->
         <button class="m3e-icon-btn" onclick="history.back()">
             <span class="material-symbols-rounded">arrow_back</span>
         </button>
@@ -106,12 +112,113 @@
     </div>
 
     <script>
-        // 获取 URL 参数中的文件路径
+        // ==========================================
+        // 核心：手写极简 Markdown 解析器
+        // ==========================================
+        function parseMarkdown(md) {
+            // 处理换行符统一
+            md = md.replace(/\r\n/g, '\n');
+            
+            // 1. 处理代码块（避免里面的符号被转换）
+            const codeBlocks = [];
+            md = md.replace(/```([\s\S]*?)```/g, (match, p1) => {
+                codeBlocks.push(`<pre><code>${p1.replace(/</g, '&lt;')}</code></pre>`);
+                return `__CODE_BLOCK_${codeBlocks.length - 1}__`;
+            });
+
+            // 2. 处理标题
+            md = md.replace(/^###### (.*$)/gm, '<h6>$1</h6>')
+                   .replace(/^##### (.*$)/gm, '<h5>$1</h5>')
+                   .replace(/^#### (.*$)/gm, '<h4>$1</h4>')
+                   .replace(/^### (.*$)/gm, '<h3>$1</h3>')
+                   .replace(/^## (.*$)/gm, '<h2>$1</h2>')
+                   .replace(/^# (.*$)/gm, '<h1>$1</h1>');
+
+            // 3. 处理引用
+            md = md.replace(/^\> (.*$)/gm, '<blockquote>$1</blockquote>');
+
+            // 4. 处理加粗和斜体
+            md = md.replace(/\*\*\*(.*?)\*\*\*/g, '<strong><em>$1</em></strong>')
+                   .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                   .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                   .replace(/\_\_(.*?)\_\_/g, '<strong>$1</strong>')
+                   .replace(/\_(.*?)\_/g, '<em>$1</em>');
+
+            // 5. 处理图片
+            md = md.replace(/!\[(.*?)\]\((.*?)\)/g, '<img src="$2" alt="$1" />');
+
+            // 6. 处理链接
+            md = md.replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank">$1</a>');
+
+            // 7. 处理分割线
+            md = md.replace(/^---$/gm, '<hr>');
+
+            // 8. 处理无序列表 (简单处理)
+            md = md.replace(/^\* (.*$)/gm, '<ul><li>$1</li></ul>')
+                   .replace(/^- (.*$)/gm, '<ul><li>$1</li></ul>');
+            
+            // 修复连续的 ul 标签
+            md = md.replace(/<\/ul>\n<ul>/g, '\n');
+
+            // 9. 处理段落（将双换行变成段落，单换行变成 <br>）
+            const lines = md.split('\n');
+            let html = '';
+            let inParagraph = false;
+
+            for (let i = 0; i < lines.length; i++) {
+                let line = lines[i].trim();
+                
+                // 如果是空行，关闭段落
+                if (line === '') {
+                    if (inParagraph) {
+                        html += '</p>';
+                        inParagraph = false;
+                    }
+                    continue;
+                }
+
+                // 如果是以标签开头的，直接输出，不包在 <p> 里
+                if (/^<(h[1-6]|ul|ol|li|blockquote|hr|pre|img|div)/.test(line)) {
+                    if (inParagraph) {
+                        html += '</p>';
+                        inParagraph = false;
+                    }
+                    html += line + '\n';
+                } else {
+                    // 普通文本
+                    if (!inParagraph) {
+                        html += '<p>';
+                        inParagraph = true;
+                    }
+                    // 判断是否是行内替换后的占位符
+                    html += line + '<br>';
+                }
+            }
+            if (inParagraph) html += '</p>';
+
+            // 清理多余的 <br> 和 <p> 嵌套
+            html = html.replace(/<br><\/p>/g, '</p>')
+                       .replace(/<p><br>/g, '<p>')
+                       .replace(/<p><\/p>/g, '')
+                       .replace(/<blockquote><br>/g, '<blockquote>')
+                       .replace(/<br><\/blockquote>/g, '</blockquote>');
+
+            // 10. 恢复代码块
+            html = html.replace(/__CODE_BLOCK_(\d+)__/g, (match, index) => {
+                return codeBlocks[index];
+            });
+
+            return html;
+        }
+
+        // ==========================================
+        // 页面逻辑
+        // ==========================================
         const urlParams = new URLSearchParams(window.location.search);
         const filePath = urlParams.get('file');
 
         if (!filePath) {
-            document.getElementById('content').innerHTML = '<h2>未指定文件</h2><p>请在网址后加上 ?file=文件路径，例如：<br>?file=./Tirvod/main/psj1.md</p>';
+            document.getElementById('content').innerHTML = '<h2>未指定文件</h2><p>请在网址后加上 ?file=文件路径</p>';
             document.getElementById('page-title').textContent = '错误';
         } else {
             fetch(filePath)
@@ -120,11 +227,11 @@
                     return response.text();
                 })
                 .then(mdText => {
-                    // 使用 marked 渲染
-                    const htmlContent = marked.parse(mdText);
+                    // 使用我们自己的解析器
+                    const htmlContent = parseMarkdown(mdText);
                     document.getElementById('content').innerHTML = htmlContent;
                     
-                    // 自动提取第一个标题作为网页标题
+                    // 自动提取标题
                     const match = mdText.match(/^#\s+(.+)$/m);
                     if (match && match[1]) {
                         document.getElementById('page-title').textContent = match[1];
