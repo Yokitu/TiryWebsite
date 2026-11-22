@@ -67,5 +67,6 @@
 function getTrvTime() {
     const start = new Date('2024-10-15T16:00:00Z').getTime();
     // 这是代码块内部，不应该被其他 Markdown 语法干扰
-    return "童世 X 年 X 月 X 日";
+    return "TrV X / X / X ";
+    // 在找这个功能吗？我们仓库主分支的/tvrtime.js可供学习及使用！
 }
