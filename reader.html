@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>阅读 - Tiry</title>
-    <!-- 引入同级的 m3e.css -->
     <link rel="stylesheet" href="./m3e.css">
     <style>
         body {
@@ -17,7 +16,6 @@
             padding: 16px;
         }
         
-        /* 阅读器容器 */
         .markdown-body {
             background: var(--md-surface);
             border-radius: 20px;
@@ -27,31 +25,13 @@
             font-size: 16px;
             line-height: 1.8;
             color: var(--md-on-surface);
+            overflow-wrap: break-word;
         }
 
-        /* 针对 Markdown 渲染出来的元素进行 M3E 风格美化 */
-        .markdown-body h1 {
-            font-size: 26px;
-            color: var(--md-primary);
-            margin-bottom: 8px;
-            border-bottom: 2px solid var(--md-primary-container);
-            padding-bottom: 12px;
-        }
-        .markdown-body h2 {
-            font-size: 20px;
-            color: var(--md-primary);
-            margin-top: 24px;
-            margin-bottom: 12px;
-        }
-        .markdown-body h3 {
-            font-size: 18px;
-            color: var(--md-tertiary);
-            margin-top: 20px;
-        }
-        .markdown-body p {
-            margin-bottom: 16px;
-            text-align: justify;
-        }
+        .markdown-body h1 { font-size: 26px; color: var(--md-primary); margin: 24px 0 12px; border-bottom: 2px solid var(--md-primary-container); padding-bottom: 12px; }
+        .markdown-body h2 { font-size: 20px; color: var(--md-primary); margin: 20px 0 10px; }
+        .markdown-body h3 { font-size: 18px; color: var(--md-tertiary); margin: 16px 0 8px; }
+        .markdown-body p { margin-bottom: 16px; text-align: justify; }
         
         /* 引用块 */
         .markdown-body blockquote {
@@ -64,79 +44,33 @@
         }
         .markdown-body blockquote p { margin-bottom: 0; }
 
-        .markdown-body strong {
-            color: var(--md-primary);
-            font-weight: 700;
-        }
-        .markdown-body em {
-            color: var(--md-on-surface-variant);
-        }
-        .markdown-body del {
-            color: var(--md-outline);
-        }
-        
-        .markdown-body hr {
-            border: none;
-            border-top: 1px dashed var(--md-outline-variant);
-            margin: 32px 0;
-        }
+        .markdown-body strong { color: var(--md-primary); font-weight: 700; }
+        .markdown-body em { color: var(--md-on-surface-variant); }
+        .markdown-body del { color: var(--md-outline); }
+        .markdown-body hr { border: none; border-top: 1px dashed var(--md-outline-variant); margin: 32px 0; }
         
         /* 列表 */
-        .markdown-body ul, .markdown-body ol {
-            margin-bottom: 16px;
-            padding-left: 24px;
-        }
+        .markdown-body ul, .markdown-body ol { margin-bottom: 16px; padding-left: 24px; }
         .markdown-body li { margin-bottom: 8px; }
+        .markdown-body ul.nested { margin: 8px 0; list-style-type: circle; }
 
-        /* 嵌套列表 */
-        .markdown-body ul.nested {
-            margin-top: 8px;
-            margin-bottom: 8px;
-            list-style-type: circle;
-        }
-
-        /* 行内代码 */
+        /* 代码 */
         .markdown-body p code {
             background: var(--md-surface-container-high);
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-family: monospace;
-            font-size: 14px;
-            color: var(--md-primary);
+            padding: 2px 6px; border-radius: 4px;
+            font-family: monospace; font-size: 14px; color: var(--md-primary);
         }
-
-        /* 代码块 */
         .markdown-body pre {
             background: var(--md-surface-container-highest);
-            padding: 16px;
-            border-radius: 12px;
-            overflow-x: auto;
-            margin-bottom: 16px;
+            padding: 16px; border-radius: 12px;
+            overflow-x: auto; margin-bottom: 16px;
         }
-        .markdown-body pre code {
-            font-family: monospace;
-            font-size: 14px;
-            color: var(--md-on-surface);
-            white-space: pre;
-        }
+        .markdown-body pre code { font-family: monospace; font-size: 14px; white-space: pre; }
 
-        .markdown-body img {
-            max-width: 100%;
-            border-radius: 12px;
-            margin: 8px 0;
-        }
-        .markdown-body a {
-            color: var(--md-primary);
-            text-decoration: none;
-            border-bottom: 1px solid var(--md-primary);
-        }
+        .markdown-body img { max-width: 100%; border-radius: 12px; margin: 8px 0; }
+        .markdown-body a { color: var(--md-primary); text-decoration: none; border-bottom: 1px solid var(--md-primary); }
 
-        .loading {
-            text-align: center;
-            padding: 40px;
-            color: var(--md-on-surface-variant);
-            font-style: italic;
-        }
+        .loading { text-align: center; padding: 40px; color: var(--md-on-surface-variant); font-style: italic; }
     </style>
 </head>
 <body>
@@ -156,100 +90,109 @@
 
     <script>
         // ==========================================
-        // 增强版原生 Markdown 解析器 (带容错)
+        // 终极版原生 Markdown 解析器 (逐行解析，拒绝粘连)
         // ==========================================
         function parseMarkdown(md) {
-            // 统一换行符
             md = md.replace(/\r\n/g, '\n');
             
-            // 1. 处理代码块（支持带语言、无语言，且容错漏写结尾 ``` 的情况）
+            // 1. 提取代码块
             const codeBlocks = [];
             md = md.replace(/```(?:[a-zA-Z]*)[ \t]*\n([\s\S]*?)(?:```|$)/g, (match, p1) => {
-                const safeCode = p1.replace(/</g, '&lt;').replace(/>/g, '&gt;');
-                codeBlocks.push(`<pre><code>${safeCode.trim()}</code></pre>`);
-                return `\n__CODE_BLOCK_${codeBlocks.length - 1}__\n`;
+                const safeCode = p1.replace(/</g, '&lt;').replace(/>/g, '&gt;').trim();
+                codeBlocks.push(`<pre><code>${safeCode}</code></pre>`);
+                return `%%CODEBLOCK_${codeBlocks.length - 1}%%\n`;
             });
 
-            // 2. 处理标题
-            md = md.replace(/^###### (.*$)/gm, '<h6>$1</h6>')
-                   .replace(/^##### (.*$)/gm, '<h5>$1</h5>')
-                   .replace(/^#### (.*$)/gm, '<h4>$1</h4>')
-                   .replace(/^### (.*$)/gm, '<h3>$1</h3>')
-                   .replace(/^## (.*$)/gm, '<h2>$1</h2>')
-                   .replace(/^# (.*$)/gm, '<h1>$1</h1>');
-
-            // 3. 处理引用 (连续的多行合并为一个 blockquote)
-            md = md.replace(/^> (.*$)/gm, '<blockquote>$1</blockquote>');
-            md = md.replace(/<\/blockquote>\n<blockquote>/g, '<br>');
-
-            // 4. 处理删除线
-            md = md.replace(/~~(.*?)~~/g, '<del>$1</del>');
-
-            // 5. 处理加粗和斜体
-            md = md.replace(/\*\*\*(.*?)\*\*\*/g, '<strong><em>$1</em></strong>')
-                   .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-                   .replace(/\*(.*?)\*/g, '<em>$1</em>')
-                   .replace(/\_\_(.*?)\_\_/g, '<strong>$1</strong>')
-                   .replace(/\_(.*?)\_/g, '<em>$1</em>');
-
-            // 6. 处理行内代码 (严格匹配单个反引号，防止吃掉代码块)
-            md = md.replace(/([^`])`([^`]+)`([^`])/g, '$1<code>$2</code>$3');
-
-            // 7. 处理图片
-            md = md.replace(/!\[(.*?)\]\((.*?)\)/g, '<img src="$2" alt="$1" />');
-
-            // 8. 处理链接
-            md = md.replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank">$1</a>');
-
-            // 9. 处理分割线
-            md = md.replace(/^---$/gm, '<hr>');
-
-            // 10. 处理嵌套列表与普通列表
-            md = md.replace(/^(\s{2,})[\*\-\+] (.*$)/gm, '<ul class="nested"><li>$2</li></ul>');
-            md = md.replace(/^[\*\-\+] (.*$)/gm, '<ul><li>$1</li></ul>');
-            md = md.replace(/^\d+\. (.*$)/gm, '<ol><li>$1</li></ol>'); // 支持有序列表
-            
-            // 修复列表标签的粘连问题
-            md = md.replace(/<\/ul>\n<ul>/g, '\n');
-            md = md.replace(/<\/ol>\n<ol>/g, '\n');
-            md = md.replace(/<\/ul>\n<ul class="nested">/g, '\n<ul class="nested">');
-
-            // 11. 处理段落（将剩下的纯文本用 <p> 包裹）
             const lines = md.split('\n');
             let html = '';
             let inParagraph = false;
+            let inList = false;
 
             for (let i = 0; i < lines.length; i++) {
                 let line = lines[i].trim();
-                
+
+                // 如果是空行，闭合当前段落和列表
                 if (line === '') {
                     if (inParagraph) { html += '</p>'; inParagraph = false; }
+                    if (inList) { html += '</ul>'; inList = false; }
                     continue;
                 }
 
-                // 遇到块级元素，直接闭合段落并追加
-                if (/^<(h[1-6]|ul|ol|li|blockquote|hr|pre|img|div)/.test(line) || line.startsWith('__CODE_BLOCK_')) {
+                // 遇到代码块占位符
+                if (line.startsWith('%%CODEBLOCK_')) {
                     if (inParagraph) { html += '</p>'; inParagraph = false; }
+                    if (inList) { html += '</ul>'; inList = false; }
                     html += line + '\n';
-                } else {
-                    // 普通文本
-                    if (!inParagraph) { html += '<p>'; inParagraph = true; }
-                    html += line + '<br>';
+                    continue;
                 }
+
+                // 标题
+                let headingMatch = line.match(/^(#{1,6})\s+(.*)$/);
+                if (headingMatch) {
+                    if (inParagraph) { html += '</p>'; inParagraph = false; }
+                    if (inList) { html += '</ul>'; inList = false; }
+                    const level = headingMatch[1].length;
+                    html += `<h${level}>${headingMatch[2]}</h${level}>\n`;
+                    continue;
+                }
+
+                // 分割线
+                if (/^-{3,}$/.test(line)) {
+                    if (inParagraph) { html += '</p>'; inParagraph = false; }
+                    if (inList) { html += '</ul>'; inList = false; }
+                    html += '<hr>\n';
+                    continue;
+                }
+
+                // 引用块
+                if (line.startsWith('> ')) {
+                    if (inParagraph) { html += '</p>'; inParagraph = false; }
+                    if (inList) { html += '</ul>'; inList = false; }
+                    html += `<blockquote>${line.substring(2)}</blockquote>\n`;
+                    continue;
+                }
+
+                // 无序列表
+                let listMatch = line.match(/^[\*\-\+]\s+(.*)$/);
+                if (listMatch) {
+                    if (inParagraph) { html += '</p>'; inParagraph = false; }
+                    if (!inList) { html += '<ul>\n'; inList = true; }
+                    html += `<li>${listMatch[1]}</li>\n`;
+                    continue;
+                }
+
+                // 有序列表 (简单处理)
+                let olMatch = line.match(/^\d+\.\s+(.*)$/);
+                if (olMatch) {
+                    if (inParagraph) { html += '</p>'; inParagraph = false; }
+                    if (inList) { html += '</ul>'; inList = false; }
+                    html += `<ol><li>${olMatch[1]}</li></ol>\n`; // 暂不支持多行合并
+                    continue;
+                }
+
+                // 普通段落
+                if (inList) { html += '</ul>'; inList = false; }
+                if (!inParagraph) { html += '<p>'; inParagraph = true; }
+                html += line;
             }
+
             if (inParagraph) html += '</p>';
+            if (inList) html += '</ul>';
 
-            // 清理多余的标签嵌套
-            html = html.replace(/<br><\/p>/g, '</p>')
-                       .replace(/<p><br>/g, '<p>')
-                       .replace(/<p><\/p>/g, '')
-                       .replace(/<blockquote><br>/g, '<blockquote>')
-                       .replace(/<br><\/blockquote>/g, '</blockquote>');
+            // 处理行内元素 (加粗、斜体、代码、链接等)
+            html = html.replace(/\*\*\*(.*?)\*\*\*/g, '<strong><em>$1</em></strong>')
+                       .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                       .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                       .replace(/~~(.*?)~~/g, '<del>$1</del>')
+                       .replace(/([^`])`([^`]+)`([^`])/g, '$1<code>$2</code>$3')
+                       .replace(/!\[(.*?)\]\((.*?)\)/g, '<img src="$2" alt="$1" />')
+                       .replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank">$1</a>');
 
-            // 恢复代码块占位符
-            html = html.replace(/__CODE_BLOCK_(\d+)__/g, (match, index) => {
-                return codeBlocks[index];
-            });
+            // 恢复代码块
+            html = html.replace(/%%CODEBLOCK_(\d+)%%/g, (match, index) => codeBlocks[index]);
+            
+            // 修复引用块内的段落标签（如果有的话）
+            html = html.replace(/<blockquote><p>(.*?)<\/p><\/blockquote>/g, '<blockquote>$1</blockquote>');
 
             return html;
         }
@@ -273,7 +216,6 @@
                     const htmlContent = parseMarkdown(mdText);
                     document.getElementById('content').innerHTML = htmlContent;
                     
-                    // 自动提取标题
                     const match = mdText.match(/^#\s+(.+)$/m);
                     if (match && match[1]) {
                         document.getElementById('page-title').textContent = match[1];
