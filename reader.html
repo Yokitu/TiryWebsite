@@ -52,6 +52,8 @@
             margin-bottom: 16px;
             text-align: justify;
         }
+        
+        /* 引用块 */
         .markdown-body blockquote {
             border-left: 4px solid var(--md-primary);
             background: var(--md-surface-container);
@@ -61,6 +63,7 @@
             color: var(--md-on-surface-variant);
         }
         .markdown-body blockquote p { margin-bottom: 0; }
+
         .markdown-body strong {
             color: var(--md-primary);
             font-weight: 700;
@@ -68,19 +71,59 @@
         .markdown-body em {
             color: var(--md-on-surface-variant);
         }
+        .markdown-body del {
+            color: var(--md-outline);
+        }
+        
         .markdown-body hr {
             border: none;
             border-top: 1px dashed var(--md-outline-variant);
             margin: 32px 0;
         }
+        
+        /* 列表 */
         .markdown-body ul, .markdown-body ol {
             margin-bottom: 16px;
             padding-left: 24px;
         }
         .markdown-body li { margin-bottom: 8px; }
+
+        /* 嵌套列表 */
+        .markdown-body ul.nested {
+            margin-top: 8px;
+            margin-bottom: 8px;
+            list-style-type: circle;
+        }
+
+        /* 行内代码 */
+        .markdown-body p code {
+            background: var(--md-surface-container-high);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 14px;
+            color: var(--md-primary);
+        }
+
+        /* 代码块 */
+        .markdown-body pre {
+            background: var(--md-surface-container-highest);
+            padding: 16px;
+            border-radius: 12px;
+            overflow-x: auto;
+            margin-bottom: 16px;
+        }
+        .markdown-body pre code {
+            font-family: monospace;
+            font-size: 14px;
+            color: var(--md-on-surface);
+            white-space: pre;
+        }
+
         .markdown-body img {
             max-width: 100%;
             border-radius: 12px;
+            margin: 8px 0;
         }
         .markdown-body a {
             color: var(--md-primary);
@@ -113,17 +156,18 @@
 
     <script>
         // ==========================================
-        // 核心：手写极简 Markdown 解析器
+        // 增强版原生 Markdown 解析器
         // ==========================================
         function parseMarkdown(md) {
-            // 处理换行符统一
+            // 统一换行符
             md = md.replace(/\r\n/g, '\n');
             
-            // 1. 处理代码块（避免里面的符号被转换）
+            // 1. 处理代码块（支持带语言和无语言的 ```）
             const codeBlocks = [];
-            md = md.replace(/```([\s\S]*?)```/g, (match, p1) => {
-                codeBlocks.push(`<pre><code>${p1.replace(/</g, '&lt;')}</code></pre>`);
-                return `__CODE_BLOCK_${codeBlocks.length - 1}__`;
+            md = md.replace(/```(?:[a-zA-Z]*)\n([\s\S]*?)```/g, (match, p1) => {
+                const safeCode = p1.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                codeBlocks.push(`<pre><code>${safeCode}</code></pre>`);
+                return `\n__CODE_BLOCK_${codeBlocks.length - 1}__\n`;
             });
 
             // 2. 处理标题
@@ -134,33 +178,43 @@
                    .replace(/^## (.*$)/gm, '<h2>$1</h2>')
                    .replace(/^# (.*$)/gm, '<h1>$1</h1>');
 
-            // 3. 处理引用
-            md = md.replace(/^\> (.*$)/gm, '<blockquote>$1</blockquote>');
+            // 3. 处理引用 (连续的多行合并为一个 blockquote)
+            md = md.replace(/^> (.*$)/gm, '<blockquote>$1</blockquote>');
+            md = md.replace(/<\/blockquote>\n<blockquote>/g, '<br>');
 
-            // 4. 处理加粗和斜体
+            // 4. 处理删除线
+            md = md.replace(/~~(.*?)~~/g, '<del>$1</del>');
+
+            // 5. 处理加粗和斜体
             md = md.replace(/\*\*\*(.*?)\*\*\*/g, '<strong><em>$1</em></strong>')
                    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
                    .replace(/\*(.*?)\*/g, '<em>$1</em>')
                    .replace(/\_\_(.*?)\_\_/g, '<strong>$1</strong>')
                    .replace(/\_(.*?)\_/g, '<em>$1</em>');
 
-            // 5. 处理图片
+            // 6. 处理行内代码 (必须在处理完粗斜体之后，防止冲突)
+            md = md.replace(/`(.*?)`/g, '<code>$1</code>');
+
+            // 7. 处理图片
             md = md.replace(/!\[(.*?)\]\((.*?)\)/g, '<img src="$2" alt="$1" />');
 
-            // 6. 处理链接
+            // 8. 处理链接
             md = md.replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank">$1</a>');
 
-            // 7. 处理分割线
+            // 9. 处理分割线
             md = md.replace(/^---$/gm, '<hr>');
 
-            // 8. 处理无序列表 (简单处理)
-            md = md.replace(/^\* (.*$)/gm, '<ul><li>$1</li></ul>')
-                   .replace(/^- (.*$)/gm, '<ul><li>$1</li></ul>');
+            // 10. 处理嵌套列表与普通列表
+            md = md.replace(/^(\s{2,})[\*\-\+] (.*$)/gm, '<ul class="nested"><li>$2</li></ul>');
+            md = md.replace(/^[\*\-\+] (.*$)/gm, '<ul><li>$1</li></ul>');
+            md = md.replace(/^\d+\. (.*$)/gm, '<ol><li>$1</li></ol>'); // 支持有序列表
             
-            // 修复连续的 ul 标签
+            // 修复列表标签的粘粘问题
             md = md.replace(/<\/ul>\n<ul>/g, '\n');
+            md = md.replace(/<\/ol>\n<ol>/g, '\n');
+            md = md.replace(/<\/ul>\n<ul class="nested">/g, '\n<ul class="nested">');
 
-            // 9. 处理段落（将双换行变成段落，单换行变成 <br>）
+            // 11. 处理段落（将剩下的纯文本用 <p> 包裹）
             const lines = md.split('\n');
             let html = '';
             let inParagraph = false;
@@ -168,42 +222,31 @@
             for (let i = 0; i < lines.length; i++) {
                 let line = lines[i].trim();
                 
-                // 如果是空行，关闭段落
                 if (line === '') {
-                    if (inParagraph) {
-                        html += '</p>';
-                        inParagraph = false;
-                    }
+                    if (inParagraph) { html += '</p>'; inParagraph = false; }
                     continue;
                 }
 
-                // 如果是以标签开头的，直接输出，不包在 <p> 里
-                if (/^<(h[1-6]|ul|ol|li|blockquote|hr|pre|img|div)/.test(line)) {
-                    if (inParagraph) {
-                        html += '</p>';
-                        inParagraph = false;
-                    }
+                // 遇到块级元素，直接闭合段落并追加
+                if (/^<(h[1-6]|ul|ol|li|blockquote|hr|pre|img|div)/.test(line) || line.startsWith('__CODE_BLOCK_')) {
+                    if (inParagraph) { html += '</p>'; inParagraph = false; }
                     html += line + '\n';
                 } else {
                     // 普通文本
-                    if (!inParagraph) {
-                        html += '<p>';
-                        inParagraph = true;
-                    }
-                    // 判断是否是行内替换后的占位符
+                    if (!inParagraph) { html += '<p>'; inParagraph = true; }
                     html += line + '<br>';
                 }
             }
             if (inParagraph) html += '</p>';
 
-            // 清理多余的 <br> 和 <p> 嵌套
+            // 清理多余的标签
             html = html.replace(/<br><\/p>/g, '</p>')
                        .replace(/<p><br>/g, '<p>')
                        .replace(/<p><\/p>/g, '')
                        .replace(/<blockquote><br>/g, '<blockquote>')
                        .replace(/<br><\/blockquote>/g, '</blockquote>');
 
-            // 10. 恢复代码块
+            // 恢复代码块占位符
             html = html.replace(/__CODE_BLOCK_(\d+)__/g, (match, index) => {
                 return codeBlocks[index];
             });
@@ -227,7 +270,6 @@
                     return response.text();
                 })
                 .then(mdText => {
-                    // 使用我们自己的解析器
                     const htmlContent = parseMarkdown(mdText);
                     document.getElementById('content').innerHTML = htmlContent;
                     
