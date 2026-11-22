@@ -156,17 +156,17 @@
 
     <script>
         // ==========================================
-        // 增强版原生 Markdown 解析器
+        // 增强版原生 Markdown 解析器 (带容错)
         // ==========================================
         function parseMarkdown(md) {
             // 统一换行符
             md = md.replace(/\r\n/g, '\n');
             
-            // 1. 处理代码块（支持带语言和无语言的 ```）
+            // 1. 处理代码块（支持带语言、无语言，且容错漏写结尾 ``` 的情况）
             const codeBlocks = [];
-            md = md.replace(/```(?:[a-zA-Z]*)\n([\s\S]*?)```/g, (match, p1) => {
+            md = md.replace(/```(?:[a-zA-Z]*)[ \t]*\n([\s\S]*?)(?:```|$)/g, (match, p1) => {
                 const safeCode = p1.replace(/</g, '&lt;').replace(/>/g, '&gt;');
-                codeBlocks.push(`<pre><code>${safeCode}</code></pre>`);
+                codeBlocks.push(`<pre><code>${safeCode.trim()}</code></pre>`);
                 return `\n__CODE_BLOCK_${codeBlocks.length - 1}__\n`;
             });
 
@@ -192,8 +192,8 @@
                    .replace(/\_\_(.*?)\_\_/g, '<strong>$1</strong>')
                    .replace(/\_(.*?)\_/g, '<em>$1</em>');
 
-            // 6. 处理行内代码 (必须在处理完粗斜体之后，防止冲突)
-            md = md.replace(/`(.*?)`/g, '<code>$1</code>');
+            // 6. 处理行内代码 (严格匹配单个反引号，防止吃掉代码块)
+            md = md.replace(/([^`])`([^`]+)`([^`])/g, '$1<code>$2</code>$3');
 
             // 7. 处理图片
             md = md.replace(/!\[(.*?)\]\((.*?)\)/g, '<img src="$2" alt="$1" />');
@@ -209,7 +209,7 @@
             md = md.replace(/^[\*\-\+] (.*$)/gm, '<ul><li>$1</li></ul>');
             md = md.replace(/^\d+\. (.*$)/gm, '<ol><li>$1</li></ol>'); // 支持有序列表
             
-            // 修复列表标签的粘粘问题
+            // 修复列表标签的粘连问题
             md = md.replace(/<\/ul>\n<ul>/g, '\n');
             md = md.replace(/<\/ol>\n<ol>/g, '\n');
             md = md.replace(/<\/ul>\n<ul class="nested">/g, '\n<ul class="nested">');
@@ -239,7 +239,7 @@
             }
             if (inParagraph) html += '</p>';
 
-            // 清理多余的标签
+            // 清理多余的标签嵌套
             html = html.replace(/<br><\/p>/g, '</p>')
                        .replace(/<p><br>/g, '<p>')
                        .replace(/<p><\/p>/g, '')
