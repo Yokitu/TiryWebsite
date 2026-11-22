@@ -49,10 +49,19 @@
         .markdown-body del { color: var(--md-outline); }
         .markdown-body hr { border: none; border-top: 1px dashed var(--md-outline-variant); margin: 32px 0; }
         
-        /* 列表 */
-        .markdown-body ul, .markdown-body ol { margin-bottom: 16px; padding-left: 24px; }
+        /* 列表样式优化 */
+        .markdown-body ul, .markdown-body ol { 
+            margin-bottom: 16px; 
+            padding-left: 24px; 
+        }
         .markdown-body li { margin-bottom: 8px; }
-        .markdown-body ul.nested { margin: 8px 0; list-style-type: circle; }
+        /* 针对嵌套列表 */
+        .markdown-body li > ul, .markdown-body li > ol { 
+            margin-top: 8px; 
+            margin-bottom: 0; 
+        }
+        .markdown-body ul ul { list-style-type: circle; }
+        .markdown-body ul ul ul { list-style-type: square; }
 
         /* 代码 */
         .markdown-body p code {
@@ -89,9 +98,6 @@
     </div>
 
     <script>
-        // ==========================================
-        // 终极版原生 Markdown 解析器 (逐行解析，拒绝粘连)
-        // ==========================================
         function parseMarkdown(md) {
             md = md.replace(/\r\n/g, '\n');
             
@@ -106,80 +112,146 @@
             const lines = md.split('\n');
             let html = '';
             let inParagraph = false;
+            
+            // 列表状态追踪
             let inList = false;
+            let listType = ''; // 'ul' or 'ol'
+            let listDepth = 0;
 
             for (let i = 0; i < lines.length; i++) {
-                let line = lines[i].trim();
+                let rawLine = lines[i];
+                let trimmedLine = rawLine.trim();
 
-                // 如果是空行，闭合当前段落和列表
-                if (line === '') {
+                // 判断当前行的缩进级别
+                let indentMatch = rawLine.match(/^(\s*)/);
+                let currentIndent = indentMatch ? indentMatch[1].length : 0;
+                let currentDepth = Math.floor(currentIndent / 2); // 2个空格算一层嵌套
+
+                // 空行处理
+                if (trimmedLine === '') {
                     if (inParagraph) { html += '</p>'; inParagraph = false; }
-                    if (inList) { html += '</ul>'; inList = false; }
+                    if (inList) {
+                        // 遇到空行，如果接下来不是列表，就闭合列表（这块稍微复杂，简单处理：空行直接闭合）
+                        // 但为了支持列表内包含空行，这里我们延迟闭合，看下一行。
+                    }
                     continue;
                 }
 
                 // 遇到代码块占位符
-                if (line.startsWith('%%CODEBLOCK_')) {
+                if (trimmedLine.startsWith('%%CODEBLOCK_')) {
                     if (inParagraph) { html += '</p>'; inParagraph = false; }
-                    if (inList) { html += '</ul>'; inList = false; }
-                    html += line + '\n';
+                    if (inList) { html += `</${listType}>`; inList = false; }
+                    html += trimmedLine + '\n';
                     continue;
                 }
 
                 // 标题
-                let headingMatch = line.match(/^(#{1,6})\s+(.*)$/);
+                let headingMatch = trimmedLine.match(/^(#{1,6})\s+(.*)$/);
                 if (headingMatch) {
                     if (inParagraph) { html += '</p>'; inParagraph = false; }
-                    if (inList) { html += '</ul>'; inList = false; }
+                    if (inList) { html += `</${listType}>`; inList = false; }
                     const level = headingMatch[1].length;
                     html += `<h${level}>${headingMatch[2]}</h${level}>\n`;
                     continue;
                 }
 
                 // 分割线
-                if (/^-{3,}$/.test(line)) {
+                if (/^-{3,}$/.test(trimmedLine)) {
                     if (inParagraph) { html += '</p>'; inParagraph = false; }
-                    if (inList) { html += '</ul>'; inList = false; }
+                    if (inList) { html += `</${listType}>`; inList = false; }
                     html += '<hr>\n';
                     continue;
                 }
 
                 // 引用块
-                if (line.startsWith('> ')) {
+                if (trimmedLine.startsWith('> ')) {
                     if (inParagraph) { html += '</p>'; inParagraph = false; }
-                    if (inList) { html += '</ul>'; inList = false; }
-                    html += `<blockquote>${line.substring(2)}</blockquote>\n`;
+                    if (inList) { html += `</${listType}>`; inList = false; }
+                    html += `<blockquote>${trimmedLine.substring(2)}</blockquote>\n`;
                     continue;
                 }
 
-                // 无序列表
-                let listMatch = line.match(/^[\*\-\+]\s+(.*)$/);
-                if (listMatch) {
+                // 无序列表项
+                let ulMatch = trimmedLine.match(/^[\*\-\+]\s+(.*)$/);
+                if (ulMatch) {
                     if (inParagraph) { html += '</p>'; inParagraph = false; }
-                    if (!inList) { html += '<ul>\n'; inList = true; }
-                    html += `<li>${listMatch[1]}</li>\n`;
+                    
+                    if (!inList) {
+                        html += '<ul>\n';
+                        inList = true;
+                        listType = 'ul';
+                        listDepth = currentDepth;
+                    } else if (listType === 'ul') {
+                        // 处理嵌套深度变化
+                        if (currentDepth > listDepth) {
+                            html += '<ul>\n';
+                            listDepth = currentDepth;
+                        } else if (currentDepth < listDepth) {
+                            html += '</ul>\n';
+                            listDepth = currentDepth;
+                        }
+                    } else {
+                        html += `</${listType}>\n<ul>\n`;
+                        listType = 'ul';
+                        listDepth = currentDepth;
+                    }
+                    
+                    html += `<li>${ulMatch[1]}</li>\n`;
                     continue;
                 }
 
-                // 有序列表 (简单处理)
-                let olMatch = line.match(/^\d+\.\s+(.*)$/);
+                // 有序列表项
+                let olMatch = trimmedLine.match(/^\d+\.\s+(.*)$/);
                 if (olMatch) {
                     if (inParagraph) { html += '</p>'; inParagraph = false; }
-                    if (inList) { html += '</ul>'; inList = false; }
-                    html += `<ol><li>${olMatch[1]}</li></ol>\n`; // 暂不支持多行合并
+                    
+                    if (!inList) {
+                        html += '<ol>\n';
+                        inList = true;
+                        listType = 'ol';
+                        listDepth = currentDepth;
+                    } else if (listType === 'ol') {
+                        if (currentDepth > listDepth) {
+                            html += '<ol>\n';
+                            listDepth = currentDepth;
+                        } else if (currentDepth < listDepth) {
+                            html += '</ol>\n';
+                            listDepth = currentDepth;
+                        }
+                    } else {
+                        html += `</${listType}>\n<ol>\n`;
+                        listType = 'ol';
+                        listDepth = currentDepth;
+                    }
+                    
+                    html += `<li>${olMatch[1]}</li>\n`;
                     continue;
                 }
 
-                // 普通段落
-                if (inList) { html += '</ul>'; inList = false; }
+                // 普通文本（如果当前在列表里，说明列表结束了）
+                if (inList) {
+                    // 闭合所有嵌套的列表
+                    while (listDepth > 0) {
+                        html += `</${listType}>\n`;
+                        listDepth--;
+                    }
+                    html += `</${listType}>\n`;
+                    inList = false;
+                }
+
                 if (!inParagraph) { html += '<p>'; inParagraph = true; }
-                html += line;
+                // 保留普通文本的换行（针对小说分行）
+                html += trimmedLine + '<br>';
             }
 
+            // 收尾清理
             if (inParagraph) html += '</p>';
-            if (inList) html += '</ul>';
+            if (inList) {
+                while (listDepth > 0) { html += `</${listType}>\n`; listDepth--; }
+                html += `</${listType}>\n`;
+            }
 
-            // 处理行内元素 (加粗、斜体、代码、链接等)
+            // 处理行内元素
             html = html.replace(/\*\*\*(.*?)\*\*\*/g, '<strong><em>$1</em></strong>')
                        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
                        .replace(/\*(.*?)\*/g, '<em>$1</em>')
@@ -191,15 +263,14 @@
             // 恢复代码块
             html = html.replace(/%%CODEBLOCK_(\d+)%%/g, (match, index) => codeBlocks[index]);
             
-            // 修复引用块内的段落标签（如果有的话）
-            html = html.replace(/<blockquote><p>(.*?)<\/p><\/blockquote>/g, '<blockquote>$1</blockquote>');
+            // 清理多余的空段落
+            html = html.replace(/<p><\/p>/g, '')
+                       .replace(/<p><br><\/p>/g, '');
 
             return html;
         }
 
-        // ==========================================
-        // 页面逻辑
-        // ==========================================
+        // 加载页面
         const urlParams = new URLSearchParams(window.location.search);
         const filePath = urlParams.get('file');
 
@@ -213,8 +284,7 @@
                     return response.text();
                 })
                 .then(mdText => {
-                    const htmlContent = parseMarkdown(mdText);
-                    document.getElementById('content').innerHTML = htmlContent;
+                    document.getElementById('content').innerHTML = parseMarkdown(mdText);
                     
                     const match = mdText.match(/^#\s+(.+)$/m);
                     if (match && match[1]) {
@@ -224,7 +294,7 @@
                     }
                 })
                 .catch(error => {
-                    document.getElementById('content').innerHTML = `<div class="loading" style="color:var(--md-error)">读取失败：${error.message}<br>请检查文件路径是否正确。</div>`;
+                    document.getElementById('content').innerHTML = `<div class="loading" style="color:var(--md-error)">读取失败：${error.message}</div>`;
                     document.getElementById('page-title').textContent = '出错了';
                 });
         }
